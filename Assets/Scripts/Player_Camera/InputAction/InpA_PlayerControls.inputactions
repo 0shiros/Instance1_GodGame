@@ -16,9 +16,36 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "ScrollWheel",
+                    "type": "Value",
+                    "id": "c1177df8-4718-4e67-884b-9186a96dfdca",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "RightClick",
                     "type": "Button",
                     "id": "5e1735d7-2966-41ab-9bba-928e9b93e42d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "LeftClick",
+                    "type": "Button",
+                    "id": "187f6605-9b8a-4a49-a122-2d88ebecf2ee",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SpaceBar",
+                    "type": "Button",
+                    "id": "218cfe87-1d09-4286-af2a-d3056b336a6e",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -89,6 +116,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "RightClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "86efd1e8-856b-4c41-81ba-a4fb200b3b34",
+                    "path": "<Mouse>/scroll",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ScrollWheel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "99ccb508-c157-4e50-9b15-fab8912de5ef",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftClick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "edc5ca6b-0d0d-4312-a544-d72475aad5ee",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SpaceBar",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

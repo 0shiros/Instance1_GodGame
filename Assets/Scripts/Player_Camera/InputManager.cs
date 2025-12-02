@@ -7,6 +7,7 @@ public class InputManager : MonoBehaviour
     [SerializeField] private CameraController cameraController;
     private Vector2 moveInput;
     private bool isDragging = false;
+    private bool canMove = true;
 
     private void Start()
     {
@@ -18,12 +19,9 @@ public class InputManager : MonoBehaviour
 
     private void Update()
     {
-        cameraController.MoveCamera(moveInput);
+        if (canMove) cameraController.MoveCamera(moveInput);
 
-        if (isDragging)
-        {
-            cameraController.DragCamera();
-        }
+        if (isDragging && canMove) cameraController.DragCamera();
     }
 
     public void OnCameraMove(InputAction.CallbackContext context)
@@ -35,5 +33,20 @@ public class InputManager : MonoBehaviour
     {
         if(context.started) cameraController.StartDragging();
         isDragging = context.performed || context.started;
+    }
+
+    public void OnScroll(InputAction.CallbackContext context)
+    {
+        if(context.performed) cameraController.ZoomCamera(context.ReadValue<Vector2>());
+    }
+    
+    public void OnLeftClick(InputAction.CallbackContext context)
+    {
+        if(context.started) Debug.Log("Left Clicked Pressed");
+    }
+    
+    public void OnSpacebar(InputAction.CallbackContext context)
+    {
+        if(context.started) Debug.Log("Spacebar Pressed");
     }
 }

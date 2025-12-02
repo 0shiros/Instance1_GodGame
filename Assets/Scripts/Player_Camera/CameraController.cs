@@ -3,11 +3,22 @@ using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
+    [Header("CameraSettings")]
     private Camera mainCamera;
     private Transform cameraTransform;
+    
+    [Header("CameraMovement")]
     [SerializeField] private float moveSpeed = 5f;
-    public Vector3 originMousePosition;
+    private Vector3 originMousePosition;
     private Vector3 difference;
+
+    [Header("CameraZoom")]
+    [SerializeField] private float startZoom = 6f;
+    [SerializeField] private float zoomSpeed = 5f;
+    [SerializeField] private float minZoom = 2f;
+    [SerializeField] private float maxZoom = 10f;
+    private float zoomTarget;
+
     
     private void Awake()
     {
@@ -19,6 +30,7 @@ public class CameraController : MonoBehaviour
         else
         {
             cameraTransform = mainCamera.transform;
+            zoomTarget = mainCamera.orthographicSize = startZoom;
         }
     }
     
@@ -37,4 +49,11 @@ public class CameraController : MonoBehaviour
     }
 
     private Vector3 GetMousePosition => mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+
+    public void ZoomCamera(Vector2 pInput)
+    {
+        zoomTarget -= pInput.y * zoomSpeed;
+        zoomTarget = Mathf.Clamp(zoomTarget, minZoom, maxZoom);
+        mainCamera.orthographicSize = zoomTarget;
+    }
 }
