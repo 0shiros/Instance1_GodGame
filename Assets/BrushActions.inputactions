@@ -1,0 +1,86 @@
+{
+    "version": 1,
+    "name": "BrushActions",
+    "maps": [
+        {
+            "name": "Brush",
+            "id": "bc2704c6-af9b-41fa-b55f-884780b7227c",
+            "actions": [
+                {
+                    "name": "Draw",
+                    "type": "Button",
+                    "id": "0f922406-a0fe-4223-9f80-9a9c9cd84c82",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Erase",
+                    "type": "Button",
+                    "id": "283ae385-0e43-436b-af84-e35f3ffa590e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ModifyRadius",
+                    "type": "Value",
+                    "id": "019d5d05-7518-43a1-9352-e17007329861",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "17d48603-3f22-4502-888f-a67b59448096",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Draw",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "eab0b1ef-7bc1-410a-a6b8-b6c6d95552be",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Erase",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "78a1f2b0-7d90-40a2-b1aa-ce8509109684",
+                    "path": "<Mouse>/forwardButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ModifyRadius",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5ae11e8d-2fb4-4594-8ec9-3f4055f114c6",
+                    "path": "<Mouse>/{Back}",
+                    "interactions": "",
+                    "processors": "Invert",
+                    "groups": "",
+                    "action": "ModifyRadius",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
