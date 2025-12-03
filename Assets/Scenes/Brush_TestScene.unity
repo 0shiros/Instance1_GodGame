@@ -274,7 +274,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8339c9415194d8245be2f71935f7a97d, type: 2}
   tilemaps:
   - {fileID: 1499538396}
-  radius: 5
+  radius: 1
+  minRadius: 1
+  maxRadius: 5
 --- !u!1 &745548613
 GameObject:
   m_ObjectHideFlags: 0
@@ -350,7 +352,19 @@ MonoBehaviour:
     m_ActionId: 283ae385-0e43-436b-af84-e35f3ffa590e
     m_ActionName: 'Brush/Erase[/Mouse/rightButton]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 424601052}
+        m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
+        m_MethodName: ModifyRadius
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 019d5d05-7518-43a1-9352-e17007329861
     m_ActionName: 'Brush/ModifyRadius[/Mouse/forwardButton,/Mouse/backButton]'
   m_NeverAutoSwitchControlSchemes: 0
