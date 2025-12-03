@@ -5,9 +5,9 @@ using UnityEngine;
 public class SearchTree : MonoBehaviour
 {
    [SerializeField] private TechnologyData[] technologyData;
+   [SerializeField] private int currentSciencePoints;
    [SerializeField] private List<Technology> technologiesAvailable;
    [SerializeField] private List<Technology> technologiesUnlock;
-   [SerializeField] private int currentSciencePoints;
 
    private void Start()
    {

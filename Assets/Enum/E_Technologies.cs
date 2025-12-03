@@ -1,6 +1,8 @@
 public enum E_Technologies
 {
-    none,
+    None,
+    
+    //MainTree
     Wood,
     WoodenBuilding,
     WoodenTools,
@@ -12,5 +14,20 @@ public enum E_Technologies
     Metal,
     MetalFrameBuilding,
     MetalTools,
-    MetalWeapons
+    MetalWeapons,
+    
+    //MilitaryTree
+    TrainingGround,
+    GreatArmoury,
+    WarForge,
+    
+    //DevelopmentTree
+    ArchitectGuild,
+    StoneMine,
+    MetalMine,
+    
+    //CraftTree
+    MasonGuild,
+    WatchTower,
+    GuardTower
 }
