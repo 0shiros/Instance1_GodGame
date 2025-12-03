@@ -6,4 +6,5 @@ public class SO_Tiles : ScriptableObject
 {
     public RuleTile RuleTiles;
     public Color color;
+    public LayerMask layerMask;
 }

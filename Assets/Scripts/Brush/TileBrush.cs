@@ -1,218 +1,142 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class TileBrush : MonoBehaviour
 {
     [SerializeField] new Camera camera;
-    [SerializeField] List<SO_Tiles> tiles;
+    [SerializeField] SO_Tiles EraseTile;
     [SerializeField] List<Tilemap> tilemaps;
+    [SerializeField] Slider BrushSizeSlider;
     [SerializeField] int radius;
     [SerializeField] int minRadius;
     [SerializeField] int maxRadius;
     bool canDraw;
     bool canErase;
-    int currentTileindex;
+    private bool isEraseSelected;
+    private Tilemap target;
+    [SerializeField] private SO_Tiles currentTile;
 
+    public void GetTile(SO_Tiles pTile)
+    {
+        currentTile = pTile;
+        target = null;
+    }
 
     private void Update()
     {
+        if (IsPointerOverUI()) return;
+
         if (canDraw)
-        {
             DrawTiles();
-        }
+    }
 
-        if (canErase)
+    bool IsPointerOverUI()
+    {
+        if (EventSystem.current == null) return false;
+        PointerEventData eventData = new PointerEventData(EventSystem.current)
         {
-            EraseTiles();
-        }
-        
-        if (Input.GetKeyDown("up"))
-        {
-            currentTileindex++;
-            currentTileindex = Mathf.Clamp(currentTileindex, 0, tiles.Count-1);
-            Debug.Log(currentTileindex);
-        }
-
-        if (Input.GetKeyDown("down"))
-        {
-            currentTileindex--;
-            currentTileindex = Mathf.Clamp(currentTileindex, 0, tiles.Count - 1);
-            Debug.Log(currentTileindex);
-        }
+            position = Input.mousePosition
+        };
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(eventData, results);
+        return results.Count > 0;
     }
 
     public void CanDraw(InputAction.CallbackContext context)
     {
-        if (context.started) 
-        { 
-            canDraw = true;
-        }
-
+        if (context.started) canDraw = true;
         if (context.canceled)
         {
             canDraw = false;
-        }
-    }
-    
-    public void CanErase(InputAction.CallbackContext context)
-    {
-        if (context.started) 
-        { 
-            canErase = true;
-        }
-
-        if (context.canceled)
-        {
-            canErase = false;
-        }
-    }
-
-    public void ModifyRadius(InputAction.CallbackContext context)
-    {
-        if (context.ReadValue<int>() < 0 && radius > minRadius)
-        {
-            radius-=2;
-        }
-        if (context.ReadValue<int>() > 0 && radius < maxRadius)
-        {
-            radius+=2;
+            target = null;
         }
     }
 
     private void DrawTiles()
     {
-        for (int i = currentTileindex; i >= 0; i--)
-        {
-            CircleDraw(tiles[i].RuleTiles);
-        }
+        if (currentTile == null) return;
+        CircleDraw(currentTile);
     }
-    
+
     private void EraseTiles()
     {
+        CircleDraw(EraseTile);
+    }
+
+    private Tilemap FindTargetTilemap(Vector3Int pos, SO_Tiles pRuleTile)
+    {
+        if (tilemaps == null || tilemaps.Count == 0) return null;
+
+        if (pRuleTile != null && pRuleTile.layerMask != 0)
+        {
+            for (int i = tilemaps.Count - 1; i >= 0; i--)
+            {
+                var tm = tilemaps[i];
+                if (tm == null) continue;
+                if ((pRuleTile.layerMask & (1 << tm.gameObject.layer)) != 0)
+                    return tm;
+            }
+        }
+
+        if (pRuleTile == EraseTile)
+        {
+            for (int i = tilemaps.Count - 1; i >= 0; i--)
+            {
+                var tm = tilemaps[i];
+                if (tm == null) continue;
+                if (tm.GetTile(pos) != null) return tm;
+            }
+        }
+
         for (int i = tilemaps.Count - 1; i >= 0; i--)
         {
-            CircleDraw(null);
+            var tm = tilemaps[i];
+            if (tm != null) return tm;
         }
+
+        return null;
     }
 
-    private void CircleDraw(RuleTile pRuleTile, bool pIsCircle = false)
+    private void CircleDraw(SO_Tiles pRuleTile, bool pIsCircle = false)
     {
-        Vector3 pos = camera.ScreenToWorldPoint(Input.mousePosition);
-        Vector3Int MidCell = tilemaps[0].WorldToCell(new Vector3(pos.x, pos.y));
-        List<Vector3Int> cirlePositions = new List<Vector3Int>();
-        int x = 0;
-        int y = radius;
-        int p = 1 - radius;
+        if (tilemaps == null || tilemaps.Count == 0 || camera == null) return;
 
-        while (x < y)
+        Vector3 mouse = Input.mousePosition;
+        mouse.z = -camera.transform.position.z;
+        Vector3 worldPos = camera.ScreenToWorldPoint(mouse);
+        Vector3Int midCell = tilemaps[0].WorldToCell(new Vector3(worldPos.x, worldPos.y, 0f));
+
+        int size = Mathf.Max(0, (int)BrushSizeSlider.value);
+        int rSq = size * size;
+
+        if (pRuleTile == EraseTile && target == null)
         {
-            if (p < 0)
-            {
-                p += 2 * x + 1;
-            }
-            else
-            {
-                y--;
-                p += 2 * (x + y) + 1;
-            }
-            
-            cirlePositions.Add(new Vector3Int(MidCell.x + x, MidCell.y + y));
-            cirlePositions.Add(new Vector3Int(MidCell.x - x, MidCell.y + y));
-            cirlePositions.Add(new Vector3Int(MidCell.x + x, MidCell.y - y));
-            cirlePositions.Add(new Vector3Int(MidCell.x - x, MidCell.y - y));
-            cirlePositions.Add(new Vector3Int(MidCell.x + y, MidCell.y + x));
-            cirlePositions.Add(new Vector3Int(MidCell.x - y, MidCell.y + x));
-            cirlePositions.Add(new Vector3Int(MidCell.x + y, MidCell.y - x));
-            cirlePositions.Add(new Vector3Int(MidCell.x - y, MidCell.y - x));
-
-            #region dessine le cercle
-            
-            tilemaps[0].SetTile(new Vector3Int(MidCell.x + x, MidCell.y + y), pRuleTile);
-            tilemaps[0].SetTile(new Vector3Int(MidCell.x - x, MidCell.y + y), pRuleTile);
-            tilemaps[0].SetTile(new Vector3Int(MidCell.x + x, MidCell.y - y), pRuleTile);
-            tilemaps[0].SetTile(new Vector3Int(MidCell.x - x, MidCell.y - y), pRuleTile);
-            tilemaps[0].SetTile(new Vector3Int(MidCell.x + y, MidCell.y + x), pRuleTile);
-            tilemaps[0].SetTile(new Vector3Int(MidCell.x - y, MidCell.y + x), pRuleTile);
-            tilemaps[0].SetTile(new Vector3Int(MidCell.x + y, MidCell.y - x), pRuleTile);
-            tilemaps[0].SetTile(new Vector3Int(MidCell.x - y, MidCell.y - x), pRuleTile);
-
-            #endregion
-            
-            x++;
+            target = FindTargetTilemap(midCell, pRuleTile);
         }
-        // DrawDisc(cirlePositions, MidCell, ruleTile);
-    }
 
-    // private void DrawDisc(List<Vector3Int> cirlePositions,Vector3Int MidCell, RuleTile ruleTile)
-    // {
-    //     foreach (Vector3Int position in cirlePositions)
-    //     {
-    //         if (position.x > MidCell.x && position.y > MidCell.y)
-    //         {
-    //             for (int i = 0; i < radius - 1; i++)
-    //             {
-    //                 tilemaps[0].SetTile(new Vector3Int(position.x - i, position.y), ruleTile);
-    //                 tilemaps[0].SetTile(new Vector3Int(position.x, position.y - i), ruleTile);
-    //             }
-    //         }
-    //         else if (position.x < MidCell.x && position.y > MidCell.y)
-    //         {
-    //             for (int i = 0; i < radius - 1; i++)
-    //             {
-    //                 tilemaps[0].SetTile(new Vector3Int(position.x + i, position.y), ruleTile);
-    //                 tilemaps[0].SetTile(new Vector3Int(position.x, position.y - i), ruleTile);
-    //             }
-    //         }
-    //         else if (position.x > MidCell.x && position.y < MidCell.y)
-    //         {
-    //             for (int i = 0; i < radius - 1; i++)
-    //             {
-    //                 tilemaps[0].SetTile(new Vector3Int(position.x - i, position.y), ruleTile);
-    //                 tilemaps[0].SetTile(new Vector3Int(position.x, position.y + i), ruleTile);
-    //             }
-    //         }
-    //         else if(position.x < MidCell.x && position.y < MidCell.y)
-    //         {
-    //             for (int i = 0; i < radius - 1; i++)
-    //             {
-    //                 tilemaps[0].SetTile(new Vector3Int(position.x + i, position.y), ruleTile);
-    //                 tilemaps[0].SetTile(new Vector3Int(position.x, position.y + i), ruleTile);
-    //             }
-    //         }
-    //     }
-    //     int startPos = (radius%2 == 0) ? radius/2 : radius-1/2;
-    //     Vector3Int startPosVector =  MidCell;
-    //     for (int y = 0; y < radius - 2; y++)
-    //     {
-    //         for (int x = 0; x < radius - 2; x++)
-    //         {
-    //             tilemaps[0].SetTile(new Vector3Int(startPosVector.x - x, startPosVector.y - y), ruleTile);
-    //         }
-    //     }
-    // }
-
-    /*private void LineDraw(Vector3Int pos, Vector3Int target, RuleTile ruleTile)
-    {
-        int dx = target.x - pos.x;
-        int dy = target.y - pos.y;
-
-        if (dx != 0)
+        for (int dx = -size; dx <= size; dx++)
         {
-            int y = pos.y;
-            int p = 2 * dy - dx;
-            for (int i = 0; i < dx+1; i++)
+            for (int dy = -size; dy <= size; dy++)
             {
-                tilemaps[0].SetTile(new Vector3Int(pos.x, Mathf.RoundToInt(pos.y + i), y), ruleTile);
-                
-                if (p >= 0)
+                if (dx * dx + dy * dy <= rSq)
                 {
-                    y++;
-                    p -= 2 * dx;
+                    Vector3Int cellPos = new Vector3Int(midCell.x + dx, midCell.y + dy, midCell.z);
+
+                    if (target == null)
+                        target = FindTargetTilemap(cellPos, pRuleTile);
+                    if (target == null) continue;
+
+                    target.SetTile(cellPos, pRuleTile != null ? pRuleTile.RuleTiles : null);
+                    if (pRuleTile != null)
+                        target.SetColor(cellPos, pRuleTile.color);
+                    else
+                        target.SetColor(cellPos, Color.clear);
                 }
-                p += 2 * dy;
             }
         }
-    }*/
+    }
 }
