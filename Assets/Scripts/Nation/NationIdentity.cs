@@ -5,10 +5,15 @@ using UnityEngine.UI;
 
 public class NationIdentity : MonoBehaviour
 {
+    [Header("Reference")]
     [SerializeField] GameObject canva;
     [SerializeField] GameObject prefabNationIdentity;
-    [SerializeField] string nationName;
     private NationIdentityRefs nationIdentityRefs;
+    
+    [Header("NationSettings")]
+    [SerializeField] string nationName;
+    
+    [Header("UISettings")]
     private TextMeshProUGUI nationNameText;
     private TextMeshProUGUI populationText;
     private TextMeshProUGUI dogmaText;

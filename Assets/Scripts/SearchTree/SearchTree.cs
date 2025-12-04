@@ -5,13 +5,18 @@ using UnityEngine;
 
 public class SearchTree : MonoBehaviour
 {
+   [Header("References")]
    [SerializeField] private TechnologyData[] technologiesData;
+   private SetDogmaToPopulation setDogmaToPopulation;
+   private NationIdentity nationIdentity;
+   
+   [Header("TechSettings")]
    [SerializeField] private int currentSciencePoints;
    [SerializeField] private List<Technology> TechnologiesAvailable;
    [SerializeField] private List<Technology> TechnologiesUnlock;
-   private SetDogmaToPopulation setDogmaToPopulation;
    [SerializeField] private int currentDogmaSciencePoints;
-   private NationIdentity nationIdentity;
+   
+   [Header("UIStatistics")]
    private int basicTechUnlockQuantity;
    private int basicTechUnlockQuantityMax;
    private int dogmaTechUnlockQuantity;

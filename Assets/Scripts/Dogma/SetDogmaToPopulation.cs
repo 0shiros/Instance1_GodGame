@@ -11,6 +11,10 @@ public struct Agent
 }
 public class SetDogmaToPopulation : MonoBehaviour
 {
+    [Header("References")]
+    private NationIdentity nationIdentity;
+    
+    [Header("PopulationSettings")]
     public int AgentsQuantity;
     [SerializeField] private int agentsQuantityNeedToSetDogma;
     [SerializeField] private List<Agent> agents;
@@ -27,7 +31,6 @@ public class SetDogmaToPopulation : MonoBehaviour
     private static readonly float referenceSpeed = (speedMax + speedMin) / 2;
     private static readonly float referenceStrength = (strengthMax + strengthMin) / 2;
     public E_Dogma CurrentDogma = E_Dogma.None;
-    private NationIdentity nationIdentity;
 
     private void Start()
     {
