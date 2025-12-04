@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: SO_MasonGuild
   m_EditorClassIdentifier: Assembly-CSharp::TechnologyData
   TechnologyName: 19
-  ExperienceNeedToUnlock: 0
+  ExperienceNeedToUnlock: 2
   TechnologiesNeedToBeUnlock: 05000000
   Dogma: 1

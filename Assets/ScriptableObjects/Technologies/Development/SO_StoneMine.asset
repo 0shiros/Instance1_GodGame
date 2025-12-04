@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: SO_StoneMine
   m_EditorClassIdentifier: Assembly-CSharp::TechnologyData
   TechnologyName: 17
-  ExperienceNeedToUnlock: 0
+  ExperienceNeedToUnlock: 4
   TechnologiesNeedToBeUnlock: 06000000
   Dogma: 2
