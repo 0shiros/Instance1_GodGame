@@ -11,7 +11,7 @@ public struct Agent
 }
 public class SetDogmaToPopulation : MonoBehaviour
 {
-    [SerializeField] private int agentsQuantity;
+    public int AgentsQuantity;
     [SerializeField] private int agentsQuantityNeedToSetDogma;
     [SerializeField] private List<Agent> agents;
     private float averageHp;
@@ -27,10 +27,13 @@ public class SetDogmaToPopulation : MonoBehaviour
     private static readonly float referenceSpeed = (speedMax + speedMin) / 2;
     private static readonly float referenceStrength = (strengthMax + strengthMin) / 2;
     public E_Dogma CurrentDogma = E_Dogma.None;
+    private NationIdentity nationIdentity;
 
     private void Start()
     {
-        for (int i = 0; i < agentsQuantity; i++)
+        nationIdentity = gameObject.GetComponent<NationIdentity>();
+        
+        for (int i = 0; i < AgentsQuantity; i++)
         {
             Agent newAgent = new Agent
             {
@@ -41,6 +44,9 @@ public class SetDogmaToPopulation : MonoBehaviour
             
             agents.Add(newAgent);
         }
+        
+        nationIdentity.SetPopulation(AgentsQuantity);
+        nationIdentity.SetDogma(CurrentDogma);
     }
 
     private void Update()
@@ -77,7 +83,7 @@ public class SetDogmaToPopulation : MonoBehaviour
         
         Debug.Log($"Differences: HP={differences[0]},  Speed={differences[1]}, Strength={differences[2]}");
         
-        if (agentsQuantity < agentsQuantityNeedToSetDogma)
+        if (AgentsQuantity < agentsQuantityNeedToSetDogma)
             return;
 
         int maxIndex = 0;
@@ -94,5 +100,6 @@ public class SetDogmaToPopulation : MonoBehaviour
             case 2: CurrentDogma = E_Dogma.Military; break;
         }
         
+        nationIdentity.SetDogma(CurrentDogma);
     }
 }
