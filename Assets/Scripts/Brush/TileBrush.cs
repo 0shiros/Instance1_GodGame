@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using NavMeshPlus.Components;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
@@ -10,15 +12,37 @@ public class TileBrush : MonoBehaviour
     [SerializeField] new Camera camera;
     [SerializeField] SO_Tiles EraseTile;
     [SerializeField] List<Tilemap> tilemaps;
+    [SerializeField] SO_Tiles waterTile;
+    [SerializeField] Tilemap waterTileMap;
     [SerializeField] Slider BrushSizeSlider;
     [SerializeField] int radius;
+    [SerializeField] private Vector2Int mapBounds;
     [SerializeField] int minRadius;
     [SerializeField] int maxRadius;
+    [SerializeField] private NavMeshSurface NavMesh;
     bool canDraw;
     bool canErase;
     private bool isEraseSelected;
     private Tilemap target;
     [SerializeField] private SO_Tiles currentTile;
+
+
+    private void OnDisable()
+    {
+        NavMesh.RemoveData();
+    }
+
+    private void OnEnable()
+    {
+        for (int x = Mathf.CeilToInt((mapBounds.x / 2) * -1); x < Mathf.CeilToInt(mapBounds.x / 2); x++)
+        {
+            for (int y = Mathf.CeilToInt((mapBounds.y / 2) * -1); y < Mathf.CeilToInt(mapBounds.x / 2); y++)
+            {
+                waterTileMap.SetTile(new Vector3Int(x, y, 0), waterTile.RuleTiles);
+                waterTileMap.SetColor(new Vector3Int(x, y, 0), waterTile.color);
+            }
+        }
+    }
 
     public void GetTile(SO_Tiles pTile)
     {
@@ -53,6 +77,10 @@ public class TileBrush : MonoBehaviour
         {
             canDraw = false;
             target = null;
+            if (NavMesh != null)
+            {
+                NavMesh.UpdateNavMesh(NavMesh.navMeshData);
+            }
         }
     }
 
