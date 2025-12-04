@@ -26,7 +26,7 @@ public class SetDogmaToPopulation : MonoBehaviour
     private static readonly float referenceHp = (hpMax + hpMin) / 2;
     private static readonly float referenceSpeed = (speedMax + speedMin) / 2;
     private static readonly float referenceStrength = (strengthMax + strengthMin) / 2;
-    [SerializeField] private E_Dogma currentDogma = E_Dogma.None;
+    public E_Dogma CurrentDogma = E_Dogma.None;
 
     private void Start()
     {
@@ -46,7 +46,7 @@ public class SetDogmaToPopulation : MonoBehaviour
     private void Update()
     {
         CalculateAverages();
-        if (currentDogma == E_Dogma.None) SetDogma();
+        if (CurrentDogma == E_Dogma.None) SetDogma();
     }
 
     private void CalculateAverages()
@@ -89,9 +89,9 @@ public class SetDogmaToPopulation : MonoBehaviour
 
         switch (maxIndex)
         {
-            case 0: currentDogma = E_Dogma.LoveNature; break;
-            case 1: currentDogma = E_Dogma.ExpandNation; break;
-            case 2: currentDogma = E_Dogma.LoveFight; break;
+            case 0: CurrentDogma = E_Dogma.Craft; break;
+            case 1: CurrentDogma = E_Dogma.Development; break;
+            case 2: CurrentDogma = E_Dogma.Military; break;
         }
         
     }

@@ -7,4 +7,5 @@ public class TechnologyData : ScriptableObject
     public E_Technologies TechnologyName;
     public int ExperienceNeedToUnlock;
     public List<E_Technologies> TechnologiesNeedToBeUnlock;
+    public E_Dogma Dogma;
 }

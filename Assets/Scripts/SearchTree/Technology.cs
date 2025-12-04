@@ -6,9 +6,10 @@ using UnityEngine;
 public class Technology 
 {
     [SerializeField] TechnologyData technologyData;
-    [SerializeField] E_Technologies technologyName;
+    public E_Technologies TechnologyName;
     public int ExperienceNeedToUnlock;
     [SerializeField] List<E_Technologies> technologiesNeedToBeUnlock;
+    public E_Dogma Dogma;
 
 
     public void Initialize(TechnologyData pData)
@@ -16,9 +17,10 @@ public class Technology
         technologyData = pData;
         if (technologyData != null)
         {
-            technologyName = technologyData.TechnologyName;
+            TechnologyName = technologyData.TechnologyName;
             ExperienceNeedToUnlock = technologyData.ExperienceNeedToUnlock;
             technologiesNeedToBeUnlock = technologyData.TechnologiesNeedToBeUnlock;
+            Dogma = technologyData.Dogma;
         }
     }
 
@@ -33,7 +35,7 @@ public class Technology
 
         foreach (E_Technologies technology in technologiesNeedToBeUnlock)
         {
-            if (pTechnologiesUnlock.All(tech => tech.technologyName != technology))
+            if (pTechnologiesUnlock.All(tech => tech.TechnologyName != technology))
             {
                 return false;
             }
