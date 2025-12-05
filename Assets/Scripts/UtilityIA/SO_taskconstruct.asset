@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36b35d584e74bd14abf77096b13bf93e, type: 3}
-  m_Name: NewTaskData 1
+  m_Name: SO_taskconstruct
   m_EditorClassIdentifier: Assembly-CSharp::TaskData
   taskName: New Task
   type: 1
   targetResource: 1
-  targetBuildingType: 0
+  targetBuildingType: 1
   basePriority: 1
-  recommendedVillagers: 1
+  recommendedVillagers: 2
+  workDuration: 2
