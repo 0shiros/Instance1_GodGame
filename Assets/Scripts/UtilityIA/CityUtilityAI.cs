@@ -11,7 +11,6 @@ using UnityEngine;
 /// - Calcule automatiquement le nombre recommandé de travailleurs via une AnimationCurve
 /// - Empêche de construire au même endroit deux fois
 /// - NotifyResourceCollected sécurisé pour ne pas générer d'erreur
-/// - Placement des maisons aléatoire autour des maisons existantes
 /// </summary>
 public class CityUtilityAI : MonoBehaviour
 {
@@ -35,12 +34,12 @@ public class CityUtilityAI : MonoBehaviour
 
     [HideInInspector] public List<VillagerUtilityAI> villagers = new List<VillagerUtilityAI>();
     private List<ResourceNode> resourceNodes = new List<ResourceNode>();
-    private List<StorageBuilding> storages = new List<StorageBuilding>();
+    public  List<StorageBuilding> storages = new List<StorageBuilding>();
     public List<CityTask> activeTasks = new List<CityTask>();
 
     private List<Vector3> usedBuildPositions = new List<Vector3>();
-    private List<Vector3> existingHouses = new List<Vector3>();
     private float timer = 0f;
+    public GameObject[] houses;
 
     void Start()
     {
@@ -95,59 +94,26 @@ public class CityUtilityAI : MonoBehaviour
 
             if (totalWood >= building.woodCost && totalStone >= building.stoneCost)
             {
-                Vector3 buildPos = Vector3.zero;
-
-                if (building.buildingType == BuildingType.House)
+                if (FindFreeBuildPosition(building.size, out Vector3 pos))
                 {
-                    // Position des maisons
-                    if (existingHouses.Count == 0)
+                    if (usedBuildPositions.Contains(pos)) continue;
+
+                    var buildTaskData = taskDataList.Find(td => td.type == TaskType.Build && td.targetBuildingType == building.buildingType);
+                    if (buildTaskData == null) continue;
+
+                    CityTask t = new CityTask
                     {
-                        // première maison : trouve une position libre
-                        if (!FindFreeBuildPosition(building.size, out buildPos)) continue;
-                    }
-                    else
-                    {
-                        // suivantes : position aléatoire autour d'une maison existante
-                        int attempts = 10;
-                        bool found = false;
-                        for (int i = 0; i < attempts; i++)
-                        {
-                            Vector3 anchor = existingHouses[Random.Range(0, existingHouses.Count)];
-                            float angle = Random.Range(0f, 360f);
-                            float distance = Random.Range(3f, 6f); // distance min et max
-                            Vector3 candidate = anchor + new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad), 0f) * distance;
+                        data = buildTaskData,
+                        buildingData = building,
+                        buildPosition = pos
+                    };
+                    activeTasks.Add(t);
 
-                            // vérifier que la position n'est pas déjà utilisée
-                            if (!existingHouses.Any(p => Vector3.Distance(p, candidate) < 2f))
-                            {
-                                buildPos = candidate;
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) continue;
-                    }
+                    // Réduction des ressources globales et dans les StorageBuildings
+                    DeductResources(building.woodCost, building.stoneCost);
 
-                    existingHouses.Add(buildPos); // mémorise la position
+                    usedBuildPositions.Add(pos);
                 }
-                else
-                {
-                    // autres bâtiments : position libre classique
-                    if (!FindFreeBuildPosition(building.size, out buildPos)) continue;
-                }
-
-                var buildTaskData = taskDataList.Find(td => td.type == TaskType.Build && td.targetBuildingType == building.buildingType);
-                if (buildTaskData == null) continue;
-
-                CityTask t = new CityTask
-                {
-                    data = buildTaskData,
-                    buildingData = building,
-                    buildPosition = buildPos
-                };
-                activeTasks.Add(t);
-
-                DeductResources(building.woodCost, building.stoneCost);
             }
         }
     }
@@ -292,6 +258,42 @@ public class CityUtilityAI : MonoBehaviour
         return best;
     }
 
+    public StorageBuilding FindNearestStorageWithFood(Vector3 from)
+    {
+        StorageBuilding best = null;
+        float bestDist = float.PositiveInfinity;
+        foreach (var s in storages)
+        {
+            if (s == null || s.storedFood <= 0) continue;
+            float d = Vector3.Distance(from, s.transform.position);
+            if (d < bestDist)
+            {
+                bestDist = d;
+                best = s;
+            }
+        }
+        return best;
+    }
+
+    public GameObject FindNearestHouse(Vector3 from)
+    {
+        GameObject best = null;
+        float bestDist = float.PositiveInfinity;
+
+         houses = GameObject.FindGameObjectsWithTag("House");
+        foreach (var h in houses)
+        {
+            if (h == null) continue;
+            float d = Vector3.Distance(from, h.transform.position);
+            if (d < bestDist)
+            {
+                bestDist = d;
+                best = h;
+            }
+        }
+        return best;
+    }
+
     void RefreshSceneListsIfNeeded()
     {
         var rn = FindObjectsOfType<ResourceNode>();
@@ -346,24 +348,15 @@ public class CityUtilityAI : MonoBehaviour
         if (activeTasks.Contains(task)) activeTasks.Remove(task);
     }
 
-    /// <summary>
-    /// Méthode sécurisée pour notifier la collecte d'une ressource
-    /// </summary>
     public void NotifyResourceCollected(ResourceType type, int amount)
     {
         if (amount <= 0) return;
 
         switch (type)
         {
-            case ResourceType.Wood:
-                totalWood += amount;
-                break;
-            case ResourceType.Stone:
-                totalStone += amount;
-                break;
-            case ResourceType.Food:
-                totalFood += amount;
-                break;
+            case ResourceType.Wood: totalWood += amount; break;
+            case ResourceType.Stone: totalStone += amount; break;
+            case ResourceType.Food: totalFood += amount; break;
         }
     }
 

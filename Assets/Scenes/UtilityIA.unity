@@ -1327,8 +1327,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f28ac96649cde348b8dc1994f6115ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StorageBuilding
-  storedWood: 10
-  storedStone: 10
+  storedWood: 0
+  storedStone: 100
   storedFood: 10
 --- !u!212 &1094531437
 SpriteRenderer:
@@ -1771,7 +1771,6 @@ MonoBehaviour:
   totalWood: 10
   totalStone: 10
   totalFood: 10
-  minDistanceBetweenBuildings: 1
   workerDistributionCurve:
     serializedVersion: 2
     m_Curve:
@@ -1809,7 +1808,7 @@ Transform:
   m_GameObject: {fileID: 1381548352}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.05, y: 0.11, z: 0}
+  m_LocalPosition: {x: 2.3, y: 2.98, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

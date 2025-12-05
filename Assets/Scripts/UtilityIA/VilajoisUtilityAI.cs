@@ -1,20 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
-/// <summary>
-/// VillagerUtilityAI - version finale corrigée
-/// - State machine légère via enum interne
-/// - Coroutines cancelables
-/// - Compatible avec TaskData.workDuration
-/// - Utilise CityUtilityAI.NotifyResourceCollected/FindNearestStorage/RemoveTask
-/// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
 public class VillagerUtilityAI : MonoBehaviour
 {
@@ -25,12 +13,12 @@ public class VillagerUtilityAI : MonoBehaviour
     public int harvestPerAction = 2;
 
     [Header("Besoins")]
-    public float initialHunger = 0f;
-    public float initialFatigue = 0f;
+    public float hunger = 0f;
+    public float fatigue = 0f;
     public float hungerRate = 0.5f;
     public float fatigueRate = 0.2f;
-    public float hungerThreshold = 80f;
-    public float fatigueThreshold = 90f;
+    public float hungerThreshold = 50f;
+    public float fatigueThreshold = 80f;
 
     [Header("Mouvement")]
     public float moveSpeed = 3.5f;
@@ -40,23 +28,19 @@ public class VillagerUtilityAI : MonoBehaviour
     public CityUtilityAI city;
 
     [Header("Construction fallback")]
-    [Tooltip("Durée par défaut de construction si TaskData.workDuration est 0.")]
     public float defaultBuildTime = 2f;
 
     private NavMeshAgent agent;
+    private Animator animator;
+
     private enum EState { Idle, Moving, Working, Depositing, Eating, Sleeping }
     private EState state = EState.Idle;
 
-    // Tâche et inventaire
     private CityTask currentTask;
+    private Coroutine actionCoroutine;
+
     public int carrying = 0;
     public ResourceType carryingType = ResourceType.None;
-
-    public float hunger;
-    public float fatigue;
-
-    private Coroutine actionCoroutine;
-    private Animator animator;
 
     public bool isBusy => state != EState.Idle;
 
@@ -75,8 +59,6 @@ public class VillagerUtilityAI : MonoBehaviour
 
     void Start()
     {
-        hunger = initialHunger;
-        fatigue = initialFatigue;
         if (city == null) city = FindObjectOfType<CityUtilityAI>();
     }
 
@@ -85,9 +67,16 @@ public class VillagerUtilityAI : MonoBehaviour
         hunger += hungerRate * Time.deltaTime;
         fatigue += fatigueRate * Time.deltaTime;
 
-        if (hunger >= hungerThreshold)
+        // priorité manger
+        if (hunger >= hungerThreshold && state != EState.Eating)
         {
-            if (!HasImmediateFoodGoal()) TryCreateImmediateFoodTask();
+            if (!isBusy) StartEatFlow();
+        }
+
+        // priorité dormir
+        if (fatigue >= fatigueThreshold && state != EState.Sleeping)
+        {
+            if (!isBusy) StartSleepFlow();
         }
 
         UpdateAnimator();
@@ -106,10 +95,10 @@ public class VillagerUtilityAI : MonoBehaviour
         switch (task.data?.type)
         {
             case TaskType.Collect:
-                StartCollectFlow(task);
+                actionCoroutine = StartCoroutine(CollectRoutine(task));
                 break;
             case TaskType.Build:
-                StartBuildFlow(task);
+                actionCoroutine = StartCoroutine(BuildRoutine(task));
                 break;
             default:
                 StartIdle();
@@ -128,33 +117,161 @@ public class VillagerUtilityAI : MonoBehaviour
         StartIdle();
     }
 
-    public bool IsIdle()
+    public bool IsIdle() => !isBusy && currentTask == null;
+
+    #endregion
+
+    #region EATING
+
+    private void StartEatFlow()
     {
-        return !isBusy && currentTask == null;
+        StopCurrentAction();
+        actionCoroutine = StartCoroutine(EatRoutine());
+    }
+
+    private IEnumerator EatRoutine()
+    {
+        // recherche nourriture : priorité Storage, sinon ResourceNode
+        StorageBuilding nearestStorage = FindNearestStorageWithFood();
+        ResourceNode nearestFoodNode = FindNearestResource(ResourceType.Food);
+
+        state = EState.Moving;
+
+        if (nearestStorage != null)
+        {
+            if (!GoToPosition(nearestStorage.transform.position)) { StartIdle(); yield break; }
+            yield return StartCoroutine(WaitUntilArrived());
+
+            state = EState.Eating;
+            float eatRate = 20f; // points de faim par seconde
+
+            while (hunger > 0f && nearestStorage.storedFood > 0)
+            {
+                int taken = nearestStorage.Withdraw(ResourceType.Food, 1);
+                if (taken <= 0) break;
+
+                // diminution progressive sur 0.5s pour chaque unité
+                float elapsed = 0f;
+                float duration = 0.5f;
+                while (elapsed < duration && hunger > 0f)
+                {
+                    hunger -= eatRate * Time.deltaTime;
+                    hunger = Mathf.Max(0f, hunger);
+                    elapsed += Time.deltaTime;
+                    yield return null;
+                }
+            }
+            StartIdle();
+            yield break;
+        }
+
+        if (nearestFoodNode != null)
+        {
+            if (!GoToPosition(nearestFoodNode.transform.position)) { StartIdle(); yield break; }
+            yield return StartCoroutine(WaitUntilArrived());
+
+            state = EState.Eating;
+            float eatRateNode = 20f;
+
+            while (hunger > 0f && nearestFoodNode.amount > 0)
+            {
+                nearestFoodNode.amount -= 1;
+
+                float elapsed = 0f;
+                float duration = 0.5f;
+                while (elapsed < duration && hunger > 0f)
+                {
+                    hunger -= eatRateNode * Time.deltaTime;
+                    hunger = Mathf.Max(0f, hunger);
+                    elapsed += Time.deltaTime;
+                    yield return null;
+                }
+            }
+            StartIdle();
+            yield break;
+        }
+
+        // aucune source
+        StartIdle();
+    }
+
+    private StorageBuilding FindNearestStorageWithFood()
+    {
+        StorageBuilding best = null;
+        float bestDist = float.PositiveInfinity;
+        foreach (var s in FindObjectsOfType<StorageBuilding>())
+        {
+            if (s == null || s.storedFood <= 0) continue;
+            float d = Vector3.Distance(transform.position, s.transform.position);
+            if (d < bestDist)
+            {
+                bestDist = d;
+                best = s;
+            }
+        }
+        return best;
     }
 
     #endregion
 
-    #region Collect / Build flows
+    #region SLEEP
 
-    private void StartCollectFlow(CityTask task)
+    private void StartSleepFlow()
     {
-        if (task == null || task.resourceTarget == null)
-        {
-            FinishCurrentTask();
-            return;
-        }
-        actionCoroutine = StartCoroutine(CollectRoutine(task));
+        StopCurrentAction();
+        actionCoroutine = StartCoroutine(SleepRoutine());
     }
+
+    private IEnumerator SleepRoutine()
+    {
+        GameObject house = FindNearestHouseObject();
+        if (house == null) { StartIdle(); yield break; }
+
+        state = EState.Moving;
+        if (!GoToPosition(house.transform.position)) { StartIdle(); yield break; }
+        yield return StartCoroutine(WaitUntilArrived());
+
+        state = EState.Sleeping;
+        float recoverRate = 25f;
+
+        while (fatigue > 0f)
+        {
+            fatigue -= recoverRate * Time.deltaTime;
+            fatigue = Mathf.Max(0f, fatigue);
+            yield return null;
+        }
+        StartIdle();
+    }
+
+    private GameObject FindNearestHouseObject()
+    {
+        GameObject[] houses = GameObject.FindGameObjectsWithTag("House");
+        if (houses.Length == 0) return null;
+
+        GameObject best = null;
+        float bestDist = float.PositiveInfinity;
+
+        foreach (var h in houses)
+        {
+            float d = Vector3.Distance(transform.position, h.transform.position);
+            if (d < bestDist)
+            {
+                bestDist = d;
+                best = h;
+            }
+        }
+        return best;
+    }
+
+    #endregion
+
+    #region COLLECT / BUILD routines
 
     private IEnumerator CollectRoutine(CityTask task)
     {
         state = EState.Moving;
-        if (!GoToPosition(task.resourceTarget.transform.position))
-        {
-            FinishCurrentTask();
-            yield break;
-        }
+        if (task.resourceTarget == null) { FinishCurrentTask(); yield break; }
+        if (!GoToPosition(task.resourceTarget.transform.position)) { FinishCurrentTask(); yield break; }
         yield return StartCoroutine(WaitUntilArrived());
 
         state = EState.Working;
@@ -164,65 +281,35 @@ public class VillagerUtilityAI : MonoBehaviour
             if (canTake <= 0)
             {
                 yield return StartCoroutine(HandleDepositFlow());
-                if (carrying >= carryCapacity) break;
-            }
-            else
-            {
-                task.resourceTarget.amount -= canTake;
-                carrying += canTake;
-                carryingType = task.resourceTarget.resourceType;
-
-                fatigue += 1f;
-                hunger += 0.5f;
-
-                if (carrying >= carryCapacity)
-                {
-                    yield return StartCoroutine(HandleDepositFlow());
-                }
-                else
-                {
-                    if (task.resourceTarget.amount <= 0) break;
-                    yield return new WaitForSeconds(0.3f);
-                }
+                break;
             }
 
-            if (task.isCompleted) break;
-            if (currentTask != task) yield break;
+            task.resourceTarget.amount -= canTake;
+            carrying += canTake;
+            carryingType = task.resourceTarget.resourceType;
+
+            if (carrying >= carryCapacity)
+                yield return StartCoroutine(HandleDepositFlow());
+
+            yield return new WaitForSeconds(0.3f);
         }
 
         FinishCurrentTask();
     }
 
-    private void StartBuildFlow(CityTask task)
-    {
-        if (task == null || task.buildingData == null)
-        {
-            FinishCurrentTask();
-            return;
-        }
-        actionCoroutine = StartCoroutine(BuildRoutine(task));
-    }
-
     private IEnumerator BuildRoutine(CityTask task)
     {
         state = EState.Moving;
-        if (!GoToPosition(task.buildPosition))
-        {
-            FinishCurrentTask();
-            yield break;
-        }
+        if (!GoToPosition(task.buildPosition)) { FinishCurrentTask(); yield break; }
         yield return StartCoroutine(WaitUntilArrived());
 
         state = EState.Working;
-
         float buildTime = (task.data != null && task.data.workDuration > 0f) ? task.data.workDuration : defaultBuildTime;
         float elapsed = 0f;
         while (elapsed < buildTime)
         {
             if (currentTask != task) yield break;
             elapsed += Time.deltaTime;
-            fatigue += 0.1f * Time.deltaTime;
-            hunger += 0.05f * Time.deltaTime;
             yield return null;
         }
 
@@ -235,39 +322,31 @@ public class VillagerUtilityAI : MonoBehaviour
     private IEnumerator HandleDepositFlow()
     {
         state = EState.Depositing;
-
-        // Stockage le plus proche
         StorageBuilding storage = city?.FindNearestStorage(transform.position);
 
         if (storage == null)
         {
-            // Pas de stockage mais ressources à remettre
-            if (carrying > 0 && city != null)
-            {
-                city.NotifyResourceCollected(carryingType, carrying);
-                carrying = 0;
-                carryingType = ResourceType.None;
-            }
+            city?.NotifyResourceCollected(carryingType, carrying);
+            carrying = 0;
+            carryingType = ResourceType.None;
             yield break;
         }
 
         if (!GoToPosition(storage.transform.position)) yield break;
         yield return StartCoroutine(WaitUntilArrived());
 
-        if (carrying > 0)
-        {
-            storage.Deposit(carryingType, carrying);
-            city.NotifyResourceCollected(carryingType, carrying);
-            carrying = 0;
-            carryingType = ResourceType.None;
-        }
+        storage.Deposit(carryingType, carrying);
+        city?.NotifyResourceCollected(carryingType, carrying);
+
+        carrying = 0;
+        carryingType = ResourceType.None;
 
         yield return new WaitForSeconds(0.1f);
     }
 
     #endregion
 
-    #region Movement helpers
+    #region MOVEMENT HELPERS
 
     private bool GoToPosition(Vector3 pos)
     {
@@ -308,58 +387,7 @@ public class VillagerUtilityAI : MonoBehaviour
 
     #endregion
 
-    #region Finish task & helpers
-
-    private void FinishCurrentTask()
-    {
-        if (currentTask == null)
-        {
-            StartIdle();
-            return;
-        }
-
-        var done = currentTask;
-        currentTask = null;
-
-        done.isCompleted = true;
-        if (done.assignedVillagers.Contains(this)) done.assignedVillagers.Remove(this);
-
-        city?.RemoveTask(done);
-
-        StopCurrentAction();
-        StartIdle();
-    }
-
-    private void StartIdle()
-    {
-        state = EState.Idle;
-    }
-
-    #endregion
-
-    #region Food urgent helpers
-
-    private bool HasImmediateFoodGoal()
-    {
-        if (currentTask == null) return false;
-        return currentTask.data != null &&
-               currentTask.data.type == TaskType.Collect &&
-               currentTask.resourceTarget != null &&
-               currentTask.resourceTarget.resourceType == ResourceType.Food;
-    }
-
-    private void TryCreateImmediateFoodTask()
-    {
-        if (city == null) return;
-        ResourceNode foodNode = FindNearestResource(ResourceType.Food);
-        if (foodNode == null) return;
-
-        var td = city.taskDataList?.Find(t => t.type == TaskType.Collect && t.targetResource == ResourceType.Food);
-        if (td == null) return;
-
-        CityTask temp = new CityTask { data = td, resourceTarget = foodNode };
-        AssignTask(temp);
-    }
+    #region HELPERS
 
     private ResourceNode FindNearestResource(ResourceType type)
     {
@@ -378,9 +406,18 @@ public class VillagerUtilityAI : MonoBehaviour
         return best;
     }
 
-    #endregion
+    private void FinishCurrentTask()
+    {
+        if (currentTask != null)
+        {
+            currentTask.isCompleted = true;
+            currentTask.assignedVillagers.Remove(this);
+        }
+        currentTask = null;
+        StartIdle();
+    }
 
-    #region Anim & Debug
+    private void StartIdle() => state = EState.Idle;
 
     private void UpdateAnimator()
     {
@@ -388,17 +425,8 @@ public class VillagerUtilityAI : MonoBehaviour
         animator.SetBool("isMoving", state == EState.Moving);
         animator.SetBool("isWorking", state == EState.Working);
         animator.SetBool("isDepositing", state == EState.Depositing);
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawSphere(transform.position + Vector3.up * 0.2f, 0.05f);
-
-#if UNITY_EDITOR
-        if (Application.isPlaying)
-            Handles.Label(transform.position + Vector3.up * 0.35f, $"State: {state}\nCarrying: {carrying}");
-#endif
+        animator.SetBool("isEating", state == EState.Eating);
+        animator.SetBool("isSleeping", state == EState.Sleeping);
     }
 
     #endregion
