@@ -16,7 +16,7 @@ MonoBehaviour:
   prefab: {fileID: 2953286491786590815, guid: cac0a8e764651d8409ee4caaf1cc9205, type: 3}
   size: {x: 1, y: 1}
   woodCost: 5
-  stoneCost: 5
+  stoneCost: 0
   housingCapacity: 5
   buildingType: 1
   isStorage: 0

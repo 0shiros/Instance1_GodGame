@@ -1,259 +1,131 @@
-﻿// VillagerUtilityAI.cs
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
-using System.Collections;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 /// <summary>
-/// IA du villageois (2D). Comportements :
-/// - Idle -> accepte une task (AssignTask)
-/// - Collect : va au ResourceNode, prend harvestPerAction unités, puis cherche storage, dépose
-/// - Build : va à buildPosition et instancie le prefab (relié au CityUtilityAI)
-/// - Gestion faim/fatigue (simplifiée)
-/// 
-/// NOTE: Si tu utilises NavMesh+ pour 2D, remplace NavMeshAgent par l'agent 2D correspondant.
+/// VillagerUtilityAI - version finale corrigée
+/// - State machine légère via enum interne
+/// - Coroutines cancelables
+/// - Compatible avec TaskData.workDuration
+/// - Utilise CityUtilityAI.NotifyResourceCollected/FindNearestStorage/RemoveTask
 /// </summary>
 [RequireComponent(typeof(NavMeshAgent))]
 public class VillagerUtilityAI : MonoBehaviour
 {
-    [Header("Role & capacités")]
     public VillagerRole role = VillagerRole.Generalist;
-    public int carryCapacity = 1;      // combien d'unités peut porter
-    public int carrying = 0;           // actuellement porté
-    public ResourceType carryingType = ResourceType.None;
+
+    [Header("Capacités")]
+    public int carryCapacity = 5;
+    public int harvestPerAction = 2;
 
     [Header("Besoins")]
-    public float hunger = 0f;
-    public float fatigue = 0f;
-    public float hungerRate = 1f;
-    public float fatigueRate = 0.5f;
-    public float hungerThreshold = 50f;
-    public float fatigueThreshold = 60f;
+    public float initialHunger = 0f;
+    public float initialFatigue = 0f;
+    public float hungerRate = 0.5f;
+    public float fatigueRate = 0.2f;
+    public float hungerThreshold = 80f;
+    public float fatigueThreshold = 90f;
 
-    [Header("Référence")]
+    [Header("Mouvement")]
+    public float moveSpeed = 3.5f;
+    public float stoppingDistance = 0.2f;
+
+    [Header("Références")]
     public CityUtilityAI city;
 
-    private NavMeshAgent agent; // Remplacer si besoin selon NavMesh2D
+    [Header("Construction fallback")]
+    [Tooltip("Durée par défaut de construction si TaskData.workDuration est 0.")]
+    public float defaultBuildTime = 2f;
+
+    private NavMeshAgent agent;
+    private enum EState { Idle, Moving, Working, Depositing, Eating, Sleeping }
+    private EState state = EState.Idle;
+
+    // Tâche et inventaire
     private CityTask currentTask;
-    public bool isBusy = false;
+    public int carrying = 0;
+    public ResourceType carryingType = ResourceType.None;
 
-    private enum State { Idle, Moving, Working, Eating, Sleeping, Depositing }
-    private State state = State.Idle;
+    public float hunger;
+    public float fatigue;
 
-    void Start()
+    private Coroutine actionCoroutine;
+    private Animator animator;
+
+    public bool isBusy => state != EState.Idle;
+
+    void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         if (agent != null)
         {
             agent.updateRotation = false;
             agent.updateUpAxis = false;
+            agent.speed = moveSpeed;
+            agent.stoppingDistance = stoppingDistance;
         }
+        animator = GetComponent<Animator>();
+    }
 
-        if (city == null)
-            city = FindObjectOfType<CityUtilityAI>();
+    void Start()
+    {
+        hunger = initialHunger;
+        fatigue = initialFatigue;
+        if (city == null) city = FindObjectOfType<CityUtilityAI>();
     }
 
     void Update()
     {
-        // Update besoins
         hunger += hungerRate * Time.deltaTime;
         fatigue += fatigueRate * Time.deltaTime;
 
-        // Si besoins critiques -> ignorer tâches, aller manger/dormir (si tu as Food/Bed)
         if (hunger >= hungerThreshold)
         {
-            // priorité manger : si dépôt ou ressource Food existante
-            var foodNode = FindNearestResource(ResourceType.Food);
-            if (foodNode != null)
-            {
-                // créer une tâche temporaire locale ou aller manger directement
-                // Pour simplicité : on va collecter comme une ressource
-                if (currentTask == null || currentTask.data.type != TaskType.Collect)
-                {
-                    var temp = new CityTask { data = city.taskDataList.Find(t => t.type == TaskType.Collect && t.targetResource == ResourceType.Food), resourceTarget = foodNode };
-                    AssignTask(temp);
-                }
-                return;
-            }
+            if (!HasImmediateFoodGoal()) TryCreateImmediateFoodTask();
         }
 
-        // Si on a une tâche
-        if (currentTask != null && !currentTask.isCompleted)
-        {
-            HandleCurrentTask();
-        }
-        else
-        {
-            // état idle
-            state = State.Idle;
-            isBusy = false;
-        }
+        UpdateAnimator();
     }
 
-    void HandleCurrentTask()
-    {
-        if (currentTask.data.type == TaskType.Collect && currentTask.resourceTarget != null)
-        {
-            isBusy = true;
-            // se déplacer vers la ressource
-            SetDestination(currentTask.resourceTarget.transform.position);
-            state = State.Moving;
-
-            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
-            {
-                // collecte
-                CollectFromNode(currentTask.resourceTarget);
-            }
-        }
-        else if (currentTask.data.type == TaskType.Build && currentTask.buildingData != null)
-        {
-            isBusy = true;
-            SetDestination(currentTask.buildPosition);
-            state = State.Moving;
-
-            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
-            {
-                // effectue la construction (simple : instancier le prefab)
-                BuildAtPosition(currentTask);
-            }
-        }
-    }
-
-    void SetDestination(Vector3 pos)
-    {
-        if (agent == null) return;
-        if (agent.destination != pos) agent.SetDestination(pos);
-    }
-
-    void CollectFromNode(ResourceNode node)
-    {
-        if (node.amount <= 0)
-        {
-            // tâche terminée (plus rien à collecter)
-            FinishCurrentTask();
-            return;
-        }
-
-        int canTake = Mathf.Min(carryCapacity - carrying, node.harvestPerAction, node.amount);
-        if (canTake <= 0)
-        {
-            // si on ne peut rien prendre -> chercher dépôt si on a du transport
-            if (carrying > 0)
-            {
-                GoDeposit();
-                return;
-            }
-            else
-            {
-                FinishCurrentTask();
-                return;
-            }
-        }
-
-        // action de collecte : décrémenter node, incrémenter inventory local
-        node.amount -= canTake;
-        carrying += canTake;
-        carryingType = node.resourceType;
-
-        // notifier la cité (temporaire) — la vraie agrégation se fera au dépôt
-        // city.NotifyResourceCollected(node.resourceType, canTake); // facultatif
-
-        // si on est plein -> aller déposer
-        if (carrying >= carryCapacity)
-        {
-            GoDeposit();
-        }
-        else
-        {
-            // si node vide -> finish
-            if (node.amount <= 0)
-                FinishCurrentTask();
-        }
-    }
-
-    void GoDeposit()
-    {
-        // trouver stockage le plus proche
-        var storage = city.FindNearestStorage(transform.position);
-        if (storage == null)
-        {
-            // pas de stockage => notifier la cité directement
-            city.NotifyResourceCollected(carryingType, carrying);
-            carrying = 0;
-            carryingType = ResourceType.None;
-            FinishCurrentTask(); // ou rester idle
-            return;
-        }
-
-        // créer une tâche de dépôt locale (ou déplacer vers storage directement)
-        SetDestination(storage.transform.position);
-        state = State.Depositing;
-
-        // quand arrivé -> déposer
-        StartCoroutine(WaitAndDeposit(storage));
-    }
-
-    IEnumerator WaitAndDeposit(StorageBuilding storage)
-    {
-        // attend l'arrivée (polling)
-        while (agent != null && (agent.pathPending || agent.remainingDistance > agent.stoppingDistance))
-            yield return null;
-
-        // dépôt réel
-        if (carrying > 0)
-        {
-            storage.Deposit(carryingType, carrying);
-            // notifier la cité
-            city.NotifyResourceCollected(carryingType, carrying);
-            carrying = 0;
-            carryingType = ResourceType.None;
-        }
-
-        // Fin de tâche / retour Idle
-        FinishCurrentTask();
-    }
-
-    void BuildAtPosition(CityTask task)
-    {
-        if (task.buildingData.prefab == null)
-        {
-            FinishCurrentTask();
-            return;
-        }
-
-        // instanciation du prefab (on suppose que ressources ont été réservées côté CityUtilityAI)
-        GameObject.Instantiate(task.buildingData.prefab, task.buildPosition, Quaternion.identity);
-
-        // marque la tâche comme complétée
-        FinishCurrentTask();
-    }
-
-    void FinishCurrentTask()
-    {
-        if (currentTask != null)
-        {
-            // notifier le city manager
-            CityTask done = currentTask;
-            currentTask = null;
-            state = State.Idle;
-            isBusy = false;
-
-            if (done != null)
-            {
-                done.isCompleted = true;
-                done.assignedVillagers.Remove(this);
-                // notifications additionnelles peuvent être appelées ici
-            }
-        }
-    }
+    #region Assign / Abandon
 
     public void AssignTask(CityTask task)
     {
-        // reçoit une tâche du CityUtilityAI
-        currentTask = task;
-        if (task != null && !task.assignedVillagers.Contains(this))
-            task.assignedVillagers.Add(this);
+        if (task == null) return;
+        if (currentTask == task) return;
 
-        isBusy = true;
+        StopCurrentAction();
+        currentTask = task;
+
+        switch (task.data?.type)
+        {
+            case TaskType.Collect:
+                StartCollectFlow(task);
+                break;
+            case TaskType.Build:
+                StartBuildFlow(task);
+                break;
+            default:
+                StartIdle();
+                break;
+        }
+    }
+
+    public void AbandonCurrentTask()
+    {
+        if (currentTask != null)
+        {
+            currentTask.assignedVillagers.Remove(this);
+            currentTask = null;
+        }
+        StopCurrentAction();
+        StartIdle();
     }
 
     public bool IsIdle()
@@ -261,7 +133,235 @@ public class VillagerUtilityAI : MonoBehaviour
         return !isBusy && currentTask == null;
     }
 
-    ResourceNode FindNearestResource(ResourceType type)
+    #endregion
+
+    #region Collect / Build flows
+
+    private void StartCollectFlow(CityTask task)
+    {
+        if (task == null || task.resourceTarget == null)
+        {
+            FinishCurrentTask();
+            return;
+        }
+        actionCoroutine = StartCoroutine(CollectRoutine(task));
+    }
+
+    private IEnumerator CollectRoutine(CityTask task)
+    {
+        state = EState.Moving;
+        if (!GoToPosition(task.resourceTarget.transform.position))
+        {
+            FinishCurrentTask();
+            yield break;
+        }
+        yield return StartCoroutine(WaitUntilArrived());
+
+        state = EState.Working;
+        while (task.resourceTarget != null && task.resourceTarget.amount > 0)
+        {
+            int canTake = Mathf.Min(carryCapacity - carrying, harvestPerAction, task.resourceTarget.amount);
+            if (canTake <= 0)
+            {
+                yield return StartCoroutine(HandleDepositFlow());
+                if (carrying >= carryCapacity) break;
+            }
+            else
+            {
+                task.resourceTarget.amount -= canTake;
+                carrying += canTake;
+                carryingType = task.resourceTarget.resourceType;
+
+                fatigue += 1f;
+                hunger += 0.5f;
+
+                if (carrying >= carryCapacity)
+                {
+                    yield return StartCoroutine(HandleDepositFlow());
+                }
+                else
+                {
+                    if (task.resourceTarget.amount <= 0) break;
+                    yield return new WaitForSeconds(0.3f);
+                }
+            }
+
+            if (task.isCompleted) break;
+            if (currentTask != task) yield break;
+        }
+
+        FinishCurrentTask();
+    }
+
+    private void StartBuildFlow(CityTask task)
+    {
+        if (task == null || task.buildingData == null)
+        {
+            FinishCurrentTask();
+            return;
+        }
+        actionCoroutine = StartCoroutine(BuildRoutine(task));
+    }
+
+    private IEnumerator BuildRoutine(CityTask task)
+    {
+        state = EState.Moving;
+        if (!GoToPosition(task.buildPosition))
+        {
+            FinishCurrentTask();
+            yield break;
+        }
+        yield return StartCoroutine(WaitUntilArrived());
+
+        state = EState.Working;
+
+        float buildTime = (task.data != null && task.data.workDuration > 0f) ? task.data.workDuration : defaultBuildTime;
+        float elapsed = 0f;
+        while (elapsed < buildTime)
+        {
+            if (currentTask != task) yield break;
+            elapsed += Time.deltaTime;
+            fatigue += 0.1f * Time.deltaTime;
+            hunger += 0.05f * Time.deltaTime;
+            yield return null;
+        }
+
+        if (task.buildingData != null && task.buildingData.prefab != null)
+            Instantiate(task.buildingData.prefab, task.buildPosition, Quaternion.identity);
+
+        FinishCurrentTask();
+    }
+
+    private IEnumerator HandleDepositFlow()
+    {
+        state = EState.Depositing;
+
+        // Stockage le plus proche
+        StorageBuilding storage = city?.FindNearestStorage(transform.position);
+
+        if (storage == null)
+        {
+            // Pas de stockage mais ressources à remettre
+            if (carrying > 0 && city != null)
+            {
+                city.NotifyResourceCollected(carryingType, carrying);
+                carrying = 0;
+                carryingType = ResourceType.None;
+            }
+            yield break;
+        }
+
+        if (!GoToPosition(storage.transform.position)) yield break;
+        yield return StartCoroutine(WaitUntilArrived());
+
+        if (carrying > 0)
+        {
+            storage.Deposit(carryingType, carrying);
+            city.NotifyResourceCollected(carryingType, carrying);
+            carrying = 0;
+            carryingType = ResourceType.None;
+        }
+
+        yield return new WaitForSeconds(0.1f);
+    }
+
+    #endregion
+
+    #region Movement helpers
+
+    private bool GoToPosition(Vector3 pos)
+    {
+        if (agent == null) return false;
+        agent.isStopped = false;
+        agent.SetDestination(pos);
+        return true;
+    }
+
+    private IEnumerator WaitUntilArrived()
+    {
+        if (agent == null) yield break;
+        float timeout = 10f;
+        float t = 0f;
+        while (agent.pathPending || agent.remainingDistance > agent.stoppingDistance)
+        {
+            if (currentTask == null) yield break;
+            t += Time.deltaTime;
+            if (t > timeout) yield break;
+            yield return null;
+        }
+    }
+
+    private void StopCurrentAction()
+    {
+        if (actionCoroutine != null)
+        {
+            StopCoroutine(actionCoroutine);
+            actionCoroutine = null;
+        }
+        if (agent != null)
+        {
+            agent.ResetPath();
+            agent.isStopped = true;
+        }
+        state = EState.Idle;
+    }
+
+    #endregion
+
+    #region Finish task & helpers
+
+    private void FinishCurrentTask()
+    {
+        if (currentTask == null)
+        {
+            StartIdle();
+            return;
+        }
+
+        var done = currentTask;
+        currentTask = null;
+
+        done.isCompleted = true;
+        if (done.assignedVillagers.Contains(this)) done.assignedVillagers.Remove(this);
+
+        city?.RemoveTask(done);
+
+        StopCurrentAction();
+        StartIdle();
+    }
+
+    private void StartIdle()
+    {
+        state = EState.Idle;
+    }
+
+    #endregion
+
+    #region Food urgent helpers
+
+    private bool HasImmediateFoodGoal()
+    {
+        if (currentTask == null) return false;
+        return currentTask.data != null &&
+               currentTask.data.type == TaskType.Collect &&
+               currentTask.resourceTarget != null &&
+               currentTask.resourceTarget.resourceType == ResourceType.Food;
+    }
+
+    private void TryCreateImmediateFoodTask()
+    {
+        if (city == null) return;
+        ResourceNode foodNode = FindNearestResource(ResourceType.Food);
+        if (foodNode == null) return;
+
+        var td = city.taskDataList?.Find(t => t.type == TaskType.Collect && t.targetResource == ResourceType.Food);
+        if (td == null) return;
+
+        CityTask temp = new CityTask { data = td, resourceTarget = foodNode };
+        AssignTask(temp);
+    }
+
+    private ResourceNode FindNearestResource(ResourceType type)
     {
         ResourceNode best = null;
         float bestDist = float.PositiveInfinity;
@@ -277,4 +377,29 @@ public class VillagerUtilityAI : MonoBehaviour
         }
         return best;
     }
+
+    #endregion
+
+    #region Anim & Debug
+
+    private void UpdateAnimator()
+    {
+        if (animator == null) return;
+        animator.SetBool("isMoving", state == EState.Moving);
+        animator.SetBool("isWorking", state == EState.Working);
+        animator.SetBool("isDepositing", state == EState.Depositing);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawSphere(transform.position + Vector3.up * 0.2f, 0.05f);
+
+#if UNITY_EDITOR
+        if (Application.isPlaying)
+            Handles.Label(transform.position + Vector3.up * 0.35f, $"State: {state}\nCarrying: {carrying}");
+#endif
+    }
+
+    #endregion
 }

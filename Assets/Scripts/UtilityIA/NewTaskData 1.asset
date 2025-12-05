@@ -15,6 +15,7 @@ MonoBehaviour:
   taskName: New Task
   type: 1
   targetResource: 1
-  targetBuildingType: 0
+  targetBuildingType: 1
   basePriority: 1
-  recommendedVillagers: 1
+  recommendedVillagers: 2
+  workDuration: 2
