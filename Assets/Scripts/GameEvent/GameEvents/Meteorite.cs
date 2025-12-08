@@ -1,5 +1,7 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
 public class Meteorite : GameEvent
@@ -9,7 +11,8 @@ public class Meteorite : GameEvent
     [SerializeField] Vector2Int activationMinMax;
     [SerializeField] Vector2 delayMinMax;
     [SerializeField] GameEventBrush brush;
-    [SerializeField] SO_Tiles meteoriteTile;
+    [SerializeField] List<Tilemap> tilemaps;
+    [SerializeField] SO_Tiles SO_Tile;
     float timer;
 
     public override void SetupEvent(int x, int y, float pTimer = 0)
@@ -35,6 +38,6 @@ public class Meteorite : GameEvent
             yield return null;
         }
         float delay = Random.Range(delayMinMax.x, delayMinMax.y);
-        StartCoroutine(brush.CircleDraw(meteoriteTile, pLocation, pRadius, delay));
+        StartCoroutine(brush.CircleDraw(SO_Tile, pLocation, pRadius, tilemaps, delay));
     }
 }

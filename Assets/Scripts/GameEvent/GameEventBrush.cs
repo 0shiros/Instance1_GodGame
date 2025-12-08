@@ -6,11 +6,10 @@ using UnityEngine.Tilemaps;
 public class GameEventBrush : MonoBehaviour
 {
     [SerializeField] int offset;
-    [SerializeField] List<Tilemap> tilemaps;
     [SerializeField] SO_Tiles EraseTile;
     private Tilemap target;
     
-    private Tilemap FindTargetTilemap(Vector3Int pos, SO_Tiles pRuleTile)
+    private Tilemap FindTargetTilemap(Vector3Int pos, SO_Tiles pRuleTile, List<Tilemap> tilemaps)
     {
         if (tilemaps == null || tilemaps.Count == 0) return null;
 
@@ -43,7 +42,7 @@ public class GameEventBrush : MonoBehaviour
 
         return null;
     }
-    public IEnumerator CircleDraw(SO_Tiles pRuleTile, Vector3Int pMidCell, int pRadius, float pDelay)
+    public IEnumerator CircleDraw(SO_Tiles pRuleTile, Vector3Int pMidCell, int pRadius, List<Tilemap> tilemaps, float pDelay = 0)
     {
         
         foreach (Tilemap tilemap in tilemaps)
@@ -56,7 +55,7 @@ public class GameEventBrush : MonoBehaviour
 
             if (pRuleTile == EraseTile && target == null)
             {
-                target = FindTargetTilemap(pMidCell, pRuleTile);
+                target = FindTargetTilemap(pMidCell, pRuleTile, tilemaps);
             }
 
             for (int dx = -size; dx <= size; dx++)
@@ -68,7 +67,7 @@ public class GameEventBrush : MonoBehaviour
                         Vector3Int cellPos = new Vector3Int(pMidCell.x + dx, pMidCell.y + dy, pMidCell.z);
 
                         if (target == null)
-                            target = FindTargetTilemap(cellPos, pRuleTile);
+                            target = FindTargetTilemap(cellPos, pRuleTile, tilemaps);
                         if (target == null) continue;
 
                         tilemap.SetTile(cellPos, null);
