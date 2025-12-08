@@ -16,7 +16,7 @@ public class ColorBlender : MonoBehaviour
     private List<CustomTileData> saveTile = new List<CustomTileData>();
     public static ColorBlender Instance;
 
-    void OnEnable()
+    void Awake()
     {
         if (Instance == null)
         {

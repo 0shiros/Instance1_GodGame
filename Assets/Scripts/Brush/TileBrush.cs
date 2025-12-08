@@ -33,7 +33,7 @@ public class TileBrush : MonoBehaviour
         NavMesh.RemoveData();
     }
 
-    private void OnEnable()
+    private void Start()
     {
         colorBlender = ColorBlender.Instance;
         for (int x = Mathf.CeilToInt((mapBounds.x / 2) * -1); x < Mathf.CeilToInt(mapBounds.x / 2); x++)
