@@ -11,6 +11,7 @@ public class VillagerUtilityAI : MonoBehaviour
     [Header("Capacités")]
     public int carryCapacity = 5;
     public int harvestPerAction = 2;
+    public float harvestDistance = 2f; // distance max pour récolter
 
     [Header("Besoins")]
     public float hunger = 0f;
@@ -21,9 +22,9 @@ public class VillagerUtilityAI : MonoBehaviour
     public float fatigueThreshold = 80f;
 
     [Header("Manger")]
-    public int foodPerEat = 1; // unités prises par bouchée
-    public float eatDurationPerUnit = 0.5f; // durée pour manger une unité
-    public float eatRate = 20f; // points de faim / sec
+    public int foodPerEat = 1; // unités par bouchée
+    public float eatDurationPerUnit = 0.5f; // temps pour manger une unité
+    public float eatRate = 20f; // points de faim/sec
 
     [Header("Mouvement")]
     public float moveSpeed = 3.5f;
@@ -72,15 +73,11 @@ public class VillagerUtilityAI : MonoBehaviour
         hunger += hungerRate * Time.deltaTime;
         fatigue += fatigueRate * Time.deltaTime;
 
-        if (hunger >= hungerThreshold && state != EState.Eating)
-        {
-            if (!isBusy) StartEatFlow();
-        }
+        if (hunger >= hungerThreshold && state != EState.Eating && !isBusy)
+            StartEatFlow();
 
-        if (fatigue >= fatigueThreshold && state != EState.Sleeping)
-        {
-            if (!isBusy) StartSleepFlow();
-        }
+        if (fatigue >= fatigueThreshold && state != EState.Sleeping && !isBusy)
+            StartSleepFlow();
 
         UpdateAnimator();
     }
@@ -88,8 +85,7 @@ public class VillagerUtilityAI : MonoBehaviour
     #region Assign / Abandon
     public void AssignTask(CityTask task)
     {
-        if (task == null) return;
-        if (currentTask == task) return;
+        if (task == null || currentTask == task) return;
 
         StopCurrentAction();
         currentTask = task;
@@ -172,6 +168,8 @@ public class VillagerUtilityAI : MonoBehaviour
 
             while (hunger > 0f && nearestFoodNode.amount > 0)
             {
+                if (Vector3.Distance(transform.position, nearestFoodNode.transform.position) > harvestDistance) break;
+
                 int toTake = Mathf.Min(foodPerEat, nearestFoodNode.amount);
                 nearestFoodNode.amount -= toTake;
 
@@ -262,14 +260,18 @@ public class VillagerUtilityAI : MonoBehaviour
     #region COLLECT / BUILD routines
     private IEnumerator CollectRoutine(CityTask task)
     {
-        state = EState.Moving;
         if (task.resourceTarget == null) { FinishCurrentTask(); yield break; }
+
+        state = EState.Moving;
         if (!GoToPosition(task.resourceTarget.transform.position)) { FinishCurrentTask(); yield break; }
         yield return StartCoroutine(WaitUntilArrived());
 
         state = EState.Working;
+
         while (task.resourceTarget != null && task.resourceTarget.amount > 0)
         {
+            if (Vector3.Distance(transform.position, task.resourceTarget.transform.position) > harvestDistance) break;
+
             int canTake = Mathf.Min(carryCapacity - carrying, harvestPerAction, task.resourceTarget.amount);
             if (canTake <= 0)
             {

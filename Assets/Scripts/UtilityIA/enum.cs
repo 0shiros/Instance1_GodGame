@@ -15,6 +15,7 @@ public enum TaskType
     Build,
     Deposit,
     Idle,
+    exploring,
     Custom
 }
 
