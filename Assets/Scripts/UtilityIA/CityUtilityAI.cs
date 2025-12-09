@@ -1,219 +1,283 @@
-﻿// CityUtilityAI.cs
+﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using Unity.VisualScripting;
+using UnityEditor.PackageManager;
+using UnityEngine;
 
 /// <summary>
-/// Manager central de la cité.
-/// - Scanne la scène (villagers, resource nodes, storages)
-/// - Génère des tâches (collect, build, deposit)
-/// - Assigne les tâches selon un Utility Score simple
-/// - Maintient des ressources globales (optionnel)
+/// CityUtilityAI
+/// - Scanne la scène (villageois, nodes, storages)
+/// - Génère des CityTask (collect, build)
+/// - Assigne selon un score Utility
+/// - Agrège les ressources depuis les StorageBuildings
+/// - Calcule automatiquement le nombre recommandé de travailleurs via une AnimationCurve
 /// </summary>
 public class CityUtilityAI : MonoBehaviour
 {
     [Header("Datas & Références")]
     public List<TaskData> taskDataList = new List<TaskData>();
     public List<BuildingData> buildingTypes = new List<BuildingData>();
+    public E_Dogma CurrentDogma = E_Dogma.None;
+    public int AgentsQuantity;
+    [SerializeField] private int agentsQuantityNeedToSetDogma;
 
     [Header("Monde")]
     public Vector2Int gridSize = new Vector2Int(50, 50);
-    public float taskScanInterval = 1f; // toutes les X secondes on (re)calcule les tâches/priorités
+    public float taskScanInterval = 0.2f; // secondes
+
+    [Header("Placement bâtiments")]
+    public float houseSpawnDistance = 5f;                 // distance autour d’une maison existante
+    public float buildingMinDistance = 2f;                // empêche les collisions de bâtiments
 
     [Header("Ressources globales (agrégées des dépôts)")]
     public int totalWood;
     public int totalStone;
     public int totalFood;
 
+    [Header("Réglages distribution travailleurs")]
+    [Tooltip("Courbe (0..1) -> pourcentage de population assignable (0..1).")]
+    public AnimationCurve workerDistributionCurve = AnimationCurve.Linear(0f, 0.1f, 1f, 1f);
+    [Tooltip("Pourcentage max (0..1) de population pouvant être assigné à une tâche.")]
+    [Range(0f, 1f)]
+    public float maxWorkerPercent = 0.5f;
+
     // internes
     [HideInInspector] public List<VillagerUtilityAI> villagers = new List<VillagerUtilityAI>();
     private List<ResourceNode> resourceNodes = new List<ResourceNode>();
     private List<StorageBuilding> storages = new List<StorageBuilding>();
-    private List<CityTask> activeTasks = new List<CityTask>();
+    public List<CityTask> activeTasks = new List<CityTask>();
 
     private float timer = 0f;
+    private float debugTimer = 0f;
+
+    public static Action<int> actionBasic;
+    public static Action<int> actionDogma;
 
     void Start()
     {
-        // découverte initiale
-        villagers = FindObjectsOfType<VillagerUtilityAI>().ToList();
-        resourceNodes = FindObjectsOfType<ResourceNode>().ToList();
-        storages = FindObjectsOfType<StorageBuilding>().ToList();
-
-        // optionnel : agréger les stocks initiaux
+        RefreshSceneListsForce();
         AggregateStorage();
+        SetDogma();
+        AddSciencePoints(6);
+        AddDogmaSciencePoints(4);
     }
 
     void Update()
     {
         timer += Time.deltaTime;
+        debugTimer += Time.deltaTime;
+
+        // TryRecruitNewVillagers
+        TryRecruitNearbyVillagers();
+
         if (timer >= taskScanInterval)
         {
             timer = 0f;
             CleanupFinishedTasks();
+            RefreshSceneListsIfNeeded();
             HandleResourceTasks();
             HandleBuildTasks();
-            HandleDepositTasks();
             AssignTasksToVillagers();
             AggregateStorage();
+        }
+
+        if (debugTimer >= 1f)
+        {
+            debugTimer = 0f;
+            DebugActiveTasks();
         }
     }
 
     #region Tâches / Création
+
     void CleanupFinishedTasks()
     {
-        // supprime les tâches complétées (sécurité)
         activeTasks.RemoveAll(t => t == null || t.isCompleted);
     }
 
     void HandleResourceTasks()
     {
-        // pour chaque nœud de ressource encore plein, créer une tâche Collect si pas déjà existante
         foreach (var node in resourceNodes)
         {
             if (node == null || node.amount <= 0) continue;
+
             bool exists = activeTasks.Exists(t => t.data != null && t.data.type == TaskType.Collect && t.resourceTarget == node);
-            if (!exists)
+            if (exists) continue;
+
+            var collectData = taskDataList.Find(td => td.type == TaskType.Collect && td.targetResource == node.resourceType);
+            if (collectData == null) continue;
+
+            var newT = new CityTask
             {
-                var collectData = taskDataList.Find(td => td.type == TaskType.Collect && td.targetResource == node.resourceType);
-                if (collectData != null)
-                {
-                    CityTask newT = new CityTask
-                    {
-                        data = collectData,
-                        resourceTarget = node
-                    };
-                    activeTasks.Add(newT);
-                }
-            }
+                data = collectData,
+                resourceTarget = node
+            };
+            activeTasks.Add(newT);
         }
     }
 
     void HandleBuildTasks()
     {
-        // vérifie les bâtiments définis et crée une tâche build si ressources globales suffisantes et pas déjà planifiée
         foreach (var building in buildingTypes)
         {
-            // Skip si prefab manquant
-            if (building.prefab == null) continue;
+            if (building == null || building.prefab == null) continue;
 
             bool alreadyPlanned = activeTasks.Exists(t => t.data != null && t.data.type == TaskType.Build && t.buildingData == building);
             if (alreadyPlanned) continue;
 
-            // TODO: logique de décision pour construire (ex: nombre de maisons)
-            // Exemple simple: si on a assez de ressources, on planifie une construction
             if (totalWood >= building.woodCost && totalStone >= building.stoneCost)
             {
-                // trouve une position libre (simple brute-force)
-                if (FindFreeBuildPosition(building.size, out Vector3 pos))
+                if (FindFreeBuildPositionRandomAroundHouse(building.size, out Vector3 pos)) // ★ AJOUT
                 {
                     var buildTaskData = taskDataList.Find(td => td.type == TaskType.Build && td.targetBuildingType == building.buildingType);
-                    if (buildTaskData != null)
-                    {
-                        CityTask t = new CityTask
-                        {
-                            data = buildTaskData,
-                            buildingData = building,
-                            buildPosition = pos
-                        };
-                        activeTasks.Add(t);
+                    if (buildTaskData == null) continue;
 
-                        // Consommer immédiatement les ressources globales (réservation)
-                        totalWood -= building.woodCost;
-                        totalStone -= building.stoneCost;
-                    }
+                    CityTask t = new CityTask
+                    {
+                        data = buildTaskData,
+                        buildingData = building,
+                        buildPosition = pos
+                    };
+                    activeTasks.Add(t);
+
+                    totalWood -= building.woodCost;
+                    totalStone -= building.stoneCost;
                 }
             }
         }
     }
 
-    void HandleDepositTasks()
-    {
-        // S'il n'y a pas de dépôt planifié mais qu'il existe des ressources en wpocket (ex: heuristique)
-        // Ici on ne crée pas de tâches Deposit automatiques, mais on en crée si il existe des villagers
-        // qui portent des ressources et aucun depositTarget assigné. (Simplification: City ne tracke pas l'inventaire individuel)
-    }
+    void HandleDepositTasks() { }
+
     #endregion
 
     #region Assignation
+
     void AssignTasksToVillagers()
     {
-        // Pour chaque villageois libre, calcule la meilleure tâche par scoring utility
         foreach (var villager in villagers)
         {
             if (villager == null) continue;
             if (!villager.IsIdle()) continue;
+            AssignTaskToVillager(villager);
+        }
+    }
 
-            CityTask best = null;
-            float bestScore = float.NegativeInfinity;
+    public void AssignTaskToVillager(VillagerUtilityAI villager)
+    {
+        AssignTaskToVillager(villager, null);
+    }
 
-            foreach (var task in activeTasks)
+    public void AssignTaskToVillager(VillagerUtilityAI villager, CityTask forced)
+    {
+        if (villager == null || !villager.IsIdle()) return;
+
+        CityTask best = null;
+        float bestScore = float.NegativeInfinity;
+
+        foreach (var task in activeTasks)
+        {
+            if (task == null || task.isCompleted) continue;
+
+            int recommended = ComputeRecommendedWorkers(task);
+            if (task.assignedVillagers.Count >= recommended) continue;
+
+            float score = ScoreTaskForVillager(task, villager);
+            if (score > bestScore)
             {
-                if (task == null || task.isCompleted) continue;
-
-                // si la tâche a déjà autant de workers que recommandé, on peut la considérer pleine
-                if (task.assignedVillagers.Count >= (task.data != null ? task.data.recommendedVillagers : 1)) continue;
-
-                float score = ScoreTaskForVillager(task, villager);
-                if (score > bestScore)
-                {
-                    bestScore = score;
-                    best = task;
-                }
+                bestScore = score;
+                best = task;
             }
+        }
 
-            if (best != null)
-            {
+        if (forced != null && !forced.isCompleted)
+            best = forced;
+
+        if (best != null)
+        {
+            if (!best.assignedVillagers.Contains(villager))
                 best.assignedVillagers.Add(villager);
-                villager.AssignTask(best);
-            }
+
+            villager.AssignTask(best);
+            Debug.Log($"[City] AssignTask: {villager.name} -> {best.data.taskName} ({best.data.type})");
         }
     }
 
     float ScoreTaskForVillager(CityTask task, VillagerUtilityAI villager)
     {
-        // Score de base = basePriority
         float score = (task.data != null) ? task.data.basePriority : 0f;
+        if (task.data == null) return score;
 
-        // Bonus selon type et besoins de la cité
         if (task.data.type == TaskType.Collect && task.resourceTarget != null)
         {
-            // + si la ressource est critique (peu de stock)
             if (task.resourceTarget.resourceType == ResourceType.Wood && totalWood < 5) score += 10f;
             if (task.resourceTarget.resourceType == ResourceType.Stone && totalStone < 3) score += 8f;
 
-            // - distance (préférence pour proche) : calcul simple
             float dist = Vector3.Distance(villager.transform.position, task.resourceTarget.transform.position);
             score -= dist * 0.1f;
         }
         else if (task.data.type == TaskType.Build && task.buildingData != null)
         {
-            // Priorité selon le type de bâtiment (logement prioritaire si population > cap)
-            if (task.buildingData.buildingType == BuildingType.House)
-            {
-                int population = villagers.Count;
-                int houses = GameObject.FindGameObjectsWithTag("Building").Length; // simplification
-                float need = population / (float)task.buildingData.housingCapacity;
-                score += Mathf.Max(0f, need - houses) * 2f;
-            }
-            // - distance vers le site
             float dist = Vector3.Distance(villager.transform.position, task.buildPosition);
             score -= dist * 0.05f;
         }
 
-        // Bonus si le rôle du villageois correspond
         if (villager.role == VillagerRole.Gatherer && task.data.type == TaskType.Collect) score += 5f;
         if (villager.role == VillagerRole.Builder && task.data.type == TaskType.Build) score += 5f;
 
-        // Petite variance aléatoire pour éviter ties
-        score += Random.Range(-0.5f, 0.5f);
-
+        score += UnityEngine.Random.Range(-0.5f, 0.5f);
         return score;
     }
+
     #endregion
 
     #region Helpers
-    // Recherche d'une position libre simple (peut être améliorée)
+
+    // recrute un villageois si proche du centre du village
+    void TryRecruitNearbyVillagers()
+    {
+        Vector3 cityCenter = transform.position;
+
+        foreach (var v in FindObjectsOfType<VillagerUtilityAI>())
+        {
+            if (villagers.Contains(v)) continue;
+
+            float d = Vector3.Distance(v.transform.position, cityCenter);
+            if (d < 15f) // distance de recrutement
+            {
+                villagers.Add(v);
+                Debug.Log($"[City] Nouveau villageois rejoint le village : {v.name}");
+            }
+        }
+    }
+
+    // nouvelle version du placement random autour d'une maison
+    bool FindFreeBuildPositionRandomAroundHouse(Vector2Int size, out Vector3 pos)
+    {
+        pos = Vector3.zero;
+
+        GameObject[] existingHouses = GameObject.FindGameObjectsWithTag("Building");
+        if (existingHouses.Length == 0)
+            return FindFreeBuildPosition(size, out pos);
+
+        GameObject baseHouse = existingHouses[UnityEngine.Random.Range(0, existingHouses.Length)];
+
+        for (int i = 0; i < 50; i++)
+        {
+            Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized * houseSpawnDistance;
+            Vector3 candidate = baseHouse.transform.position + new Vector3(offset.x, offset.y, 0f);
+
+            if (!Physics2D.OverlapCircle(candidate, buildingMinDistance))
+            {
+                pos = candidate;
+                return true;
+            }
+        }
+
+        return FindFreeBuildPosition(size, out pos);
+    }
+
     bool FindFreeBuildPosition(Vector2Int size, out Vector3 position)
     {
         for (int x = 0; x < gridSize.x; x++)
@@ -221,7 +285,8 @@ public class CityUtilityAI : MonoBehaviour
             for (int y = 0; y < gridSize.y; y++)
             {
                 Vector3 center = new Vector3(x, y, 0f);
-                if (Physics2D.OverlapBox(center, size, 0f) == null)
+                Vector2 boxSize = new Vector2(size.x, size.y);
+                if (Physics2D.OverlapBox(center, boxSize, 0f) == null)
                 {
                     position = center;
                     return true;
@@ -232,9 +297,9 @@ public class CityUtilityAI : MonoBehaviour
         return false;
     }
 
-    // Aggrégation des stocks depuis les StorageBuildings présents
     void AggregateStorage()
     {
+        storages = FindObjectsOfType<StorageBuilding>().ToList();
         int w = 0, s = 0, f = 0;
         foreach (var st in storages)
         {
@@ -248,14 +313,15 @@ public class CityUtilityAI : MonoBehaviour
         totalFood = f;
     }
 
-    // Fonction publique pour qu'un villageois notifie une collecte/dépôt
     public void NotifyResourceCollected(ResourceType type, int amount)
     {
-        // Si on veut, on peut temporairement garder un "pocket" avant dépôt
-        // Ici on agrège directement (mais le mieux est que les villagers déposent dans un Storage)
-        if (type == ResourceType.Wood) totalWood += amount;
-        if (type == ResourceType.Stone) totalStone += amount;
-        if (type == ResourceType.Food) totalFood += amount;
+        if (amount <= 0) return;
+        switch (type)
+        {
+            case ResourceType.Wood: totalWood += amount; break;
+            case ResourceType.Stone: totalStone += amount; break;
+            case ResourceType.Food: totalFood += amount; break;
+        }
     }
 
     public StorageBuilding FindNearestStorage(Vector3 from)
@@ -274,5 +340,140 @@ public class CityUtilityAI : MonoBehaviour
         }
         return best;
     }
+
+    void DebugActiveTasks()
+    {
+        if (activeTasks == null || activeTasks.Count == 0)
+        {
+            Debug.Log("[City] Aucune tâche active");
+            return;
+        }
+
+        string log = "[City] Tâches actives: ";
+        foreach (var t in activeTasks)
+        {
+            if (t == null || t.data == null) continue;
+            string target = t.resourceTarget != null ? t.resourceTarget.name :
+                            t.buildingData != null ? t.buildingData.buildingName : "N/A";
+            log += $"[{t.data.taskName}:{t.data.type}->{target} assigned:{t.assignedVillagers.Count}] ";
+        }
+        Debug.Log(log);
+    }
+
+    void RefreshSceneListsIfNeeded()
+    {
+        var rn = FindObjectsOfType<ResourceNode>();
+        if (rn.Length != resourceNodes.Count)
+            resourceNodes = rn.ToList();
+
+        var vs = FindObjectsOfType<VillagerUtilityAI>();
+        if (vs.Length != villagers.Count)
+            villagers = vs.ToList();
+
+        var st = FindObjectsOfType<StorageBuilding>();
+        if (st.Length != storages.Count)
+            storages = st.ToList();
+    }
+
+    void RefreshSceneListsForce()
+    {
+        resourceNodes = FindObjectsOfType<ResourceNode>().ToList();
+        villagers = FindObjectsOfType<VillagerUtilityAI>().ToList();
+        storages = FindObjectsOfType<StorageBuilding>().ToList();
+    }
+
     #endregion
+
+    #region Worker calculation (AnimationCurve)
+
+    public int ComputeRecommendedWorkers(CityTask task)
+    {
+        if (task == null || task.data == null) return 1;
+        int population = Mathf.Max(1, villagers.Count);
+
+        float normalizedPriority = Mathf.InverseLerp(0f, 10f, task.data.basePriority);
+
+        float distanceFactor = 0f;
+        if (task.resourceTarget != null)
+        {
+            float avgDist = villagers.Where(v => v != null).Average(v => Vector3.Distance(v.transform.position, task.resourceTarget.transform.position));
+            distanceFactor = Mathf.Clamp01(avgDist / 30f);
+        }
+
+        float utilityScore = Mathf.Clamp01(normalizedPriority * 0.7f + distanceFactor * 0.3f);
+        float percent = workerDistributionCurve.Evaluate(utilityScore);
+        percent = Mathf.Clamp(percent, 0f, maxWorkerPercent);
+
+        int recommended = Mathf.Max(1, Mathf.RoundToInt(population * percent));
+        return recommended;
+    }
+
+    #endregion
+
+    #region API publique
+
+    public void RemoveTask(CityTask task)
+    {
+        if (task == null) return;
+        if (activeTasks.Contains(task)) activeTasks.Remove(task);
+    }
+
+    #endregion
+    private float[] CalculateAverages()
+    {
+        float totalHpNormalized = 0;
+        float totalSpeedNormalized = 0;
+        float totalStrengthNormalized = 0;
+
+        foreach (var agent in villagers)
+        {
+            float hpNormalized = ((agent.Hp - agent.hpMin));
+            float speedNormalized = ((agent.agent.speed - agent.speedMin)); 
+            float strengthNormalized = ((agent.Strength - agent.strengthMin));
+
+            totalHpNormalized += hpNormalized;
+            totalSpeedNormalized += speedNormalized;
+            totalStrengthNormalized += strengthNormalized;
+        }
+
+        float hpPercent = totalHpNormalized / ((villagers[0].hpMax - villagers[0].hpMin) * villagers.Count);
+        float speedPercent = totalSpeedNormalized / ((villagers[0].speedMax - villagers[0].speedMin) * villagers.Count);
+        float strengthPercent = totalStrengthNormalized / ((villagers[0].strengthMax - villagers[0].strengthMin) * villagers.Count);
+
+        Debug.Log($"hpPercent : {hpPercent} ; speedPercent : {speedPercent} ; strengthPercent : {strengthPercent}");
+
+        return new float[] { hpPercent, speedPercent, strengthPercent };
+    }
+
+    private void SetDogma()
+    {
+        if (villagers.Count < agentsQuantityNeedToSetDogma)
+            return;
+
+        float[] AveragePercents = CalculateAverages();
+
+        int maxIndex = 0;
+        for (int i = 1; i < AveragePercents.Length; i++)
+        {
+            if (AveragePercents[i] > AveragePercents[maxIndex])
+                maxIndex = i;
+        }
+
+        switch (maxIndex)
+        {
+            case 0: CurrentDogma = E_Dogma.Craft; break;
+            case 1: CurrentDogma = E_Dogma.Development; break;
+            case 2: CurrentDogma = E_Dogma.Military; break;
+        }
+    }
+
+    public void AddSciencePoints(int pExperienceReward)
+    {
+        actionBasic?.Invoke(pExperienceReward);
+    }
+
+    public void AddDogmaSciencePoints(int pExperienceReward)
+    {
+        actionDogma?.Invoke(pExperienceReward);
+    }
 }

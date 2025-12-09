@@ -25,15 +25,17 @@ public class TileBrush : MonoBehaviour
     private bool isEraseSelected;
     private Tilemap target;
     [SerializeField] private SO_Tiles currentTile;
-
+    bool isSelected;
+    ColorBlender colorBlender;
 
     private void OnDisable()
     {
         NavMesh.RemoveData();
     }
 
-    private void OnEnable()
+    private void Start()
     {
+        colorBlender = ColorBlender.Instance;
         for (int x = Mathf.CeilToInt((mapBounds.x / 2) * -1); x < Mathf.CeilToInt(mapBounds.x / 2); x++)
         {
             for (int y = Mathf.CeilToInt((mapBounds.y / 2) * -1); y < Mathf.CeilToInt(mapBounds.x / 2); y++)
@@ -47,12 +49,18 @@ public class TileBrush : MonoBehaviour
     public void GetTile(SO_Tiles pTile)
     {
         currentTile = pTile;
+        colorBlender.SetColorForTile(pTile);
         target = null;
+    }
+
+    public void TileSelected(bool pIsSelected)
+    {
+        isSelected = pIsSelected;
     }
 
     private void Update()
     {
-        if (IsPointerOverUI()) return;
+        if (IsPointerOverUI() || !isSelected) return;
 
         if (canDraw)
             DrawTiles();
@@ -72,6 +80,7 @@ public class TileBrush : MonoBehaviour
 
     public void CanDraw(InputAction.CallbackContext context)
     {
+        if (currentTile == null || !isSelected) return;
         if (context.started) canDraw = true;
         if (context.canceled)
         {
@@ -89,12 +98,7 @@ public class TileBrush : MonoBehaviour
         if (currentTile == null) return;
         CircleDraw(currentTile);
     }
-
-    private void EraseTiles()
-    {
-        CircleDraw(EraseTile);
-    }
-
+    
     private Tilemap FindTargetTilemap(Vector3Int pos, SO_Tiles pRuleTile)
     {
         if (tilemaps == null || tilemaps.Count == 0) return null;
@@ -145,7 +149,6 @@ public class TileBrush : MonoBehaviour
         {
             target = FindTargetTilemap(midCell, pRuleTile);
         }
-
         for (int dx = -size; dx <= size; dx++)
         {
             for (int dy = -size; dy <= size; dy++)
@@ -160,7 +163,7 @@ public class TileBrush : MonoBehaviour
 
                     target.SetTile(cellPos, pRuleTile != null ? pRuleTile.RuleTiles : null);
                     if (pRuleTile != null)
-                        target.SetColor(cellPos, pRuleTile.color);
+                        target.SetColor(cellPos, colorBlender.BlendColorForTile());
                     else
                         target.SetColor(cellPos, Color.clear);
                 }
