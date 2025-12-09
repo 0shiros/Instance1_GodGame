@@ -804,7 +804,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GridManager
   Width: 125
   Height: 176
-  CellSize: 1.65
+  CellSize: 10
 --- !u!4 &679806103
 Transform:
   m_ObjectHideFlags: 0
@@ -814,7 +814,7 @@ Transform:
   m_GameObject: {fileID: 679806101}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -21.94, y: -1.25, z: 0}
+  m_LocalPosition: {x: -40.3, y: -140.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -47981,6 +47981,10 @@ PrefabInstance:
     - target: {fileID: 2134854056468781722, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
       propertyPath: m_Name
       value: Wood
+      objectReference: {fileID: 0}
+    - target: {fileID: 2260266108793296439, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
       propertyPath: m_LocalPosition.x
