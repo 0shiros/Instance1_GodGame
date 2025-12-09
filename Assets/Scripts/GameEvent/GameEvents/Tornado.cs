@@ -52,7 +52,7 @@ public class Tornado : GameEvent
             yield return null;
         }
         animTimer = 0;
-        var dist = Vector3.Distance(tornado.transform.position, pTargetPos);
+        float dist = Vector3.Distance(tornado.transform.position, pTargetPos);
         while (dist > 1)
         {
             dist = Vector3.Distance(tornado.transform.position, pTargetPos);
