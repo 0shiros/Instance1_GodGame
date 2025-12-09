@@ -18,7 +18,7 @@ public class EnvironementBrush : MonoBehaviour
 
     ColorBlender colorBlender;
 
-    void OnEnable()
+    void Start()
     {
         colorBlender = ColorBlender.Instance;
     }
