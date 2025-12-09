@@ -60,7 +60,7 @@ public class TileBrush : MonoBehaviour
 
     private void Update()
     {
-        if (IsPointerOverUI()) return;
+        if (IsPointerOverUI() || !isSelected) return;
 
         if (canDraw)
             DrawTiles();

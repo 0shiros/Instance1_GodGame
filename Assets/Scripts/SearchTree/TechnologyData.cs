@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "ScriptableObjects/TechnologyData", order = 1)]
+[CreateAssetMenu(menuName = "Scriptable Objects/TechnologyData", order = 1)]
 public class TechnologyData : ScriptableObject
 {
     public E_Technologies TechnologyName;

@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b71718aaf02795142b1cadf76097b884, type: 3}
-  m_Name: SO_Tree1
+  m_Name: SO_Tree3
   m_EditorClassIdentifier: Assembly-CSharp::CustomTile
   Sources:
-  - Sprites: {fileID: 11400000, guid: dd539153e2d4fb4489e6a10e56c5e9d1, type: 2}
+  - Sprites: {fileID: 11400000, guid: b983f5fd9e5c0ce4bb89e2e7ee77bd99, type: 2}
     Direction: 0
     Color: {r: 0.5686275, g: 0.8156863, b: 0.11372549, a: 1}
     Name: Leaves
-  - Sprites: {fileID: 11400000, guid: b929f39d89ce90f4baab1799c34cd765, type: 2}
+  - Sprites: {fileID: 11400000, guid: eaa80bd092c0f924db0cd26499e89518, type: 2}
     Direction: 1
     Color: {r: 0.43529412, g: 0.17254902, b: 0.0627451, a: 1}
     Name: Log
