@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
+using UnityEditor.PackageManager;
 using UnityEngine;
 
 /// <summary>
@@ -15,6 +18,9 @@ public class CityUtilityAI : MonoBehaviour
     [Header("Datas & Références")]
     public List<TaskData> taskDataList = new List<TaskData>();
     public List<BuildingData> buildingTypes = new List<BuildingData>();
+    public E_Dogma CurrentDogma = E_Dogma.None;
+    public int AgentsQuantity;
+    [SerializeField] private int agentsQuantityNeedToSetDogma;
 
     [Header("Monde")]
     public Vector2Int gridSize = new Vector2Int(50, 50);
@@ -45,10 +51,16 @@ public class CityUtilityAI : MonoBehaviour
     private float timer = 0f;
     private float debugTimer = 0f;
 
+    public static Action<int> actionBasic;
+    public static Action<int> actionDogma;
+
     void Start()
     {
         RefreshSceneListsForce();
         AggregateStorage();
+        SetDogma();
+        AddSciencePoints(6);
+        AddDogmaSciencePoints(4);
     }
 
     void Update()
@@ -214,7 +226,7 @@ public class CityUtilityAI : MonoBehaviour
         if (villager.role == VillagerRole.Gatherer && task.data.type == TaskType.Collect) score += 5f;
         if (villager.role == VillagerRole.Builder && task.data.type == TaskType.Build) score += 5f;
 
-        score += Random.Range(-0.5f, 0.5f);
+        score += UnityEngine.Random.Range(-0.5f, 0.5f);
         return score;
     }
 
@@ -249,11 +261,11 @@ public class CityUtilityAI : MonoBehaviour
         if (existingHouses.Length == 0)
             return FindFreeBuildPosition(size, out pos);
 
-        GameObject baseHouse = existingHouses[Random.Range(0, existingHouses.Length)];
+        GameObject baseHouse = existingHouses[UnityEngine.Random.Range(0, existingHouses.Length)];
 
         for (int i = 0; i < 50; i++)
         {
-            Vector2 offset = Random.insideUnitCircle.normalized * houseSpawnDistance;
+            Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized * houseSpawnDistance;
             Vector3 candidate = baseHouse.transform.position + new Vector3(offset.x, offset.y, 0f);
 
             if (!Physics2D.OverlapCircle(candidate, buildingMinDistance))
@@ -407,4 +419,61 @@ public class CityUtilityAI : MonoBehaviour
     }
 
     #endregion
+    private float[] CalculateAverages()
+    {
+        float totalHpNormalized = 0;
+        float totalSpeedNormalized = 0;
+        float totalStrengthNormalized = 0;
+
+        foreach (var agent in villagers)
+        {
+            float hpNormalized = ((agent.Hp - agent.hpMin));
+            float speedNormalized = ((agent.agent.speed - agent.speedMin)); 
+            float strengthNormalized = ((agent.Strength - agent.strengthMin));
+
+            totalHpNormalized += hpNormalized;
+            totalSpeedNormalized += speedNormalized;
+            totalStrengthNormalized += strengthNormalized;
+        }
+
+        float hpPercent = totalHpNormalized / ((villagers[0].hpMax - villagers[0].hpMin) * villagers.Count);
+        float speedPercent = totalSpeedNormalized / ((villagers[0].speedMax - villagers[0].speedMin) * villagers.Count);
+        float strengthPercent = totalStrengthNormalized / ((villagers[0].strengthMax - villagers[0].strengthMin) * villagers.Count);
+
+        Debug.Log($"hpPercent : {hpPercent} ; speedPercent : {speedPercent} ; strengthPercent : {strengthPercent}");
+
+        return new float[] { hpPercent, speedPercent, strengthPercent };
+    }
+
+    private void SetDogma()
+    {
+        if (villagers.Count < agentsQuantityNeedToSetDogma)
+            return;
+
+        float[] AveragePercents = CalculateAverages();
+
+        int maxIndex = 0;
+        for (int i = 1; i < AveragePercents.Length; i++)
+        {
+            if (AveragePercents[i] > AveragePercents[maxIndex])
+                maxIndex = i;
+        }
+
+        switch (maxIndex)
+        {
+            case 0: CurrentDogma = E_Dogma.Craft; break;
+            case 1: CurrentDogma = E_Dogma.Development; break;
+            case 2: CurrentDogma = E_Dogma.Military; break;
+        }
+    }
+
+    public void AddSciencePoints(int pExperienceReward)
+    {
+        actionBasic?.Invoke(pExperienceReward);
+    }
+
+    public void AddDogmaSciencePoints(int pExperienceReward)
+    {
+        actionDogma?.Invoke(pExperienceReward);
+    }
 }

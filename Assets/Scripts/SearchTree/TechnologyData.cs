@@ -8,4 +8,5 @@ public class TechnologyData : ScriptableObject
     public int ExperienceNeedToUnlock;
     public List<E_Technologies> TechnologiesNeedToBeUnlock;
     public E_Dogma Dogma;
+    public List<BuildingData> Buildings;
 }
