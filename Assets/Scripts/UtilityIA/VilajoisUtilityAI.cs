@@ -26,8 +26,20 @@ public class VillagerUtilityAI : MonoBehaviour
     public float eatDurationPerUnit = 0.5f; // temps pour manger une unité
     public float eatRate = 20f; // points de faim/sec
 
+    [Header("Statistics")]
+    public int Hp;
+    public int Strength;
+
+    [Header("Statistics limits")]
+    public int hpMin = 85;
+    public int hpMax = 100;
+    public int speedMin = 5;
+    public int speedMax = 20;
+    public int strengthMin = 5;
+    public int strengthMax = 20;
+
     [Header("Mouvement")]
-    public float moveSpeed = 3.5f;
+    
     public float stoppingDistance = 0.2f;
 
     [Header("Références")]
@@ -36,7 +48,7 @@ public class VillagerUtilityAI : MonoBehaviour
     [Header("Construction fallback")]
     public float defaultBuildTime = 2f;
 
-    private NavMeshAgent agent;
+    public NavMeshAgent agent;
     private Animator animator;
 
     private enum EState { Idle, Moving, Working, Depositing, Eating, Sleeping }
@@ -56,10 +68,14 @@ public class VillagerUtilityAI : MonoBehaviour
         if (agent != null)
         {
             agent.updateRotation = false;
-            agent.updateUpAxis = false;
-            agent.speed = moveSpeed;
+            agent.updateUpAxis = false;           
             agent.stoppingDistance = stoppingDistance;
+            Hp = UnityEngine.Random.Range(hpMin, hpMax);
+                   agent.speed = UnityEngine.Random.Range(speedMin, speedMax);
+
+            Strength = UnityEngine.Random.Range(strengthMin, strengthMax);
         }
+
         animator = GetComponent<Animator>();
     }
 

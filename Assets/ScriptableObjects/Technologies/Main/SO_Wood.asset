@@ -15,3 +15,6 @@ MonoBehaviour:
   TechnologyName: 1
   ExperienceNeedToUnlock: 0
   TechnologiesNeedToBeUnlock: 
+  Dogma: 0
+  Buildings:
+  - {fileID: 11400000, guid: 4147b3572a674824b9799d9f9b735b27, type: 2}

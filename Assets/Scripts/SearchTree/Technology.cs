@@ -5,12 +5,12 @@ using UnityEngine;
 [System.Serializable]
 public class Technology 
 {
-    [SerializeField] TechnologyData technologyData;
+    public TechnologyData technologyData;
     public E_Technologies TechnologyName;
     public int ExperienceNeedToUnlock;
     [SerializeField] List<E_Technologies> technologiesNeedToBeUnlock;
     public E_Dogma Dogma;
-
+    public List<BuildingData> Buildings;
 
     public void Initialize(TechnologyData pData)
     {
@@ -21,6 +21,7 @@ public class Technology
             ExperienceNeedToUnlock = technologyData.ExperienceNeedToUnlock;
             technologiesNeedToBeUnlock = technologyData.TechnologiesNeedToBeUnlock;
             Dogma = technologyData.Dogma;
+            Buildings = technologyData.Buildings;
         }
     }
 
