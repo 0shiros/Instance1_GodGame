@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SO_Tree1
   m_EditorClassIdentifier: Assembly-CSharp::CustomTile
   Sources:
-  - Sprites: {fileID: 11400000, guid: dd539153e2d4fb4489e6a10e56c5e9d1, type: 2}
+  - Sprites: {fileID: 11400000, guid: 098ecb16bf0564c4185a934b00c37e44, type: 2}
     Direction: 0
     Color: {r: 0.5686275, g: 0.8156863, b: 0.11372549, a: 1}
     Name: Leaves
