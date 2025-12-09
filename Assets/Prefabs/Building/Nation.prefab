@@ -1,0 +1,144 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4060376712858540133
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4797036580320165733}
+  - component: {fileID: 5979278287541560166}
+  - component: {fileID: 1704379708142574422}
+  - component: {fileID: -2718495211638468172}
+  m_Layer: 0
+  m_Name: Nation
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4797036580320165733
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4060376712858540133}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.05, y: 0.11, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5979278287541560166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4060376712858540133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af5135fd2e3b8784b904af23b03acff7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CityUtilityAI
+  taskDataList:
+  - {fileID: 11400000, guid: defd67ae90d1e744d8daaa1a1d0d9b50, type: 2}
+  - {fileID: 11400000, guid: 5429ffa2c8ee6c84d8289a6c91eaccd6, type: 2}
+  buildingTypes:
+  - {fileID: 11400000, guid: 4147b3572a674824b9799d9f9b735b27, type: 2}
+  CurrentDogma: 0
+  AgentsQuantity: 0
+  agentsQuantityNeedToSetDogma: 0
+  villager: {fileID: 7121599808976688172, guid: f6c65556a0e1fa64e812d275222fad46, type: 3}
+  gridSize: {x: 100, y: 100}
+  taskScanInterval: 1
+  houseSpawnDistance: 5
+  buildingMinDistance: 2
+  totalWood: 0
+  totalStone: 0
+  totalFood: 0
+  workerDistributionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.1
+      inSlope: 0
+      outSlope: 0.9
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.9
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  maxWorkerPercent: 0.5
+  villagers: []
+  activeTasks: []
+--- !u!114 &1704379708142574422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4060376712858540133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d8e299c90e411741ac85889bee51fae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SearchTree
+  technologiesData:
+  - {fileID: 11400000, guid: 858739338b635404fae6d48bfe5ceb0f, type: 2}
+  - {fileID: 11400000, guid: 0b0c07c0b5d3c4947b93e62e78b45852, type: 2}
+  - {fileID: 11400000, guid: ffde25fcbe5b9ec438ec51b7d1a0f73a, type: 2}
+  - {fileID: 11400000, guid: 7f8068e114fb62f439f7967e9a43590f, type: 2}
+  - {fileID: 11400000, guid: c2719603b50a6fc48aca67ac8b5d1e80, type: 2}
+  - {fileID: 11400000, guid: fb5032e0077be3e49a184fce5bab2dda, type: 2}
+  - {fileID: 11400000, guid: 2ded3ca582c7e3043869868f8d89114c, type: 2}
+  - {fileID: 11400000, guid: ad0c118cff50fb9459f3510273ac254a, type: 2}
+  - {fileID: 11400000, guid: dbac197e8d8fa3d488696325c42b3ee9, type: 2}
+  - {fileID: 11400000, guid: 011c6e5d73c823c4c930df17dbc73457, type: 2}
+  - {fileID: 11400000, guid: 743d8ac8b73aa3e42a68708cec587c58, type: 2}
+  - {fileID: 11400000, guid: 063d4bdfe688e8748b78d3add340f5eb, type: 2}
+  - {fileID: 11400000, guid: 7814e26a0046db74587e6385197c0030, type: 2}
+  - {fileID: 11400000, guid: 74789f25d25edc043a8e588103d6f949, type: 2}
+  - {fileID: 11400000, guid: e679b97ffa0e54a408ef5fbc47226181, type: 2}
+  - {fileID: 11400000, guid: e192bf4f14d3ea340af298487492c610, type: 2}
+  - {fileID: 11400000, guid: bf5fc364ab3bfcf45be1b6cfd54507d2, type: 2}
+  - {fileID: 11400000, guid: 953a751ad2bfe854b83b5e52f0daf654, type: 2}
+  - {fileID: 11400000, guid: dc515120380187847a3d03602babebcf, type: 2}
+  - {fileID: 11400000, guid: 8eb9245c0aad8634394bc02d1a223d57, type: 2}
+  - {fileID: 11400000, guid: 3364ae6e032e8d24e8f82b80afb29ad0, type: 2}
+  currentSciencePoints: 0
+  currentDogmaSciencePoints: 0
+  TechnologiesAvailable: []
+  TechnologiesUnlock: []
+--- !u!114 &-2718495211638468172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4060376712858540133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f28ac96649cde348b8dc1994f6115ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StorageBuilding
+  storedWood: 0
+  storedStone: 0
+  storedFood: 0

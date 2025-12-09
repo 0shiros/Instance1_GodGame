@@ -21,6 +21,7 @@ public class CityUtilityAI : MonoBehaviour
     public E_Dogma CurrentDogma = E_Dogma.None;
     public int AgentsQuantity;
     [SerializeField] private int agentsQuantityNeedToSetDogma;
+    [SerializeField] private GameObject villager;
 
     [Header("Monde")]
     public Vector2Int gridSize = new Vector2Int(50, 50);
@@ -43,7 +44,7 @@ public class CityUtilityAI : MonoBehaviour
     public float maxWorkerPercent = 0.5f;
 
     // internes
-    [HideInInspector] public List<VillagerUtilityAI> villagers = new List<VillagerUtilityAI>();
+    public List<VillagerUtilityAI> villagers = new List<VillagerUtilityAI>();
     private List<ResourceNode> resourceNodes = new List<ResourceNode>();
     private List<StorageBuilding> storages = new List<StorageBuilding>();
     public List<CityTask> activeTasks = new List<CityTask>();
@@ -56,11 +57,18 @@ public class CityUtilityAI : MonoBehaviour
 
     void Start()
     {
+        AddVillagers(6);
         RefreshSceneListsForce();
         AggregateStorage();
         SetDogma();
-        AddSciencePoints(6);
-        AddDogmaSciencePoints(4);
+    }
+
+    private void AddVillagers(int pQuantity)
+    {
+        for(int i = 0; i < pQuantity; i++)
+        {
+            Instantiate(villager, transform);
+        }
     }
 
     void Update()
