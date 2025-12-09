@@ -13,24 +13,20 @@ public class ColorBlender : MonoBehaviour
     [SerializeField] Image previewImage;
     [SerializeField] TMP_Dropdown spriteSelectorDropdown;
 
-    private List<CustomTileData> saveTile = new List<CustomTileData>();
+    [SerializeField] List<CustomTileData> saveTile = new List<CustomTileData>();
     public static ColorBlender Instance;
+
+    private bool isUserSettingValues = true;
 
     void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else
-        {
-            Destroy(this);
-        }
+        if (Instance == null) Instance = this;
+        else Destroy(this);
 
-        redSlider.onValueChanged.AddListener(ModifieColor);
-        greenSlider.onValueChanged.AddListener(ModifieColor);
-        blueSlider.onValueChanged.AddListener(ModifieColor);
-        alphaSlider.onValueChanged.AddListener(ModifieColor);
+        redSlider.onValueChanged.AddListener(OnSliderChanged);
+        greenSlider.onValueChanged.AddListener(OnSliderChanged);
+        blueSlider.onValueChanged.AddListener(OnSliderChanged);
+        alphaSlider.onValueChanged.AddListener(OnSliderChanged);
 
         spriteSelectorDropdown.onValueChanged.AddListener(DisplaySprite);
     }
@@ -40,19 +36,21 @@ public class ColorBlender : MonoBehaviour
         Instance = null;
     }
 
-    private void ModifieColor(float pValue)
+    private void OnSliderChanged(float value)
     {
+        // Mise à jour instantanée de la couleur d’aperçu
         Color color = new Color(redSlider.value, greenSlider.value, blueSlider.value, alphaSlider.value);
         previewImage.color = color;
-        if (saveTile.Count > 0)
+
+        // On sauvegarde UNIQUEMENT si les sliders ont été modifiés manuellement
+        if (!isUserSettingValues) return;
+
+        int idx = spriteSelectorDropdown.value;
+        if (idx >= 0 && idx < saveTile.Count)
         {
-            int idx = spriteSelectorDropdown.value;
-            if (idx >= 0 && idx < saveTile.Count)
-            {
-                var data = saveTile[idx];
-                data.Color = color;
-                saveTile[idx] = data;
-            }
+            var customTileData = saveTile[idx];
+            customTileData.Color = color;
+            saveTile[idx] = customTileData;
         }
     }
 
@@ -66,7 +64,7 @@ public class ColorBlender : MonoBehaviour
         if (pIndex >= 0 && pIndex < saveTile.Count)
             return saveTile[pIndex].Color;
 
-        return new Color(redSlider.value, greenSlider.value, blueSlider.value, alphaSlider.value);
+        return BlendColorForTile();
     }
 
     public void SetColorForTile(SO_Tiles pTile)
@@ -74,12 +72,18 @@ public class ColorBlender : MonoBehaviour
         spriteSelectorDropdown.options.Clear();
         saveTile.Clear();
         spriteSelectorDropdown.gameObject.SetActive(false);
+
+        // Empêcher que changer les sliders déclenche une sauvegarde
+        isUserSettingValues = false;
+
         redSlider.value = pTile.color.r;
         greenSlider.value = pTile.color.g;
         blueSlider.value = pTile.color.b;
         alphaSlider.value = pTile.color.a;
+
+        isUserSettingValues = true;
+
         previewImage.sprite = pTile.RuleTiles.m_DefaultSprite;
-        // appliquer la couleur immédiatement
         previewImage.color = pTile.color;
     }
 
@@ -90,6 +94,7 @@ public class ColorBlender : MonoBehaviour
 
         spriteSelectorDropdown.options.Clear();
         saveTile.Clear();
+
         foreach (CustomTileData data in pCustomTile.Sources)
         {
             spriteSelectorDropdown.options.Add(new TMP_Dropdown.OptionData(data.Name, data.Sprites.sprite, data.Color));
@@ -109,9 +114,18 @@ public class ColorBlender : MonoBehaviour
         if (pIndex < 0 || pIndex >= spriteSelectorDropdown.options.Count || pIndex >= saveTile.Count) return;
 
         previewImage.sprite = spriteSelectorDropdown.options[pIndex].image;
+
+        // Bloquer la sauvegarde automatique
+        isUserSettingValues = false;
+
         redSlider.value = saveTile[pIndex].Color.r;
         greenSlider.value = saveTile[pIndex].Color.g;
         blueSlider.value = saveTile[pIndex].Color.b;
         alphaSlider.value = saveTile[pIndex].Color.a;
+
+        previewImage.color = saveTile[pIndex].Color;
+
+        // Réautoriser la sauvegarde après mise à jour
+        isUserSettingValues = true;
     }
 }

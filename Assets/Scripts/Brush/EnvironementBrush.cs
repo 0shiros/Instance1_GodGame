@@ -10,9 +10,9 @@ public class EnvironementBrush : MonoBehaviour
 {
     [SerializeField] private CustomTile currentTile;
     [SerializeField] Camera camera;
-    [SerializeField] SO_Tiles EraseTile;
+    [SerializeField] SO_Tiles eraseTile;
     [SerializeField] Tilemap target;
-    [SerializeField] private NavMeshSurface NavMesh;
+    [SerializeField] private NavMeshSurface navMesh;
     bool canDraw;
     private bool isSelected;
 
@@ -25,7 +25,7 @@ public class EnvironementBrush : MonoBehaviour
 
     private void OnDisable()
     {
-        NavMesh.RemoveData();
+        navMesh.RemoveData();
     }
 
     public void SetTile(CustomTile pTile)
@@ -66,9 +66,9 @@ public class EnvironementBrush : MonoBehaviour
         if (context.canceled)
         {
             canDraw = false;
-            if (NavMesh != null)
+            if (navMesh != null)
             {
-                NavMesh.UpdateNavMesh(NavMesh.navMeshData);
+                navMesh.UpdateNavMesh(navMesh.navMeshData);
             }
         }
     }

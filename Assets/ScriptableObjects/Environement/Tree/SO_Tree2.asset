@@ -17,7 +17,7 @@ MonoBehaviour:
     Direction: 0
     Color: {r: 0.5686275, g: 0.8156863, b: 0.11372549, a: 1}
     Name: Leaves
-  - Sprites: {fileID: 11400000, guid: 2ada6cb7ef9ff7b4bae48e4b793021c2, type: 2}
+  - Sprites: {fileID: 11400000, guid: c1692689e77ee6c44b7edff7415a44f9, type: 2}
     Direction: 1
     Color: {r: 0.43529412, g: 0.17254902, b: 0.0627451, a: 1}
     Name: Log
