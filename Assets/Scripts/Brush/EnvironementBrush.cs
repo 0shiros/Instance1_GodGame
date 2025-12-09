@@ -23,11 +23,6 @@ public class EnvironementBrush : MonoBehaviour
         colorBlender = ColorBlender.Instance;
     }
 
-    private void OnDisable()
-    {
-        navMesh.RemoveData();
-    }
-
     public void SetTile(CustomTile pTile)
     {
         currentTile = pTile;

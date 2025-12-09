@@ -2,79 +2,57 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
-using UnityEngine.UI;
 
 public class BrushPreview : MonoBehaviour
 {
     [SerializeField] new Camera camera;
-    [SerializeField] TileBrush brush;
-    [SerializeField] SO_Tiles previweTiles;
-    [SerializeField] SO_Tiles emptyTiles;
-    [SerializeField] Slider BrushSizeSlider;
-    [SerializeField] int offset;
-    [SerializeField] List<Tilemap> tilemaps;
+    public Tilemap targetTilemap; // peut être assignée ou définie dynamiquement
+    public Tilemap previewTilemap; // Tilemap pour l'aperçu (peut être null -> créé automatiquement)
+    public TileBase brushTile; // Tile utilisée pour peindre
+    public TileBase previewTile; // Tile utilisée pour l'aperçu (opaque/mono)
+    public Color previewColor = new Color(1f, 1f, 1f, 0.5f);
+    [Range(1, 50)] public int brushSize = 1;
+
+    private bool isUpdatingPreview;
+    private List<Vector3Int> currentPreviewPositions = new List<Vector3Int>();
+
+    public void SetTargetTilemap(Tilemap tilemap, int pSize, SO_Tiles pTile)
+    {
+        if (tilemap == targetTilemap && (pTile == null || pTile.RuleTiles == brushTile))
+            return;
+
+        targetTilemap = tilemap;
+        brushSize = pSize;
+        brushTile = pTile != null ? pTile.RuleTiles : null;
+        previewTile = brushTile;
+        isUpdatingPreview = brushTile != null;
+
+        if (targetTilemap != null)
+            EnsurePreviewTilemap();
+        if (!isUpdatingPreview)
+            ClearPreview();
+    }
 
     private void Update()
     {
-        if (IsPointerOverUI())
-        {
-            CircleDraw(emptyTiles, offset * 2 + (int)BrushSizeSlider.value);
-            return;
-        }
-        CircleDraw(emptyTiles, (int)BrushSizeSlider.value + offset);
-        CircleDraw(previweTiles, (int)BrushSizeSlider.value);
+        if (!isUpdatingPreview) return;
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
+        if (Camera.main == null && camera == null) return;
+
+        UpdatePreview();
     }
-    
-    private Tilemap FindTargetTilemap(Vector3Int pos, SO_Tiles pRuleTile)
+
+    private void UpdatePreview()
     {
-        if (tilemaps == null || tilemaps.Count == 0) return null;
+        if (previewTile == null || targetTilemap == null) return;
 
-        if (pRuleTile != null && pRuleTile.layerMask != 0)
-        {
-            for (int i = tilemaps.Count - 1; i >= 0; i--)
-            {
-                var tm = tilemaps[i];
-                if (tm == null) continue;
-                if ((pRuleTile.layerMask & (1 << tm.gameObject.layer)) != 0)
-                    return tm;
-            }
-        }
+        // Nettoie l'ancien aperçu
+        ClearPreview();
 
-        if (pRuleTile == EraseTile)
-        {
-            for (int i = tilemaps.Count - 1; i >= 0; i--)
-            {
-                var tm = tilemaps[i];
-                if (tm == null) continue;
-                if (tm.GetTile(pos) != null) return tm;
-            }
-        }
+        var midCell = GetMidCell();
 
-        for (int i = tilemaps.Count - 1; i >= 0; i--)
-        {
-            var tm = tilemaps[i];
-            if (tm != null) return tm;
-        }
-
-        return null;
-    }
-    
-    private void CircleDraw(SO_Tiles pRuleTile, int pBrushSize, bool pIsCircle = false)
-    {
-        if (tilemaps == null || tilemaps.Count == 0 || camera == null) return;
-
-        Vector3 mouse = Input.mousePosition;
-        mouse.z = -camera.transform.position.z;
-        Vector3 worldPos = camera.ScreenToWorldPoint(mouse);
-        Vector3Int midCell = tilemaps[0].WorldToCell(new Vector3(worldPos.x, worldPos.y, 0f));
-
-        int size = Mathf.Max(0, pBrushSize);
+        int size = Mathf.Max(0, brushSize);
         int rSq = size * size;
-
-        if (pRuleTile == EraseTile && target == null)
-        {
-            target = FindTargetTilemap(midCell, pRuleTile);
-        }
 
         for (int dx = -size; dx <= size; dx++)
         {
@@ -84,29 +62,59 @@ public class BrushPreview : MonoBehaviour
                 {
                     Vector3Int cellPos = new Vector3Int(midCell.x + dx, midCell.y + dy, midCell.z);
 
-                    if (target == null)
-                        target = FindTargetTilemap(cellPos, pRuleTile);
-                    if (target == null) continue;
-
-                    target.SetTile(cellPos, pRuleTile != null ? pRuleTile.RuleTiles : null);
-                    if (pRuleTile != null)
-                        target.SetColor(cellPos, pRuleTile.color);
-                    else
-                        target.SetColor(cellPos, Color.clear);
+                    previewTilemap.SetTile(cellPos, previewTile);
+                    previewTilemap.SetColor(cellPos, previewColor);
+                    currentPreviewPositions.Add(cellPos);
                 }
             }
         }
     }
-    
-    bool IsPointerOverUI()
+
+    public void ClearPreview()
     {
-        if (EventSystem.current == null) return false;
-        PointerEventData eventData = new PointerEventData(EventSystem.current)
+        if (previewTilemap == null) 
         {
-            position = Input.mousePosition
-        };
-        List<RaycastResult> results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(eventData, results);
-        return results.Count > 0;
+            currentPreviewPositions.Clear();
+            return;
+        }
+
+        foreach (var pos in currentPreviewPositions)
+        {
+            previewTilemap.SetTile(pos, null);
+            previewTilemap.SetColor(pos, Color.clear);
+        }
+        currentPreviewPositions.Clear();
+    }
+
+    private void EnsurePreviewTilemap()
+    {
+        if (previewTilemap != null) return;
+
+        GameObject go = new GameObject("BrushPreviewTilemap");
+        if (targetTilemap != null)
+        {
+            if (targetTilemap.transform.parent != null)
+                go.transform.SetParent(targetTilemap.transform.parent, false);
+            else
+                go.transform.SetParent(targetTilemap.transform, false);
+        }
+
+        previewTilemap = go.AddComponent<Tilemap>();
+        var renderer = go.AddComponent<TilemapRenderer>();
+        var targetRenderer = targetTilemap != null ? targetTilemap.GetComponent<TilemapRenderer>() : null;
+        renderer.sortingOrder = (targetRenderer?.sortingOrder ?? 0) + 1;
+        renderer.material = targetRenderer?.material;
+    }
+
+    private Vector3Int GetMidCell()
+    {
+        Vector3 cam = (camera != null) ? camera.transform.position : Camera.main.transform.position;
+        Vector3 mouse = Input.mousePosition;
+        mouse.z = -cam.z;
+        Vector3 worldPos = (camera != null) ? camera.ScreenToWorldPoint(mouse) : Camera.main.ScreenToWorldPoint(mouse);
+        Tilemap refMap = targetTilemap != null ? targetTilemap : previewTilemap;
+        if (refMap == null) return Vector3Int.zero;
+        Vector3Int midCell = refMap.WorldToCell(new Vector3(worldPos.x, worldPos.y, 0f));
+        return midCell;
     }
 }
