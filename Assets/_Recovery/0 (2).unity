@@ -431,7 +431,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &545430750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -797,7 +797,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &921863310
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1021,7 +1021,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &977426416
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1693,8 +1693,8 @@ MonoBehaviour:
   fatigue: 0
   hungerRate: 4
   fatigueRate: 0.5
-  hungerThreshold: 50
-  fatigueThreshold: 50
+  hungerThreshold: 500
+  fatigueThreshold: 500
   foodPerEat: 1
   eatDurationPerUnit: 0.5
   eatRate: 20
@@ -1772,8 +1772,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4147b3572a674824b9799d9f9b735b27, type: 2}
   gridSize: {x: 50, y: 50}
   taskScanInterval: 0.2
-  houseSpawnDistance: 5
-  buildingMinDistance: 2
   totalWood: 0
   totalStone: 0
   totalFood: 0
@@ -1801,7 +1799,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  maxWorkerPercent: 0.717
+  maxWorkerPercent: 1
   villagers: []
   activeTasks: []
 --- !u!4 &1381548354
@@ -1837,7 +1835,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1382547650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1981,7 +1979,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1489628539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2125,7 +2123,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1563898053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2406,7 +2404,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2021489931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2550,7 +2548,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &2059262029
 MonoBehaviour:
   m_ObjectHideFlags: 0
