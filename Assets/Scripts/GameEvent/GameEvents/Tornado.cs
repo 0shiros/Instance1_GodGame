@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using AYellowpaper.SerializedCollections;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
@@ -9,13 +8,11 @@ public class Tornado : GameEvent
 {
     [SerializeField] int ID;
     [SerializeField] Vector2Int radiusMinMax;
-    [SerializeField] Vector2 activationMinMax;
-    [SerializeField] Vector2 durationMinMax;
     [SerializeField] GameEventBrush brush;
     [SerializeField] SO_Tiles SO_Tile;
     [SerializeField] List<Tilemap> tilemaps;
-    [SerializedDictionary("id", "List")]
-    Dictionary<int, ListWrapper> targets = new Dictionary<int, ListWrapper>();
+    [SerializeField] CustomDict targets;
+    
     float animTimer;
     private int temp2;
     
@@ -29,51 +26,45 @@ public class Tornado : GameEvent
 
     public override void SetupEvent(int x, int y, float pTimer = 0)
     {
-        Debug.Log("Setup Meteorite");
+        Debug.Log("Setup Tornado");
         int radius = Random.Range(radiusMinMax.x, radiusMinMax.y);
-        float activation = Random.Range(activationMinMax.x, activationMinMax.y);
-        float duration = Random.Range(durationMinMax.x, durationMinMax.y);
         float speed = Random.Range(speedMinMax.x, speedMinMax.y);
 
-        int temp = Random.Range(1, targets.Count);
-        transform.position = Vector3.MoveTowards(transform.position,
-            targets[temp].target[Random.Range(0, targets[temp].target.Count - 1)].transform.position,
-            speed * Time.deltaTime);
-        
-        temp2 = Random.Range(1, targets.Count);
+        int temp = Random.Range(0, targets.sides.Count);
+
+        temp2 = Random.Range(0, targets.sides.Count);
         while (temp == temp2)
         {
-            temp2 = Random.Range(1, targets.Count);
+            temp2 = Random.Range(0, targets.sides.Count);
         }
-        
-        StartCoroutine(StartTornado(radius, activation, pTimer, duration, speed));
+
+        tornado.transform.position = targets.sides[temp].target[Random.Range(0, targets.sides[temp].target.Count)].transform.position;
+        Vector3 targetPos = targets.sides[temp2].target[Random.Range(0, targets.sides[temp2].target.Count)].transform.position;
+        StartCoroutine(StartTornado(radius, pTimer, speed, targetPos));
     }
 
-    IEnumerator StartTornado(int pRadius, float pActivationTimer, float pTimer, float pDuration, float speed)
+    IEnumerator StartTornado(int pRadius, float pTimer, float pSpeed, Vector3 pTargetPos)
     {
+        animTimer = 0;
         while (animTimer < pTimer)
         {
             animTimer += Time.deltaTime;
             yield return null;
         }
         animTimer = 0;
-        while (animTimer < pActivationTimer)
+        var dist = Vector3.Distance(tornado.transform.position, pTargetPos);
+        while (dist > 1)
         {
-            animTimer += Time.deltaTime;
-            yield return null;
-        }
-        animTimer = 0;
-        while (animTimer < pDuration)
-        {
+            dist = Vector3.Distance(tornado.transform.position, pTargetPos);
             //loop de l'anim et déplacments
-            transform.position = Vector3.MoveTowards(transform.position,
-                targets[temp2].target[Random.Range(0, targets[temp2].target.Count - 1)].transform.position,
-                speed * Time.deltaTime);
+            tornado.transform.position = Vector3.MoveTowards(tornado.transform.position, pTargetPos, pSpeed * Time.deltaTime);
             Vector3Int midcell = tilemaps[0].WorldToCell(transform.position);
             StartCoroutine(brush.CircleDraw(SO_Tile, midcell, pRadius, tilemaps));
             yield return null;
         }
     }
+    
+    [System.Serializable] public class CustomDict { public List<ListWrapper> sides; }
     
     [System.Serializable] public class ListWrapper { public List<GameObject> target; }
 }
