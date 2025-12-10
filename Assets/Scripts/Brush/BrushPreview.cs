@@ -33,6 +33,11 @@ public class BrushPreview : MonoBehaviour
             ClearPreview();
     }
 
+    public void SetSize(int  pSize)
+    {
+        brushSize = pSize;
+    }
+
     private void Update()
     {
         if (!isUpdatingPreview) return;

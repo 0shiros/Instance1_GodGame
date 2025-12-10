@@ -46,6 +46,12 @@ public class TileBrush : MonoBehaviour
         }
 
         previewBrush = GetComponent<BrushPreview>();
+        BrushSizeSlider.onValueChanged.AddListener(SizeChanged);
+    }
+
+    private void SizeChanged(float pArg0)
+    {
+        previewBrush.SetSize((int)pArg0);
     }
 
     public void GetTile(SO_Tiles pTile)
