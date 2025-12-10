@@ -6,10 +6,6 @@ using UnityEngine.UI;
 
 public class ColorBlender : MonoBehaviour
 {
-    [SerializeField] Slider redSlider;
-    [SerializeField] Slider greenSlider;
-    [SerializeField] Slider blueSlider;
-    [SerializeField] Slider alphaSlider;
     [SerializeField] Image previewImage;
     [SerializeField] TMP_Dropdown spriteSelectorDropdown;
 
@@ -23,11 +19,6 @@ public class ColorBlender : MonoBehaviour
         if (Instance == null) Instance = this;
         else Destroy(this);
 
-        redSlider.onValueChanged.AddListener(OnSliderChanged);
-        greenSlider.onValueChanged.AddListener(OnSliderChanged);
-        blueSlider.onValueChanged.AddListener(OnSliderChanged);
-        alphaSlider.onValueChanged.AddListener(OnSliderChanged);
-
         spriteSelectorDropdown.onValueChanged.AddListener(DisplaySprite);
     }
 
@@ -36,27 +27,9 @@ public class ColorBlender : MonoBehaviour
         Instance = null;
     }
 
-    private void OnSliderChanged(float value)
-    {
-        // Mise à jour instantanée de la couleur d’aperçu
-        Color color = new Color(redSlider.value, greenSlider.value, blueSlider.value, alphaSlider.value);
-        previewImage.color = color;
-
-        // On sauvegarde UNIQUEMENT si les sliders ont été modifiés manuellement
-        if (!isUserSettingValues) return;
-
-        int idx = spriteSelectorDropdown.value;
-        if (idx >= 0 && idx < saveTile.Count)
-        {
-            var customTileData = saveTile[idx];
-            customTileData.Color = color;
-            saveTile[idx] = customTileData;
-        }
-    }
-
     public Color BlendColorForTile()
     {
-        return new Color(redSlider.value, greenSlider.value, blueSlider.value, alphaSlider.value);
+        return previewImage.color;
     }
 
     public Color BlendColorForCustomTile(int pIndex)
@@ -72,16 +45,6 @@ public class ColorBlender : MonoBehaviour
         spriteSelectorDropdown.options.Clear();
         saveTile.Clear();
         spriteSelectorDropdown.gameObject.SetActive(false);
-
-        // Empêcher que changer les sliders déclenche une sauvegarde
-        isUserSettingValues = false;
-
-        redSlider.value = pTile.color.r;
-        greenSlider.value = pTile.color.g;
-        blueSlider.value = pTile.color.b;
-        alphaSlider.value = pTile.color.a;
-
-        isUserSettingValues = true;
 
         if (pTile.RuleTiles != null)
         {
@@ -123,17 +86,14 @@ public class ColorBlender : MonoBehaviour
 
         previewImage.sprite = spriteSelectorDropdown.options[pIndex].image;
 
-        // Bloquer la sauvegarde automatique
-        isUserSettingValues = false;
-
-        redSlider.value = saveTile[pIndex].Color.r;
-        greenSlider.value = saveTile[pIndex].Color.g;
-        blueSlider.value = saveTile[pIndex].Color.b;
-        alphaSlider.value = saveTile[pIndex].Color.a;
-
         previewImage.color = saveTile[pIndex].Color;
-
-        // Réautoriser la sauvegarde après mise à jour
-        isUserSettingValues = true;
+    }
+    
+    public void SaveColor()
+    {
+        if (saveTile.Count == 0) return;
+        var data = saveTile[spriteSelectorDropdown.value];
+        data.Color = previewImage.color;
+        saveTile[spriteSelectorDropdown.value] = data;
     }
 }

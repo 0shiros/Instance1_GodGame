@@ -33,6 +33,11 @@ public class EnvironementBrush : MonoBehaviour
     public void TileSelected(bool pIsSelected)
     {
         isSelected = pIsSelected;
+        if (isSelected)
+        {
+            GetComponent<BrushPreview>().HidePreview();
+            Debug.Log("Selected");
+        }
     }
 
     private void Update()
@@ -68,11 +73,11 @@ public class EnvironementBrush : MonoBehaviour
             }
         }
     }
-    
+
     private bool HasTileGroundAtPosition()
     {
         Vector3Int pPosition = target.WorldToCell(camera.ScreenToWorldPoint(Input.mousePosition));
-        
+
         foreach (Tilemap tilemap in tilemaps)
         {
             if (tilemap.GetTile(pPosition) != null)
@@ -80,6 +85,7 @@ public class EnvironementBrush : MonoBehaviour
                 return true;
             }
         }
+
         return false;
     }
 
@@ -97,26 +103,30 @@ public class EnvironementBrush : MonoBehaviour
         mouse.z = -camera.transform.position.z;
         Vector3 worldPos = camera.ScreenToWorldPoint(mouse);
         Vector3Int midCell = target.WorldToCell(new Vector3(worldPos.x, worldPos.y, 0f));
-        
+
         for (int i = 0; i < pRuleTile.Sources.Count; i++)
         {
             switch (pRuleTile.Sources[i].Direction)
             {
                 case ETileDirection.Top:
                     target.SetTile(new Vector3Int(midCell.x, midCell.y + 1, 0), pRuleTile.Sources[i].Sprites);
-                    target.SetColor(new Vector3Int(midCell.x, midCell.y + 1, 0), colorBlender.BlendColorForCustomTile(i));
+                    target.SetColor(new Vector3Int(midCell.x, midCell.y + 1, 0),
+                        colorBlender.BlendColorForCustomTile(i));
                     break;
                 case ETileDirection.Bottom:
                     target.SetTile(new Vector3Int(midCell.x, midCell.y - 1, 0), pRuleTile.Sources[i].Sprites);
-                    target.SetColor(new Vector3Int(midCell.x, midCell.y - 1, 0), colorBlender.BlendColorForCustomTile(i));
+                    target.SetColor(new Vector3Int(midCell.x, midCell.y - 1, 0),
+                        colorBlender.BlendColorForCustomTile(i));
                     break;
                 case ETileDirection.Left:
                     target.SetTile(new Vector3Int(midCell.x - 1, midCell.y, 0), pRuleTile.Sources[i].Sprites);
-                    target.SetColor(new Vector3Int(midCell.x - 1, midCell.y, 0), colorBlender.BlendColorForCustomTile(i));
+                    target.SetColor(new Vector3Int(midCell.x - 1, midCell.y, 0),
+                        colorBlender.BlendColorForCustomTile(i));
                     break;
                 case ETileDirection.Right:
                     target.SetTile(new Vector3Int(midCell.x + 1, midCell.y + 1, 0), pRuleTile.Sources[i].Sprites);
-                    target.SetColor(new Vector3Int(midCell.x + 1, midCell.y, 0), colorBlender.BlendColorForCustomTile(i));
+                    target.SetColor(new Vector3Int(midCell.x + 1, midCell.y, 0),
+                        colorBlender.BlendColorForCustomTile(i));
                     break;
                 default:
                     target.SetTile(new Vector3Int(midCell.x, midCell.y, 0), pRuleTile.Sources[i].Sprites);
@@ -125,10 +135,10 @@ public class EnvironementBrush : MonoBehaviour
             }
         }
     }
-    
+
     public void ClearCurrentTileEnvironement()
     {
-        if(currentTile == null) return;
+        if (currentTile == null) return;
         currentTile = null;
     }
 }

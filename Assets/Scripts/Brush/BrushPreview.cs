@@ -16,6 +16,20 @@ public class BrushPreview : MonoBehaviour
     private bool isUpdatingPreview;
     private List<Vector3Int> currentPreviewPositions = new List<Vector3Int>();
 
+
+    public void HidePreview()
+    {
+        isUpdatingPreview = false;
+        ClearPreview();
+    }
+    public void ShowPreview()
+    {
+        if (previewTile == null || targetTilemap == null) return;
+        EnsurePreviewTilemap();
+        isUpdatingPreview = true;
+        UpdatePreview();
+    }
+    
     public void SetTargetTilemap(Tilemap tilemap, int pSize, SO_Tiles pTile)
     {
         if (tilemap == targetTilemap && (pTile == null || pTile.RuleTiles == brushTile))
@@ -26,14 +40,15 @@ public class BrushPreview : MonoBehaviour
         brushTile = pTile != null ? pTile.RuleTiles : null;
         previewTile = brushTile;
         isUpdatingPreview = brushTile != null;
-
+        ShowPreview();
+        
         if (targetTilemap != null)
             EnsurePreviewTilemap();
         if (!isUpdatingPreview)
             ClearPreview();
     }
 
-    public void SetSize(int  pSize)
+    public void SetSize(int pSize)
     {
         brushSize = pSize;
     }
@@ -77,7 +92,7 @@ public class BrushPreview : MonoBehaviour
 
     public void ClearPreview()
     {
-        if (previewTilemap == null) 
+        if (previewTilemap == null)
         {
             currentPreviewPositions.Clear();
             return;
@@ -88,6 +103,7 @@ public class BrushPreview : MonoBehaviour
             previewTilemap.SetTile(pos, null);
             previewTilemap.SetColor(pos, Color.clear);
         }
+
         currentPreviewPositions.Clear();
     }
 
