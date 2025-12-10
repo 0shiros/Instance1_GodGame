@@ -27,7 +27,7 @@ public class TileBrush : MonoBehaviour
     [SerializeField] private SO_Tiles currentTile;
     bool isSelected;
     ColorBlender colorBlender;
-
+    private BrushPreview previewBrush;
     private void OnDisable()
     {
         NavMesh.RemoveData();
@@ -44,12 +44,21 @@ public class TileBrush : MonoBehaviour
                 waterTileMap.SetColor(new Vector3Int(x, y, 0), waterTile.color);
             }
         }
+
+        previewBrush = GetComponent<BrushPreview>();
+        BrushSizeSlider.onValueChanged.AddListener(SizeChanged);
+    }
+
+    private void SizeChanged(float pArg0)
+    {
+        previewBrush.SetSize((int)pArg0);
     }
 
     public void GetTile(SO_Tiles pTile)
     {
         currentTile = pTile;
         colorBlender.SetColorForTile(pTile);
+        FindTargetTilemap(GetMidCell(), currentTile);
         target = null;
     }
 
@@ -110,7 +119,10 @@ public class TileBrush : MonoBehaviour
                 var tm = tilemaps[i];
                 if (tm == null) continue;
                 if ((pRuleTile.layerMask & (1 << tm.gameObject.layer)) != 0)
+                {
+                    GetComponent<BrushPreview>().SetTargetTilemap(tm, (int)BrushSizeSlider.value, pRuleTile);
                     return tm;
+                }
             }
         }
 
@@ -120,14 +132,22 @@ public class TileBrush : MonoBehaviour
             {
                 var tm = tilemaps[i];
                 if (tm == null) continue;
-                if (tm.GetTile(pos) != null) return tm;
+                if (tm.GetTile(pos) != null)
+                {
+                    GetComponent<BrushPreview>().SetTargetTilemap(tm, (int)BrushSizeSlider.value, pRuleTile);
+                    return tm;
+                }
             }
         }
 
         for (int i = tilemaps.Count - 1; i >= 0; i--)
         {
             var tm = tilemaps[i];
-            if (tm != null) return tm;
+            if (tm != null)
+            {
+                GetComponent<BrushPreview>().SetTargetTilemap(tm, (int)BrushSizeSlider.value, pRuleTile);
+                return tm;
+            }
         }
 
         return null;
@@ -137,10 +157,7 @@ public class TileBrush : MonoBehaviour
     {
         if (tilemaps == null || tilemaps.Count == 0 || camera == null) return;
 
-        Vector3 mouse = Input.mousePosition;
-        mouse.z = -camera.transform.position.z;
-        Vector3 worldPos = camera.ScreenToWorldPoint(mouse);
-        Vector3Int midCell = tilemaps[0].WorldToCell(new Vector3(worldPos.x, worldPos.y, 0f));
+        var midCell = GetMidCell();
 
         int size = Mathf.Max(0, (int)BrushSizeSlider.value);
         int rSq = size * size;
@@ -169,5 +186,14 @@ public class TileBrush : MonoBehaviour
                 }
             }
         }
+    }
+
+    private Vector3Int GetMidCell()
+    {
+        Vector3 mouse = Input.mousePosition;
+        mouse.z = -camera.transform.position.z;
+        Vector3 worldPos = camera.ScreenToWorldPoint(mouse);
+        Vector3Int midCell = tilemaps[0].WorldToCell(new Vector3(worldPos.x, worldPos.y, 0f));
+        return midCell;
     }
 }
