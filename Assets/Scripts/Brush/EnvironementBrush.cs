@@ -13,8 +13,10 @@ public class EnvironementBrush : MonoBehaviour
     [SerializeField] SO_Tiles eraseTile;
     [SerializeField] Tilemap target;
     [SerializeField] private NavMeshSurface navMesh;
+    [SerializeField] private GameObject particlesEffect;
     bool canDraw;
     private bool isSelected;
+    private Vector3Int oldMidcell = new Vector3Int(0, 0, 1);
 
     ColorBlender colorBlender;
 
@@ -116,5 +118,12 @@ public class EnvironementBrush : MonoBehaviour
                     break;
             }
         }
+
+        if (midCell != oldMidcell)
+        {
+            GameObject particles = Instantiate(particlesEffect, midCell, Quaternion.identity);
+            particles.GetComponent<Particles>().playParticles();
+        }
+        oldMidcell = midCell;
     }
 }
