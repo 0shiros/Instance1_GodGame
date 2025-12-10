@@ -551,6 +551,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7478492788662917816, guid: 5e89e93315746404b8d96d8df0e1ff4d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7507211848723085908, guid: 5e89e93315746404b8d96d8df0e1ff4d, type: 3}
       propertyPath: m_Name
       value: LoadingScreenManager

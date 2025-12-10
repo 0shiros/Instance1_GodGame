@@ -133,7 +133,7 @@ public class TileBrush : MonoBehaviour
         return null;
     }
 
-    private void CircleDraw(SO_Tiles pRuleTile, bool pIsCircle = false)
+    private void CircleDraw(SO_Tiles pRuleTile)
     {
         if (tilemaps == null || tilemaps.Count == 0 || camera == null) return;
 
@@ -149,6 +149,7 @@ public class TileBrush : MonoBehaviour
         {
             target = FindTargetTilemap(midCell, pRuleTile);
         }
+        
         for (int dx = -size; dx <= size; dx++)
         {
             for (int dy = -size; dy <= size; dy++)
@@ -157,16 +158,35 @@ public class TileBrush : MonoBehaviour
                 {
                     Vector3Int cellPos = new Vector3Int(midCell.x + dx, midCell.y + dy, midCell.z);
 
-                    if (target == null)
-                        target = FindTargetTilemap(cellPos, pRuleTile);
-                    if (target == null) continue;
-
-                    target.SetTile(cellPos, pRuleTile != null ? pRuleTile.RuleTiles : null);
-                    if (pRuleTile != null)
-                        target.SetColor(cellPos, colorBlender.BlendColorForTile());
+                    if (pRuleTile == waterTile)
+                    {
+                        ReplaceByWater(cellPos);
+                    }
                     else
-                        target.SetColor(cellPos, Color.clear);
+                    {
+                        if (target == null)
+                            target = FindTargetTilemap(cellPos, pRuleTile);
+                        if (target == null) continue;
+
+                        target.SetTile(cellPos, pRuleTile != null ? pRuleTile.RuleTiles : null);
+                        if (pRuleTile != null)
+                            target.SetColor(cellPos, colorBlender.BlendColorForTile());
+                        else
+                            target.SetColor(cellPos, Color.clear);
+                    }
                 }
+            }
+        }
+    }
+
+    private void ReplaceByWater(Vector3Int pCellPos)
+    {
+        foreach (Tilemap tilemap in tilemaps)
+        {
+            if (tilemap != waterTileMap)
+            {
+                tilemap.SetTile(pCellPos, null);
+                tilemap.SetColor(pCellPos, Color.clear);
             }
         }
     }
