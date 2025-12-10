@@ -373,6 +373,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 645553424}
+        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
+        m_MethodName: ClearCurrentTileEnvironement
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &24371162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -545,6 +557,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 645553424}
+        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
+        m_MethodName: ClearCurrentTileEnvironement
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &45740553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -709,6 +733,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
         m_MethodName: TileSelected
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 645553424}
+        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
+        m_MethodName: ClearCurrentTileEnvironement
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -996,6 +1032,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 645553419}
+        m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
+        m_MethodName: ClearCurrentTileGround
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &87495769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1160,6 +1208,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
         m_MethodName: TileSelected
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 645553419}
+        m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
+        m_MethodName: ClearCurrentTileGround
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1802,7 +1862,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: NavMeshPlus::NavMeshPlus.Components.NavMeshModifier
   m_OverrideArea: 1
-  m_Area: 0
+  m_Area: 1
   m_IgnoreFromBuild: 0
   m_AffectedAgents: ffffffff
 --- !u!1 &386635014
@@ -2431,6 +2491,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
         m_MethodName: TileSelected
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 645553419}
+        m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
+        m_MethodName: ClearCurrentTileGround
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3175,9 +3247,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnvironementBrush
   currentTile: {fileID: 0}
   camera: {fileID: 645553421}
-  eraseTile: {fileID: 0}
+  eraseTile: {fileID: 11400000, guid: 18c420ceab39c33499f2a288bc1e184f, type: 2}
+  tilemaps:
+  - {fileID: 818439517}
+  - {fileID: 642973270}
+  - {fileID: 1944642708}
   target: {fileID: 318923123}
-  navMesh: {fileID: 0}
+  navMesh: {fileID: 1165953081}
 --- !u!1 &662562720
 GameObject:
   m_ObjectHideFlags: 0
@@ -3807,6 +3883,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
         m_MethodName: TileSelected
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 645553424}
+        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
+        m_MethodName: ClearCurrentTileEnvironement
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -6950,6 +7038,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 645553424}
+        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
+        m_MethodName: ClearCurrentTileEnvironement
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &1465937505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7849,6 +7949,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
         m_MethodName: TileSelected
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 645553419}
+        m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
+        m_MethodName: ClearCurrentTileGround
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -9390,6 +9502,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
         m_MethodName: TileSelected
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 645553424}
+        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
+        m_MethodName: ClearCurrentTileEnvironement
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

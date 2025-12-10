@@ -190,4 +190,10 @@ public class TileBrush : MonoBehaviour
             }
         }
     }
+    
+    public void ClearCurrentTileGround()
+    {
+        if(currentTile == null) return;
+        currentTile = null;
+    }
 }

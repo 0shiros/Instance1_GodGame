@@ -83,8 +83,16 @@ public class ColorBlender : MonoBehaviour
 
         isUserSettingValues = true;
 
-        previewImage.sprite = pTile.RuleTiles.m_DefaultSprite;
-        previewImage.color = pTile.color;
+        if (pTile.RuleTiles != null)
+        {
+            previewImage.sprite = pTile.RuleTiles.m_DefaultSprite;
+            previewImage.color = pTile.color;
+        }
+        else
+        {
+            previewImage.sprite = null;
+            previewImage.color = Color.clear;
+        }
     }
 
     public void SetColorForCustomTile(CustomTile pCustomTile)
