@@ -22,6 +22,7 @@ public class CityUtilityAI : MonoBehaviour
     public int AgentsQuantity;
     [SerializeField] private int agentsQuantityNeedToSetDogma;
     [SerializeField] private GameObject villager;
+    public string cityName = "";
 
     [Header("Monde")]
     public Vector2Int gridSize = new Vector2Int(50, 50);
@@ -32,9 +33,10 @@ public class CityUtilityAI : MonoBehaviour
     public float buildingMinDistance = 2f;                // empêche les collisions de bâtiments
 
     [Header("Ressources globales (agrégées des dépôts)")]
-    public int totalWood;
-    public int totalStone;
-    public int totalFood;
+    public int TotalWood;
+    public int TotalStone;
+    public int TotalFood;
+    public int TotalMetal;
 
     [Header("Réglages distribution travailleurs")]
     [Tooltip("Courbe (0..1) -> pourcentage de population assignable (0..1).")]
@@ -54,6 +56,11 @@ public class CityUtilityAI : MonoBehaviour
 
     public static Action<int> actionBasic;
     public static Action<int> actionDogma;
+
+    private void Awake()
+    {
+        cityName = gameObject.name;
+    }
 
     void Start()
     {
@@ -134,7 +141,7 @@ public class CityUtilityAI : MonoBehaviour
             bool alreadyPlanned = activeTasks.Exists(t => t.data != null && t.data.type == TaskType.Build && t.buildingData == building);
             if (alreadyPlanned) continue;
 
-            if (totalWood >= building.woodCost && totalStone >= building.stoneCost)
+            if (TotalWood >= building.woodCost && TotalStone >= building.stoneCost)
             {
                 if (FindFreeBuildPositionRandomAroundHouse(building.size, out Vector3 pos)) // ★ AJOUT
                 {
@@ -149,8 +156,8 @@ public class CityUtilityAI : MonoBehaviour
                     };
                     activeTasks.Add(t);
 
-                    totalWood -= building.woodCost;
-                    totalStone -= building.stoneCost;
+                    TotalWood -= building.woodCost;
+                    TotalStone -= building.stoneCost;
                 }
             }
         }
@@ -219,8 +226,8 @@ public class CityUtilityAI : MonoBehaviour
 
         if (task.data.type == TaskType.Collect && task.resourceTarget != null)
         {
-            if (task.resourceTarget.resourceType == ResourceType.Wood && totalWood < 5) score += 10f;
-            if (task.resourceTarget.resourceType == ResourceType.Stone && totalStone < 3) score += 8f;
+            if (task.resourceTarget.resourceType == ResourceType.Wood && TotalWood < 5) score += 10f;
+            if (task.resourceTarget.resourceType == ResourceType.Stone && TotalStone < 3) score += 8f;
 
             float dist = Vector3.Distance(villager.transform.position, task.resourceTarget.transform.position);
             score -= dist * 0.1f;
@@ -316,9 +323,9 @@ public class CityUtilityAI : MonoBehaviour
             s += st.storedStone;
             f += st.storedFood;
         }
-        totalWood = w;
-        totalStone = s;
-        totalFood = f;
+        TotalWood = w;
+        TotalStone = s;
+        TotalFood = f;
     }
 
     public void NotifyResourceCollected(ResourceType type, int amount)
@@ -326,9 +333,9 @@ public class CityUtilityAI : MonoBehaviour
         if (amount <= 0) return;
         switch (type)
         {
-            case ResourceType.Wood: totalWood += amount; break;
-            case ResourceType.Stone: totalStone += amount; break;
-            case ResourceType.Food: totalFood += amount; break;
+            case ResourceType.Wood: TotalWood += amount; break;
+            case ResourceType.Stone: TotalStone += amount; break;
+            case ResourceType.Food: TotalFood += amount; break;
         }
     }
 

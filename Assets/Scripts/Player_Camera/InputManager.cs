@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 
 public class InputManager : MonoBehaviour
 {
@@ -8,7 +9,14 @@ public class InputManager : MonoBehaviour
     private Vector2 moveInput;
     private bool isDragging = false;
     private bool canMove = true;
-
+    
+    [SerializeField] private Camera mainCamera;
+    
+    private void Awake()
+    {
+        mainCamera = Camera.main;
+    }
+    
     private void Start()
     {
         if (cameraController == null)
@@ -40,13 +48,26 @@ public class InputManager : MonoBehaviour
         if(context.performed) cameraController.ZoomCamera(context.ReadValue<Vector2>());
     }
     
-    public void OnLeftClick(InputAction.CallbackContext context)
+    public void OnAPressed(InputAction.CallbackContext context)
     {
-        if(context.started) Debug.Log("Left Clicked Pressed");
-    }
-    
-    public void OnSpacebar(InputAction.CallbackContext context)
-    {
-        if(context.started) Debug.Log("Spacebar Pressed");
+        if (!context.performed) return;
+       
+        Vector3 worldPos = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+
+        Vector2 point = new Vector2(worldPos.x, worldPos.y);
+
+        Collider2D hit = Physics2D.OverlapPoint(point);
+
+        if (hit != null)
+        {
+            SearchTree nation = hit.GetComponent<SearchTree>();
+            
+            if (nation != null)
+            {
+                Debug.Log("Before invoke: " + nation.cityUtilityAI.cityName);
+                NationEvents.OnNationSelected?.Invoke(nation);
+                Debug.Log("After invoke");
+            }
+        }
     }
 }

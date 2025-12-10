@@ -34,24 +34,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "LeftClick",
-                    "type": "Button",
-                    "id": "187f6605-9b8a-4a49-a122-2d88ebecf2ee",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "SpaceBar",
-                    "type": "Button",
-                    "id": "218cfe87-1d09-4286-af2a-d3056b336a6e",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Draw",
                     "type": "Button",
                     "id": "916f56c5-a0c2-499b-905b-5fecffd67a68",
@@ -77,6 +59,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "A",
+                    "type": "Button",
+                    "id": "ba11568a-a32a-4b21-85ff-0f0e8d1c8d70",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -159,28 +150,6 @@
                 },
                 {
                     "name": "",
-                    "id": "99ccb508-c157-4e50-9b15-fab8912de5ef",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "LeftClick",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "edc5ca6b-0d0d-4312-a544-d72475aad5ee",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SpaceBar",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "b39a1898-42ef-4f6d-9d79-659a8b606bb0",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
@@ -220,6 +189,17 @@
                     "processors": "Invert",
                     "groups": "",
                     "action": "ModiftRadius",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3db13ee2-4ae6-40d4-b54d-97f425769bab",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "A",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

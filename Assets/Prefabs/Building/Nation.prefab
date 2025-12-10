@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5979278287541560166}
   - component: {fileID: 1704379708142574422}
   - component: {fileID: -2718495211638468172}
+  - component: {fileID: 3336839140374520713}
   m_Layer: 0
   m_Name: Nation
   m_TagString: Untagged
@@ -28,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 4060376712858540133}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.05, y: 0.11, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -55,13 +56,15 @@ MonoBehaviour:
   AgentsQuantity: 0
   agentsQuantityNeedToSetDogma: 0
   villager: {fileID: 7121599808976688172, guid: f6c65556a0e1fa64e812d275222fad46, type: 3}
+  cityName: Village
   gridSize: {x: 100, y: 100}
   taskScanInterval: 1
   houseSpawnDistance: 5
   buildingMinDistance: 2
-  totalWood: 0
-  totalStone: 0
-  totalFood: 0
+  TotalWood: 0
+  TotalStone: 0
+  TotalFood: 0
+  TotalMetal: 0
   workerDistributionCurve:
     serializedVersion: 2
     m_Curve:
@@ -123,10 +126,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dc515120380187847a3d03602babebcf, type: 2}
   - {fileID: 11400000, guid: 8eb9245c0aad8634394bc02d1a223d57, type: 2}
   - {fileID: 11400000, guid: 3364ae6e032e8d24e8f82b80afb29ad0, type: 2}
+  cityUtilityAI: {fileID: 0}
   currentSciencePoints: 0
   currentDogmaSciencePoints: 0
   TechnologiesAvailable: []
   TechnologiesUnlock: []
+  basicTechUnlockQuantity: 0
+  basicTechUnlockQuantityMax: 0
+  dogmaTechUnlockQuantity: 0
+  dogmaTechUnlockQuantityMax: 0
 --- !u!114 &-2718495211638468172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,3 +150,49 @@ MonoBehaviour:
   storedWood: 0
   storedStone: 0
   storedFood: 0
+--- !u!61 &3336839140374520713
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4060376712858540133}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 2, y: 2}
+  m_EdgeRadius: 0
