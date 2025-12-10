@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 3978798b61cfdb746a56c7cb011b420a
+guid: 3713530aa26c25343af349c448d17468
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 879536022370569514
-    second: As_Tile5.4_0
+      213: 7757112432311325874
+    second: tronc 5_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: As_Tile5.4_0
+      name: tronc 5_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 42
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
+        x: 3
+        y: 2
+        width: 58
+        height: 54
+      alignment: 9
+      pivot: {x: 0.5, y: 0.375}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a2dce843a5db43c00800000000000000
-      internalID: 879536022370569514
+      spriteID: 2b4dea288acc6ab60800000000000000
+      internalID: 7757112432311325874
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 06a210e231328b84c9b08bdc24dfbc28
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      As_Tile5.4_0: 879536022370569514
+      tronc 5_0: 7757112432311325874
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
