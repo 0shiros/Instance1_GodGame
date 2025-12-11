@@ -2,24 +2,31 @@ using UnityEngine;
 using System;
 using System.Collections;
 using DG.Tweening;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
-    public Sound[] sounds;
+    public Sound[] Sounds;
+    public AudioMixer mixer;
+    public AudioMixerGroup Master;
+    public AudioMixerGroup Music;
+    public AudioMixerGroup SFX;
+    
+    public bool musicPlaying = true;
     private float timeBetweenMusics;
     
-    public static AudioManager instance;
+    public static AudioManager Instance;
 
     void Awake()
     {
-        if (instance != null) {
-            instance = this;
+        if (Instance == null) {
+            Instance = this;
         } else {
             Destroy(gameObject);
             return;
         }
         
-        foreach (Sound s in sounds) {
+        foreach (Sound s in Sounds) {
             s.source = gameObject.AddComponent<AudioSource>();
             s.source.clip = s.clip;
             s.source.outputAudioMixerGroup = s.audioMixerGroup;
@@ -39,7 +46,15 @@ public class AudioManager : MonoBehaviour
     }
     private void Update() {
         timeBetweenMusics += Time.deltaTime;
-        if (timeBetweenMusics >= GetLength("Music")) {
+        mixer.GetFloat("MusicVolume", out float temp);
+        if (temp == 0 && musicPlaying) {
+            musicPlaying = false; 
+        }
+        else if (musicPlaying == false) {
+            musicPlaying = true;
+        }
+        
+        if (timeBetweenMusics >= GetLength("Music") && musicPlaying) { 
             PlaySound("Music");
         }
     }
@@ -48,7 +63,7 @@ public class AudioManager : MonoBehaviour
     #region sfx
     public void PlaySound (string pName) {
         try {
-            Sound s = Array.Find(sounds, sound => sound.name == pName);
+            Sound s = Array.Find(Sounds, sound => sound.name == pName);
             s.source.Play();
         }
         catch {
@@ -58,7 +73,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlayOverlap(string pName) {
         try {
-            Sound s = Array.Find(sounds, sound => sound.name == pName);
+            Sound s = Array.Find(Sounds, sound => sound.name == pName);
             s.source.PlayOneShot(s.source.clip, s.source.volume);
         }
         catch {
@@ -77,7 +92,7 @@ public class AudioManager : MonoBehaviour
 
     public void StopSound(string pName) {
         try {
-            Sound s = Array.Find(sounds, sound => sound.name == pName);
+            Sound s = Array.Find(Sounds, sound => sound.name == pName);
             s.source.Stop();
         }
         catch {
@@ -86,7 +101,7 @@ public class AudioManager : MonoBehaviour
     }
 
     public void stopAllSounds() {
-        foreach (Sound s in sounds)
+        foreach (Sound s in Sounds)
         {
             if (s.source.isPlaying)
             {
@@ -99,12 +114,16 @@ public class AudioManager : MonoBehaviour
     #region effects
     public void ChangeVolume(string pName, float pVolume)
     {
-        Sound s = Array.Find(sounds, sound => sound.name == pName);
+        Sound s = Array.Find(Sounds, sound => sound.name == pName);
         s.source.volume = pVolume;
+    }
+    public void ChangeMixerVolume(float pVolume, AudioMixerGroup pMixer)
+    {
+        mixer.SetFloat(pMixer.name ,pVolume);
     }
     
     public void ChangePitch(string pName, float pPitch) { //pas utilisé
-        Sound s = Array.Find(sounds, sound => sound.name == pName);
+        Sound s = Array.Find(Sounds, sound => sound.name == pName);
         s.source.pitch = pPitch;
     }
     
@@ -114,7 +133,7 @@ public class AudioManager : MonoBehaviour
 
     private IEnumerator FadeVolumeCoroutine(string pName, float pDuration, float pTargetVolume) {
         try {
-            Sound s = Array.Find(sounds, sound => sound.name == pName);
+            Sound s = Array.Find(Sounds, sound => sound.name == pName);
             while (Mathf.Approximately(s.source.volume, pTargetVolume)) {
                 s.source.DOFade(pTargetVolume, pDuration);
             }
@@ -128,7 +147,7 @@ public class AudioManager : MonoBehaviour
     
     #region parameters
     public float GetLength(string pName) {
-        Sound s = Array.Find(sounds, sound => sound.name == pName);
+        Sound s = Array.Find(Sounds, sound => sound.name == pName);
         return s.source.clip.length;
     }
     #endregion
