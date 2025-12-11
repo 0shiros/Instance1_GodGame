@@ -7,6 +7,4 @@ public class ResourceNode : MonoBehaviour
     public ResourceType ResourceType = ResourceType.Wood;
     public int Amount = 10;              
     public int HarvestPerAction = 1;     
-
-   
 }

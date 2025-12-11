@@ -15,3 +15,9 @@ MonoBehaviour:
   TechnologyName: 12
   ExperienceNeedToUnlock: 11
   TechnologiesNeedToBeUnlock: 
+  Dogma: 0
+  Buildings: []
+  Bonuses:
+    HpBonus: 0
+    SpeedBonus: 0
+    StrenghtBonus: 10
