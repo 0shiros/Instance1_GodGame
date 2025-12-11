@@ -5,17 +5,16 @@ using UnityEngine.Tilemaps;
 
 public class InputManager : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private CameraController cameraController;
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private UIManager uiManager;
+    
+    [Header("Settings")]
     private Vector2 moveInput;
     private bool isDragging = false;
     private bool canMove = true;
     
-    [SerializeField] private Camera mainCamera;
-    
-    private void Awake()
-    {
-        mainCamera = Camera.main;
-    }
     
     private void Start()
     {
@@ -67,5 +66,11 @@ public class InputManager : MonoBehaviour
                 NationEvents.OnNationSelected?.Invoke(nation);
             }
         }
+    }
+
+    public void OnPPressed(InputAction.CallbackContext context)
+    {
+        uiManager.PauseButton();
+        uiManager.ChangePauseMode();
     }
 }
