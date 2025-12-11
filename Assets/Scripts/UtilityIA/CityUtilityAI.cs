@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 
 public class CityUtilityAI : MonoBehaviour
@@ -18,6 +19,14 @@ public class CityUtilityAI : MonoBehaviour
 
     [Header("Grid")]
     public GridManager2D GridManager;
+    
+    [Header("Villagers Statistics Limits")]
+    public int HpMin = 85;
+    public int HpMax = 100;
+    public int SpeedMin = 5;
+    public int SpeedMax = 20;
+    public int StrengthMin = 5;
+    public int StrengthMax = 20;
 
     [Header("Monde")]
     public Vector2Int GridSize = new Vector2Int(50, 50);
@@ -43,8 +52,24 @@ public class CityUtilityAI : MonoBehaviour
     private List<ResourceNode> resourceNodes = new List<ResourceNode>();
     private List<StorageBuilding> storages = new List<StorageBuilding>();
     public List<CityTask> ActiveTasks = new List<CityTask>();
-    private readonly string [] nationNames = { "Avaloria", "Brumecity", "Celestia", "Draemor", "Eldoria", "Frosthaven", "Glimmerdale", "Harmonia", "Ironforge", "Jadewood" };
-
+    
+    // Possible Names of nations/cities
+    private readonly string[] nationNames = {
+        
+        "Avaloria", "Brumecity", "Celestia", "Draemor", "Eldoria", "Frosthaven", "Glimmerdale", "Harmonia", "Ironforge", "Jadewood",
+        "Sylvandor", "Luneris", "Verdanelle", "Thalowyn", "Elarion", "Sylvaeris", "Ardanor", "Faelwyn", "Thornewood", "Mystralis",
+        "Lysendell", "Evergrove", "Altheran", "Willowspire", "Amaranthil", "Frosthelm", "Nivorheim", "Skjoldvik", "Wintergate", "Icehaven", "Coldspire", "Hivernel", "Snowcrest", "Eldfrost", "Borealis Keep",
+        "Whitehold", "Stonewatch", "Ironpeak", "Deepdelve", "Hammerhold", "Copperhall", "Graniteforge", "Darkstone", "Mithrildeep", "Emberhall",
+        "Rocktide", "Solara", "Sandspire", "Mirazun", "Arkanesh", "Aridion", "Zahir’Kal", "Sunreach", "Dunespire", "Kalimora", "Orinar",
+        "Seabreak", "Marivelle", "Driftport", "Tidescar", "Pelagia", "Stormshore", "Crestfall", "Oceanreach", "Saltwind", "Havenbay",
+        "Kingsfall", "Highvalor", "Dawnmere", "Oakenguard", "Lioncrest", "Silverkeep", "Westford", "Varenholm", "Brightwall",
+        "Greenreach", "Sunbrook", "Arcanis", "Mythrendale", "Etherwyn", "Astralis", "Nocturnia", "Luminor", "Tempys", "Shadovar", "Vesperia", "Enchantel",
+        "Blackmoor", "Dreadfall", "Shadowfen", "Mor’Ghul", "Bloodfort", "Nightspire", "Ashencroft", "Thornkeep", "Voidreach",
+        "Ravenhold", "Stormhold", "Moonspire", "Amberfall", "Dragonstead", "Goldshore", "Runebrook", "Falconcrest", "Oakshade", "Windrest",
+        "Stonebrooke", "Riverhelm", "Wyrmwood", "Stormhollow", "Sunspire", "Ashenwald", "Clearhaven", "Faylen", "Northwyn",
+        "Embertide", "Galehaven"
+    };
+    
     private float timer = 0f;
     private float debugTimer = 0f;
 
@@ -79,10 +104,46 @@ public class CityUtilityAI : MonoBehaviour
     {
         for (int i = 0; i < pQuantity; i++)
         {
-            Instantiate(villager, transform);
+            GameObject human = Instantiate(villager, transform);
+            VillagerUtilityAI humanStats = human.GetComponent<VillagerUtilityAI>();
+            humanStats.Hp = Random.Range(HpMin, HpMax);
+            humanStats.agent.speed = Random.Range(SpeedMin, SpeedMax);
+            humanStats.Strength = Random.Range(StrengthMin, StrengthMax);
+        }
+        SetDogma();
+    }
+    
+    public void AddStrengthToAllVillagers(int pStrenghtBonus)
+    {
+        foreach (var villager in villagers)
+        {
+            villager.Strength += pStrenghtBonus;
         }
         
-        SetDogma();
+        StrengthMin += pStrenghtBonus;
+        StrengthMax += pStrenghtBonus;
+    }
+    
+    public void AddHealthToAllVillagers(int pHpBonus)
+    {
+        foreach (var villager in villagers)
+        {
+            villager.Hp += pHpBonus;
+        }
+        
+        HpMin += pHpBonus;
+        HpMax += pHpBonus;
+    }
+    
+    public void AddSpeedToAllVillagers(int pSpeedBonus)
+    {
+        foreach (var villager in villagers)
+        {
+            villager.agent.speed += pSpeedBonus;
+        }
+        
+        SpeedMin += pSpeedBonus;
+        SpeedMax += pSpeedBonus;
     }
 
     void Update()
@@ -433,18 +494,18 @@ public class CityUtilityAI : MonoBehaviour
 
         foreach (var agent in villagers)
         {
-            float hpNormalized = ((agent.Hp - agent.HpMin));
-            float speedNormalized = ((agent.agent.speed - agent.SpeedMin));
-            float strengthNormalized = ((agent.Strength - agent.StrengthMin));
+            float hpNormalized = ((agent.Hp - HpMin));
+            float speedNormalized = ((agent.agent.speed - SpeedMin));
+            float strengthNormalized = ((agent.Strength - StrengthMin));
 
             totalHpNormalized += hpNormalized;
             totalSpeedNormalized += speedNormalized;
             totalStrengthNormalized += strengthNormalized;
         }
 
-        float hpPercent = totalHpNormalized / ((villagers[0].HpMax - villagers[0].HpMin) * villagers.Count);
-        float speedPercent = totalSpeedNormalized / ((villagers[0].SpeedMax - villagers[0].SpeedMin) * villagers.Count);
-        float strengthPercent = totalStrengthNormalized / ((villagers[0].StrengthMax - villagers[0].StrengthMin) * villagers.Count);
+        float hpPercent = totalHpNormalized / ((HpMax - HpMin) * villagers.Count);
+        float speedPercent = totalSpeedNormalized / ((SpeedMax - SpeedMin) * villagers.Count);
+        float strengthPercent = totalStrengthNormalized / ((StrengthMax - StrengthMin) * villagers.Count);
 
         Debug.Log($"hpPercent : {hpPercent} ; speedPercent : {speedPercent} ; strengthPercent : {strengthPercent}");
 

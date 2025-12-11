@@ -135,8 +135,11 @@ public class SearchTree : MonoBehaviour
                 cityUtilityAI.BuildingTypes.Add(tech.Buildings[i]);
             }
             
-            TechnologiesUnlock.Add(tech);
+            cityUtilityAI.AddHealthToAllVillagers(tech.Bonuses.HpBonus);
+            cityUtilityAI.AddSpeedToAllVillagers(tech.Bonuses.SpeedBonus);
+            cityUtilityAI.AddStrengthToAllVillagers(tech.Bonuses.StrenghtBonus);
             
+            TechnologiesUnlock.Add(tech);
             TechnologiesAvailable.Remove(tech);
         }
     }

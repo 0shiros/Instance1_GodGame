@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -29,14 +28,6 @@ public class VillagerUtilityAI : MonoBehaviour
     [Header("Statistics")]
     public int Hp;
     public int Strength;
-
-    [Header("Statistics limits")]
-    public int HpMin = 85;
-    public int HpMax = 100;
-    public int SpeedMin = 5;
-    public int SpeedMax = 20;
-    public int StrengthMin = 5;
-    public int StrengthMax = 20;
 
     [Header("Mouvement")]
     public float stoppingDistance = 0.2f;
@@ -69,9 +60,6 @@ public class VillagerUtilityAI : MonoBehaviour
             agent.updateRotation = false;
             agent.updateUpAxis = false;
             agent.stoppingDistance = stoppingDistance;
-            Hp = Random.Range(HpMin, HpMax);
-            agent.speed = Random.Range(SpeedMin, SpeedMax);
-            Strength = Random.Range(StrengthMin, StrengthMax);
         }
 
         animator = GetComponent<Animator>();
