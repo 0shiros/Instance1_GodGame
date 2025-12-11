@@ -4,9 +4,9 @@ using UnityEngine;
 public class ResourceNode : MonoBehaviour
 {
     [Header("Ressource")]
-    public ResourceType resourceType = ResourceType.Wood;
-    public int amount = 10;              // quantité restante
-    public int harvestPerAction = 1;     // ce que prend un villageois par collecte
+    public ResourceType ResourceType = ResourceType.Wood;
+    public int Amount = 10;              
+    public int HarvestPerAction = 1;     
 
-    // Optionnel : id / qualité / respawn => peut être ajouté plus tard
+   
 }
