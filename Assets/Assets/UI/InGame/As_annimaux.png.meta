@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: a5ba8d606c0729145a25c2f58a214747
+guid: 82bd407d8fb4fe34ebc0c9b1d3c2d34a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5303608433391371700
-    second: As_hub toit_0
+      213: 2149889180347689249
+    second: As_annimaux_0
+  - first:
+      213: -1316396014573771697
+    second: As_annimaux_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +40,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -51,7 +54,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 32
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,23 +103,45 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: As_hub toit_0
+      name: As_annimaux_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 11
-        width: 64
-        height: 53
-      alignment: 9
-      pivot: {x: 0.5, y: 0.7}
+        y: 0
+        width: 31
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c4af0f3ca3cc566b0800000000000000
-      internalID: -5303608433391371700
+      spriteID: 1296415a1d0f5dd10800000000000000
+      internalID: 2149889180347689249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: As_annimaux_1
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 24
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f44279f9cc83bbde0800000000000000
+      internalID: -1316396014573771697
       vertices: []
       indices: 
       edges: []
@@ -125,7 +150,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 2bb8e8d65902d3c4e954b2d350f25913
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +160,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      As_hub toit_0: -5303608433391371700
+      As_annimaux_0: 2149889180347689249
+      As_annimaux_1: -1316396014573771697
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

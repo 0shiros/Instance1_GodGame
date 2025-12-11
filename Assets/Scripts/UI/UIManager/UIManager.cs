@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
+    [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject settingsMenu;
     private bool isPaused;
 
     private void Start()
@@ -32,6 +34,19 @@ public class UIManager : MonoBehaviour
         {
             Time.timeScale = 0;
             isPaused = true;
+        }
+    }
+
+    public void PauseButton()
+    {
+        if (pauseMenu.activeSelf)
+        {
+            pauseMenu.SetActive(false);
+            settingsMenu.SetActive(false);
+        }
+        else
+        {
+            pauseMenu.SetActive(true);
         }
     }
     

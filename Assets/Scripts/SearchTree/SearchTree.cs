@@ -7,8 +7,7 @@ public class SearchTree : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private TechnologyData[] technologiesData;
-    private CityUtilityAI cityUtilityAI;
-    private NationIdentity nationIdentity;
+    public CityUtilityAI cityUtilityAI;
 
     [Header("TechSettings")]
     [SerializeField] private int currentSciencePoints;
@@ -17,10 +16,10 @@ public class SearchTree : MonoBehaviour
     [SerializeField] private List<Technology> TechnologiesUnlock;
 
     [Header("UIStatistics")]
-    private int basicTechUnlockQuantity;
-    private int basicTechUnlockQuantityMax;
-    private int dogmaTechUnlockQuantity;
-    private int dogmaTechUnlockQuantityMax;
+    public int basicTechUnlockQuantity;
+    public int basicTechUnlockQuantityMax;
+    public int dogmaTechUnlockQuantity;
+    public int dogmaTechUnlockQuantityMax;
 
     private void OnEnable()
     {
@@ -43,107 +42,102 @@ public class SearchTree : MonoBehaviour
         currentDogmaSciencePoints += pExperienceReward;
     }
 
-private void Start()
-{
-    // nationIdentity = gameObject.GetComponent<NationIdentity>();
-    cityUtilityAI = gameObject.GetComponent<CityUtilityAI>();
-    SetMaxQuantityOfBasicTech();
-    SetMaxQuantityOfDogmaTech();
-    //nationIdentity.SetTitle();
-    //nationIdentity.SetBasicSearchTreeProgressBar(basicTechUnlockQuantity, basicTechUnlockQuantityMax);
-    //nationIdentity.SetDogmaSearchTreeProgressBar(dogmaTechUnlockQuantity, dogmaTechUnlockQuantityMax);
-}
-
-private void Update()
-{
-    SetTechnologiesAvailable();
-    UnlockTechnology();
-}
-
-private void SetMaxQuantityOfBasicTech()
-{
-    foreach (TechnologyData technologyData in technologiesData)
+    private void Start()
     {
-        if (technologyData.Dogma == E_Dogma.None)
-        {
-            Debug.Log(technologyData);
-            basicTechUnlockQuantityMax++;
-        }
+        cityUtilityAI = gameObject.GetComponent<CityUtilityAI>();
+        SetMaxQuantityOfBasicTech();
+        SetMaxQuantityOfDogmaTech();
     }
-}
 
-private void SetMaxQuantityOfDogmaTech()
-{
-    foreach (TechnologyData technologyData in technologiesData)
+    private void Update()
     {
-        if (technologyData.Dogma == cityUtilityAI.CurrentDogma)
-        {
-            Debug.Log(technologyData);
-            dogmaTechUnlockQuantityMax++;
-        }
+        SetTechnologiesAvailable();
+        UnlockTechnology();
     }
-}
 
-private void SetTechnologiesAvailable()
-{
-    foreach (TechnologyData technologyData in technologiesData)
+    private void SetMaxQuantityOfBasicTech()
     {
-        E_Dogma dogma = technologyData.Dogma;
-        Debug.Log(dogma);
-
-        if (dogma == E_Dogma.None || dogma == cityUtilityAI.CurrentDogma)
+        foreach (TechnologyData technologyData in technologiesData)
         {
-            Technology newTechnology = new();
-            newTechnology.Initialize(technologyData);
-
-            if (TechnologiesAvailable.All(tech => tech.TechnologyName != newTechnology.TechnologyName) &&
-                TechnologiesUnlock.All(tech => tech.TechnologyName != newTechnology.TechnologyName))
+            if (technologyData.Dogma == E_Dogma.None)
             {
-                TechnologiesAvailable.Add(newTechnology);
+                Debug.Log(technologyData);
+                basicTechUnlockQuantityMax++;
             }
         }
     }
 
-    SortTechnologiesByExperienceRequired(TechnologiesAvailable);
-}
-
-private void SortTechnologiesByExperienceRequired(List<Technology> pTechnologies)
-{
-    pTechnologies.Sort((x, y) => x.ExperienceNeedToUnlock.CompareTo(y.ExperienceNeedToUnlock));
-}
-
-private void UnlockTechnology()
-{
-    if (TechnologiesAvailable.Count <= 0) return;
-
-    List<Technology> toUnlock = TechnologiesAvailable.Where(tech =>
+    private void SetMaxQuantityOfDogmaTech()
     {
-        if (tech.Dogma == E_Dogma.None)
-            return tech.CanUnlockTechnology(currentSciencePoints, TechnologiesUnlock);
-        else
-            return tech.CanUnlockTechnology(currentDogmaSciencePoints, TechnologiesUnlock);
-    }).ToList();
+        foreach (TechnologyData technologyData in technologiesData)
+        {
+            if (technologyData.Dogma == cityUtilityAI.CurrentDogma)
+            {
+                Debug.Log(technologyData);
+                dogmaTechUnlockQuantityMax++;
+            }
+        }
+    }
 
-    foreach (Technology tech in toUnlock)
+    private void SetTechnologiesAvailable()
     {
-        if (tech.Dogma == E_Dogma.None)
+        foreach (TechnologyData technologyData in technologiesData)
         {
-            basicTechUnlockQuantity++;
-            //nationIdentity.SetBasicSearchTreeProgressBar(basicTechUnlockQuantity, basicTechUnlockQuantityMax);
+            E_Dogma dogma = technologyData.Dogma;
+            Debug.Log(dogma);
+
+            if (dogma == E_Dogma.None || dogma == cityUtilityAI.CurrentDogma)
+            {
+                Technology newTechnology = new();
+                newTechnology.Initialize(technologyData);
+
+                if (TechnologiesAvailable.All(tech => tech.TechnologyName != newTechnology.TechnologyName) &&
+                    TechnologiesUnlock.All(tech => tech.TechnologyName != newTechnology.TechnologyName))
+                {
+                    TechnologiesAvailable.Add(newTechnology);
+                }
+            }
         }
-        else
+
+        SortTechnologiesByExperienceRequired(TechnologiesAvailable);
+    }
+
+    private void SortTechnologiesByExperienceRequired(List<Technology> pTechnologies)
+    {
+        pTechnologies.Sort((x, y) => x.ExperienceNeedToUnlock.CompareTo(y.ExperienceNeedToUnlock));
+    }
+
+    private void UnlockTechnology()
+    {
+        if (TechnologiesAvailable.Count <= 0) return;
+
+        List<Technology> toUnlock = TechnologiesAvailable.Where(tech =>
         {
-            dogmaTechUnlockQuantity++;
-            //nationIdentity.SetDogmaSearchTreeProgressBar(dogmaTechUnlockQuantity, dogmaTechUnlockQuantityMax);
-        }
-        Debug.Log(tech.technologyData.Buildings);
+            if (tech.Dogma == E_Dogma.None)
+                return tech.CanUnlockTechnology(currentSciencePoints, TechnologiesUnlock);
+            else
+                return tech.CanUnlockTechnology(currentDogmaSciencePoints, TechnologiesUnlock);
+        }).ToList();
+
+        foreach (Technology tech in toUnlock)
+        {
+            if (tech.Dogma == E_Dogma.None)
+            {
+                basicTechUnlockQuantity++;
+            }
+            else
+            {
+                dogmaTechUnlockQuantity++;
+            }
+            
             for (int i = 0; i < tech.Buildings.Count; i++)
             {
                 cityUtilityAI.BuildingTypes.Add(tech.Buildings[i]);
             }
-        TechnologiesUnlock.Add(tech);
-        Debug.Log(tech.TechnologyName);
-        TechnologiesAvailable.Remove(tech);
+            
+            TechnologiesUnlock.Add(tech);
+            
+            TechnologiesAvailable.Remove(tech);
+        }
     }
-}
 }

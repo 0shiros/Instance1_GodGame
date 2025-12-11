@@ -14,6 +14,12 @@ public class CityUtilityAI : MonoBehaviour
 
     [Header("Grid")]
     public GridManager2D GridManager;
+    public List<TaskData> taskDataList = new List<TaskData>();
+    public List<BuildingData> buildingTypes = new List<BuildingData>();
+    public E_Dogma CurrentDogma = E_Dogma.None;
+    [SerializeField] private int agentsQuantityNeedToSetDogma;
+    [SerializeField] private GameObject villager;
+    public string cityName = "";
 
     [Header("Monde")]
     public Vector2Int GridSize = new Vector2Int(50, 50);
@@ -23,10 +29,11 @@ public class CityUtilityAI : MonoBehaviour
     public float HouseSpawnDistance = 5f;
     public float BuildingMinDistance = 2f;
 
-    [Header("Ressources globales")]
+    [Header("Ressources globales (agrégées des dépôts)")]
     public int TotalWood;
     public int TotalStone;
     public int TotalFood;
+    public int TotalMetal;
 
     [Header("Réglages distribution travailleurs")]
     public AnimationCurve WorkerDistributionCurve = AnimationCurve.Linear(0f, 0.1f, 1f, 1f);
@@ -38,15 +45,20 @@ public class CityUtilityAI : MonoBehaviour
     private List<ResourceNode> resourceNodes = new List<ResourceNode>();
     private List<StorageBuilding> storages = new List<StorageBuilding>();
     public List<CityTask> ActiveTasks = new List<CityTask>();
+    private readonly string [] nationNames = { "Avaloria", "Brumecity", "Celestia", "Draemor", "Eldoria", "Frosthaven", "Glimmerdale", "Harmonia", "Ironforge", "Jadewood" };
+
 
     private float timer = 0f;
     private float debugTimer = 0f;
 
     public static Action<int> ActionBasic;
     public static Action<int> ActionDogma;
-    public E_Dogma CurrentDogma = E_Dogma.None;
-    public int AgentsQuantity;
-    [SerializeField] private int agentsQuantityNeedToSetDogma;
+
+    private void Awake()
+    {
+        cityName = nationNames[UnityEngine.Random.Range(0, nationNames.Length)];
+        gameObject.name = cityName;
+    }
 
 
     // --- START / UPDATE
@@ -177,6 +189,7 @@ public class CityUtilityAI : MonoBehaviour
                         BuildPosition = reservedWorldPos
                     };
 
+
                     ActiveTasks.Add(t);
                 }
             }
@@ -247,6 +260,7 @@ public class CityUtilityAI : MonoBehaviour
             if (pRask.ResourceTarget.ResourceType == ResourceType.Wood && TotalWood < 5) score += 10f;
             if (pRask.ResourceTarget.ResourceType == ResourceType.Stone && TotalStone < 3) score += 8f;
 
+
             float dist = Vector3.Distance(pVillager.transform.position, pRask.ResourceTarget.transform.position);
             score -= dist * 0.1f;
         }
@@ -306,6 +320,7 @@ public class CityUtilityAI : MonoBehaviour
             case ResourceType.Wood: TotalWood += pAmount; break;
             case ResourceType.Stone: TotalStone += pAmount; break;
             case ResourceType.Food: TotalFood += pAmount; break;
+
         }
     }
 
