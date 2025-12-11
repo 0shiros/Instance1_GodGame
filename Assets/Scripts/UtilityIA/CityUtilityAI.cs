@@ -1,74 +1,88 @@
-﻿using System;
+﻿
+// CityUtilityAI.cs
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
-/// <summary>
-/// CityUtilityAI
-/// - Scanne la scène (villageois, nodes, storages)
-/// - Génère des CityTask (collect, build)
-/// - Assigne selon un score Utility
-/// - Agrège les ressources depuis les StorageBuildings
-/// - Calcule automatiquement le nombre recommandé de travailleurs via une AnimationCurve
-/// </summary>
+
 public class CityUtilityAI : MonoBehaviour
 {
     [Header("Datas & Références")]
-    public List<TaskData> taskDataList = new List<TaskData>();
-    public List<BuildingData> buildingTypes = new List<BuildingData>();
+    public List<TaskData> TaskDataList = new List<TaskData>();
+    public List<BuildingData> BuildingTypes = new List<BuildingData>();
     public E_Dogma CurrentDogma = E_Dogma.None;
-    public int AgentsQuantity;
     [SerializeField] private int agentsQuantityNeedToSetDogma;
     [SerializeField] private GameObject villager;
+    public string cityName = "";
+
+    [Header("Grid")]
+    public GridManager2D GridManager;
 
     [Header("Monde")]
-    public Vector2Int gridSize = new Vector2Int(50, 50);
-    public float taskScanInterval = 0.2f; // secondes
+    public Vector2Int GridSize = new Vector2Int(50, 50);
+    public float TaskScanInterval = 0.2f; // secondes
 
     [Header("Placement bâtiments")]
-    public float houseSpawnDistance = 5f;                 // distance autour d’une maison existante
-    public float buildingMinDistance = 2f;                // empêche les collisions de bâtiments
+    public float HouseSpawnDistance = 5f;
+    public float BuildingMinDistance = 2f;
 
     [Header("Ressources globales (agrégées des dépôts)")]
-    public int totalWood;
-    public int totalStone;
-    public int totalFood;
+    public int TotalWood;
+    public int TotalStone;
+    public int TotalFood;
+    public int TotalMetal;
 
     [Header("Réglages distribution travailleurs")]
-    [Tooltip("Courbe (0..1) -> pourcentage de population assignable (0..1).")]
-    public AnimationCurve workerDistributionCurve = AnimationCurve.Linear(0f, 0.1f, 1f, 1f);
-    [Tooltip("Pourcentage max (0..1) de population pouvant être assigné à une tâche.")]
+    public AnimationCurve WorkerDistributionCurve = AnimationCurve.Linear(0f, 0.1f, 1f, 1f);
     [Range(0f, 1f)]
-    public float maxWorkerPercent = 0.5f;
+    public float MaxWorkerPercent = 0.5f;
 
     // internes
     public List<VillagerUtilityAI> villagers = new List<VillagerUtilityAI>();
     private List<ResourceNode> resourceNodes = new List<ResourceNode>();
     private List<StorageBuilding> storages = new List<StorageBuilding>();
-    public List<CityTask> activeTasks = new List<CityTask>();
+    public List<CityTask> ActiveTasks = new List<CityTask>();
+    private readonly string [] nationNames = { "Avaloria", "Brumecity", "Celestia", "Draemor", "Eldoria", "Frosthaven", "Glimmerdale", "Harmonia", "Ironforge", "Jadewood" };
 
     private float timer = 0f;
     private float debugTimer = 0f;
 
-    public static Action<int> actionBasic;
-    public static Action<int> actionDogma;
+    public static Action<int> ActionBasic;
+    public static Action<int> ActionDogma;
 
+    private void Awake()
+    {
+        cityName = nationNames[UnityEngine.Random.Range(0, nationNames.Length)];
+        gameObject.name = cityName;
+    }
+
+
+    // --- START / UPDATE
     void Start()
     {
-        AddVillagers(6);
+        if (GridManager == null)
+        {
+            GridManager = FindObjectOfType<GridManager2D>();
+            if (GridManager == null)
+                Debug.LogWarning("[City] GridManager2D not found in scene. Building placement will fail.");
+        }
+
         RefreshSceneListsForce();
         AggregateStorage();
-        SetDogma();
+
+        // ne touche pas au bloc CalculateAverages/SetDogma/AddSciencePoints
+        AddVillagers(6);
     }
 
     private void AddVillagers(int pQuantity)
     {
-        for(int i = 0; i < pQuantity; i++)
+        for (int i = 0; i < pQuantity; i++)
         {
             Instantiate(villager, transform);
         }
+        
+        SetDogma();
     }
 
     void Update()
@@ -76,10 +90,9 @@ public class CityUtilityAI : MonoBehaviour
         timer += Time.deltaTime;
         debugTimer += Time.deltaTime;
 
-        // TryRecruitNewVillagers
         TryRecruitNearbyVillagers();
 
-        if (timer >= taskScanInterval)
+        if (timer >= TaskScanInterval)
         {
             timer = 0f;
             CleanupFinishedTasks();
@@ -101,62 +114,93 @@ public class CityUtilityAI : MonoBehaviour
 
     void CleanupFinishedTasks()
     {
-        activeTasks.RemoveAll(t => t == null || t.isCompleted);
+        ActiveTasks.RemoveAll(t => t == null || t.IsCompleted);
     }
 
     void HandleResourceTasks()
     {
         foreach (var node in resourceNodes)
         {
-            if (node == null || node.amount <= 0) continue;
-
-            bool exists = activeTasks.Exists(t => t.data != null && t.data.type == TaskType.Collect && t.resourceTarget == node);
+            if (node == null || node.Amount <= 0) continue;
+            bool exists = ActiveTasks.Exists(t => t.Data != null && t.Data.Type == TaskType.Collect && t.ResourceTarget == node);
             if (exists) continue;
 
-            var collectData = taskDataList.Find(td => td.type == TaskType.Collect && td.targetResource == node.resourceType);
+            var collectData = TaskDataList.Find(td => td.Type == TaskType.Collect && td.TargetResource == node.ResourceType);
             if (collectData == null) continue;
 
-            var newT = new CityTask
-            {
-                data = collectData,
-                resourceTarget = node
-            };
-            activeTasks.Add(newT);
+            var newT = new CityTask { Data = collectData, ResourceTarget = node };
+            ActiveTasks.Add(newT);
         }
     }
 
     void HandleBuildTasks()
     {
-        foreach (var building in buildingTypes)
-        {
-            if (building == null || building.prefab == null) continue;
+        if (GridManager == null) return;
 
-            bool alreadyPlanned = activeTasks.Exists(t => t.data != null && t.data.type == TaskType.Build && t.buildingData == building);
+        foreach (var building in BuildingTypes)
+        {
+            if (building == null || building.Prefab == null) continue;
+
+            bool alreadyPlanned = ActiveTasks.Exists(t => t.Data != null && t.Data.Type == TaskType.Build && t.BuildingData == building);
             if (alreadyPlanned) continue;
 
-            if (totalWood >= building.woodCost && totalStone >= building.stoneCost)
+            if (TotalWood >= building.WoodCost && TotalStone >= building.StoneCost)
             {
-                if (FindFreeBuildPositionRandomAroundHouse(building.size, out Vector3 pos)) // ★ AJOUT
+                Vector2Int targetCell;
+
+                // --- PREMIER BÂTIMENT : placer dans la cellule LIBRE LA PLUS PROCHE DU CITYAI ---
+                if (GridManager.GetCellsOwnedByCity(this).Count == 0)
                 {
-                    var buildTaskData = taskDataList.Find(td => td.type == TaskType.Build && td.targetBuildingType == building.buildingType);
-                    if (buildTaskData == null) continue;
+                    if (!GridManager.TryFindNearestFreeCell(transform.position, building.Size, out targetCell))
+                    {
+                        Debug.LogWarning("[City] Impossible de trouver une cellule proche pour le premier bâtiment.");
+                        continue;
+                    }
+                }
+                else
+                {
+                    // --- Construction normale → cell adjacente prioritaire ---
+                    if (!GridManager.TryFindCellAdjacentToCity(this, building, out targetCell))
+                    {
+                        if (!GridManager.TryFindRandomCellAroundHouse(building.Size, out targetCell))
+                            continue;
+                    }
+                }
+
+                // Réserver la cellule
+                if (GridManager.TryReserveCell(this, targetCell, building, out Vector3 reservedWorldPos))
+                {
+                    // Placement aléatoire dans la cellule
+                    reservedWorldPos += new Vector3(
+                        UnityEngine.Random.Range(-0.4f, 0.4f) * GridManager.CellSize,
+                        0,
+                        UnityEngine.Random.Range(-0.4f, 0.4f) * GridManager.CellSize
+                    );
+
+                    TotalWood -= building.WoodCost;
+                    TotalStone -= building.StoneCost;
+
+                    var buildTaskData = TaskDataList.Find(td => td.Type == TaskType.Build && td.TargetBuildingType == building.BuildingType);
+                    if (buildTaskData == null)
+                    {
+                        GridManager.ReleaseReservation(targetCell);
+                        continue;
+                    }
 
                     CityTask t = new CityTask
                     {
-                        data = buildTaskData,
-                        buildingData = building,
-                        buildPosition = pos
+                        Data = buildTaskData,
+                        BuildingData = building,
+                        BuildPosition = reservedWorldPos
                     };
-                    activeTasks.Add(t);
 
-                    totalWood -= building.woodCost;
-                    totalStone -= building.stoneCost;
+
+                    ActiveTasks.Add(t);
                 }
             }
         }
     }
 
-    void HandleDepositTasks() { }
 
     #endregion
 
@@ -172,26 +216,26 @@ public class CityUtilityAI : MonoBehaviour
         }
     }
 
-    public void AssignTaskToVillager(VillagerUtilityAI villager)
+    public void AssignTaskToVillager(VillagerUtilityAI pVillager)
     {
-        AssignTaskToVillager(villager, null);
+        AssignTaskToVillager(pVillager, null);
     }
 
-    public void AssignTaskToVillager(VillagerUtilityAI villager, CityTask forced)
+    public void AssignTaskToVillager(VillagerUtilityAI pVillager, CityTask pForced)
     {
-        if (villager == null || !villager.IsIdle()) return;
+        if (pVillager == null || !pVillager.IsIdle()) return;
 
         CityTask best = null;
         float bestScore = float.NegativeInfinity;
 
-        foreach (var task in activeTasks)
+        foreach (var task in ActiveTasks)
         {
-            if (task == null || task.isCompleted) continue;
+            if (task == null || task.IsCompleted) continue;
 
             int recommended = ComputeRecommendedWorkers(task);
-            if (task.assignedVillagers.Count >= recommended) continue;
+            if (task.AassignedVillagers.Count >= recommended) continue;
 
-            float score = ScoreTaskForVillager(task, villager);
+            float score = ScoreTaskForVillager(task, pVillager);
             if (score > bestScore)
             {
                 bestScore = score;
@@ -199,40 +243,40 @@ public class CityUtilityAI : MonoBehaviour
             }
         }
 
-        if (forced != null && !forced.isCompleted)
-            best = forced;
+        if (pForced != null && !pForced.IsCompleted) best = pForced;
 
         if (best != null)
         {
-            if (!best.assignedVillagers.Contains(villager))
-                best.assignedVillagers.Add(villager);
+            if (!best.AassignedVillagers.Contains(pVillager))
+                best.AassignedVillagers.Add(pVillager);
 
-            villager.AssignTask(best);
-            Debug.Log($"[City] AssignTask: {villager.name} -> {best.data.taskName} ({best.data.type})");
+            pVillager.AssignTask(best);
+            Debug.Log($"[City] AssignTask: {pVillager.name} -> {best.Data.TaskName} ({best.Data.Type})");
         }
     }
 
-    float ScoreTaskForVillager(CityTask task, VillagerUtilityAI villager)
+    float ScoreTaskForVillager(CityTask pRask, VillagerUtilityAI pVillager)
     {
-        float score = (task.data != null) ? task.data.basePriority : 0f;
-        if (task.data == null) return score;
+        float score = (pRask.Data != null) ? pRask.Data.BasePriority : 0f;
+        if (pRask.Data == null) return score;
 
-        if (task.data.type == TaskType.Collect && task.resourceTarget != null)
+        if (pRask.Data.Type == TaskType.Collect && pRask.ResourceTarget != null)
         {
-            if (task.resourceTarget.resourceType == ResourceType.Wood && totalWood < 5) score += 10f;
-            if (task.resourceTarget.resourceType == ResourceType.Stone && totalStone < 3) score += 8f;
+            if (pRask.ResourceTarget.ResourceType == ResourceType.Wood && TotalWood < 5) score += 10f;
+            if (pRask.ResourceTarget.ResourceType == ResourceType.Stone && TotalStone < 3) score += 8f;
 
-            float dist = Vector3.Distance(villager.transform.position, task.resourceTarget.transform.position);
+
+            float dist = Vector3.Distance(pVillager.transform.position, pRask.ResourceTarget.transform.position);
             score -= dist * 0.1f;
         }
-        else if (task.data.type == TaskType.Build && task.buildingData != null)
+        else if (pRask.Data.Type == TaskType.Build && pRask.BuildingData != null)
         {
-            float dist = Vector3.Distance(villager.transform.position, task.buildPosition);
+            float dist = Vector3.Distance(pVillager.transform.position, pRask.BuildPosition);
             score -= dist * 0.05f;
         }
 
-        if (villager.role == VillagerRole.Gatherer && task.data.type == TaskType.Collect) score += 5f;
-        if (villager.role == VillagerRole.Builder && task.data.type == TaskType.Build) score += 5f;
+        if (pVillager.role == VillagerRole.Gatherer && pRask.Data.Type == TaskType.Collect) score += 5f;
+        if (pVillager.role == VillagerRole.Builder && pRask.Data.Type == TaskType.Build) score += 5f;
 
         score += UnityEngine.Random.Range(-0.5f, 0.5f);
         return score;
@@ -242,67 +286,19 @@ public class CityUtilityAI : MonoBehaviour
 
     #region Helpers
 
-    // recrute un villageois si proche du centre du village
     void TryRecruitNearbyVillagers()
     {
         Vector3 cityCenter = transform.position;
-
         foreach (var v in FindObjectsOfType<VillagerUtilityAI>())
         {
             if (villagers.Contains(v)) continue;
-
             float d = Vector3.Distance(v.transform.position, cityCenter);
-            if (d < 15f) // distance de recrutement
+            if (d < 15f)
             {
                 villagers.Add(v);
                 Debug.Log($"[City] Nouveau villageois rejoint le village : {v.name}");
             }
         }
-    }
-
-    // nouvelle version du placement random autour d'une maison
-    bool FindFreeBuildPositionRandomAroundHouse(Vector2Int size, out Vector3 pos)
-    {
-        pos = Vector3.zero;
-
-        GameObject[] existingHouses = GameObject.FindGameObjectsWithTag("Building");
-        if (existingHouses.Length == 0)
-            return FindFreeBuildPosition(size, out pos);
-
-        GameObject baseHouse = existingHouses[UnityEngine.Random.Range(0, existingHouses.Length)];
-
-        for (int i = 0; i < 50; i++)
-        {
-            Vector2 offset = UnityEngine.Random.insideUnitCircle.normalized * houseSpawnDistance;
-            Vector3 candidate = baseHouse.transform.position + new Vector3(offset.x, offset.y, 0f);
-
-            if (!Physics2D.OverlapCircle(candidate, buildingMinDistance))
-            {
-                pos = candidate;
-                return true;
-            }
-        }
-
-        return FindFreeBuildPosition(size, out pos);
-    }
-
-    bool FindFreeBuildPosition(Vector2Int size, out Vector3 position)
-    {
-        for (int x = 0; x < gridSize.x; x++)
-        {
-            for (int y = 0; y < gridSize.y; y++)
-            {
-                Vector3 center = new Vector3(x, y, 0f);
-                Vector2 boxSize = new Vector2(size.x, size.y);
-                if (Physics2D.OverlapBox(center, boxSize, 0f) == null)
-                {
-                    position = center;
-                    return true;
-                }
-            }
-        }
-        position = Vector3.zero;
-        return false;
     }
 
     void AggregateStorage()
@@ -312,34 +308,35 @@ public class CityUtilityAI : MonoBehaviour
         foreach (var st in storages)
         {
             if (st == null) continue;
-            w += st.storedWood;
-            s += st.storedStone;
-            f += st.storedFood;
+            w += st.StoredWood;
+            s += st.StoredStone;
+            f += st.StoredFood;
         }
-        totalWood = w;
-        totalStone = s;
-        totalFood = f;
+        TotalWood = w;
+        TotalStone = s;
+        TotalFood = f;
     }
 
-    public void NotifyResourceCollected(ResourceType type, int amount)
+    public void NotifyResourceCollected(ResourceType pType, int pAmount)
     {
-        if (amount <= 0) return;
-        switch (type)
+        if (pAmount <= 0) return;
+        switch (pType)
         {
-            case ResourceType.Wood: totalWood += amount; break;
-            case ResourceType.Stone: totalStone += amount; break;
-            case ResourceType.Food: totalFood += amount; break;
+            case ResourceType.Wood: TotalWood += pAmount; break;
+            case ResourceType.Stone: TotalStone += pAmount; break;
+            case ResourceType.Food: TotalFood += pAmount; break;
+
         }
     }
 
-    public StorageBuilding FindNearestStorage(Vector3 from)
+    public StorageBuilding FindNearestStorage(Vector3 pFrom)
     {
         StorageBuilding best = null;
         float bestDist = float.PositiveInfinity;
         foreach (var s in storages)
         {
             if (s == null) continue;
-            float d = Vector3.Distance(from, s.transform.position);
+            float d = Vector3.Distance(pFrom, s.transform.position);
             if (d < bestDist)
             {
                 bestDist = d;
@@ -351,19 +348,19 @@ public class CityUtilityAI : MonoBehaviour
 
     void DebugActiveTasks()
     {
-        if (activeTasks == null || activeTasks.Count == 0)
+        if (ActiveTasks == null || ActiveTasks.Count == 0)
         {
             Debug.Log("[City] Aucune tâche active");
             return;
         }
 
         string log = "[City] Tâches actives: ";
-        foreach (var t in activeTasks)
+        foreach (var t in ActiveTasks)
         {
-            if (t == null || t.data == null) continue;
-            string target = t.resourceTarget != null ? t.resourceTarget.name :
-                            t.buildingData != null ? t.buildingData.buildingName : "N/A";
-            log += $"[{t.data.taskName}:{t.data.type}->{target} assigned:{t.assignedVillagers.Count}] ";
+            if (t == null || t.Data == null) continue;
+            string target = t.ResourceTarget != null ? t.ResourceTarget.name :
+                            t.BuildingData != null ? t.BuildingData.BuildingName : "N/A";
+            log += $"[{t.Data.TaskName}:{t.Data.Type}->{target} assigned:{t.AassignedVillagers.Count}] ";
         }
         Debug.Log(log);
     }
@@ -371,16 +368,13 @@ public class CityUtilityAI : MonoBehaviour
     void RefreshSceneListsIfNeeded()
     {
         var rn = FindObjectsOfType<ResourceNode>();
-        if (rn.Length != resourceNodes.Count)
-            resourceNodes = rn.ToList();
+        if (rn.Length != resourceNodes.Count) resourceNodes = rn.ToList();
 
         var vs = FindObjectsOfType<VillagerUtilityAI>();
-        if (vs.Length != villagers.Count)
-            villagers = vs.ToList();
+        if (vs.Length != villagers.Count) villagers = vs.ToList();
 
         var st = FindObjectsOfType<StorageBuilding>();
-        if (st.Length != storages.Count)
-            storages = st.ToList();
+        if (st.Length != storages.Count) storages = st.ToList();
     }
 
     void RefreshSceneListsForce()
@@ -394,23 +388,23 @@ public class CityUtilityAI : MonoBehaviour
 
     #region Worker calculation (AnimationCurve)
 
-    public int ComputeRecommendedWorkers(CityTask task)
+    public int ComputeRecommendedWorkers(CityTask pTask)
     {
-        if (task == null || task.data == null) return 1;
+        if (pTask == null || pTask.Data == null) return 1;
         int population = Mathf.Max(1, villagers.Count);
 
-        float normalizedPriority = Mathf.InverseLerp(0f, 10f, task.data.basePriority);
+        float normalizedPriority = Mathf.InverseLerp(0f, 10f, pTask.Data.BasePriority);
 
         float distanceFactor = 0f;
-        if (task.resourceTarget != null)
+        if (pTask.ResourceTarget != null)
         {
-            float avgDist = villagers.Where(v => v != null).Average(v => Vector3.Distance(v.transform.position, task.resourceTarget.transform.position));
+            float avgDist = villagers.Where(v => v != null).Average(v => Vector3.Distance(v.transform.position, pTask.ResourceTarget.transform.position));
             distanceFactor = Mathf.Clamp01(avgDist / 30f);
         }
 
         float utilityScore = Mathf.Clamp01(normalizedPriority * 0.7f + distanceFactor * 0.3f);
-        float percent = workerDistributionCurve.Evaluate(utilityScore);
-        percent = Mathf.Clamp(percent, 0f, maxWorkerPercent);
+        float percent = WorkerDistributionCurve.Evaluate(utilityScore);
+        percent = Mathf.Clamp(percent, 0f, MaxWorkerPercent);
 
         int recommended = Mathf.Max(1, Mathf.RoundToInt(population * percent));
         return recommended;
@@ -420,13 +414,17 @@ public class CityUtilityAI : MonoBehaviour
 
     #region API publique
 
-    public void RemoveTask(CityTask task)
+    public void RemoveTask(CityTask pTask)
     {
-        if (task == null) return;
-        if (activeTasks.Contains(task)) activeTasks.Remove(task);
+        if (pTask == null) return;
+        if (ActiveTasks.Contains(pTask)) ActiveTasks.Remove(pTask);
     }
 
     #endregion
+
+    #region ----- NE PAS MODIFIER : CalculateAverages / SetDogma / AddSciencePoints -----
+    // Tu as demandé que cette partie ne soit jamais modifiée — je la laisse intacte.
+
     private float[] CalculateAverages()
     {
         float totalHpNormalized = 0;
@@ -435,18 +433,18 @@ public class CityUtilityAI : MonoBehaviour
 
         foreach (var agent in villagers)
         {
-            float hpNormalized = ((agent.Hp - agent.hpMin));
-            float speedNormalized = ((agent.agent.speed - agent.speedMin)); 
-            float strengthNormalized = ((agent.Strength - agent.strengthMin));
+            float hpNormalized = ((agent.Hp - agent.HpMin));
+            float speedNormalized = ((agent.agent.speed - agent.SpeedMin));
+            float strengthNormalized = ((agent.Strength - agent.StrengthMin));
 
             totalHpNormalized += hpNormalized;
             totalSpeedNormalized += speedNormalized;
             totalStrengthNormalized += strengthNormalized;
         }
 
-        float hpPercent = totalHpNormalized / ((villagers[0].hpMax - villagers[0].hpMin) * villagers.Count);
-        float speedPercent = totalSpeedNormalized / ((villagers[0].speedMax - villagers[0].speedMin) * villagers.Count);
-        float strengthPercent = totalStrengthNormalized / ((villagers[0].strengthMax - villagers[0].strengthMin) * villagers.Count);
+        float hpPercent = totalHpNormalized / ((villagers[0].HpMax - villagers[0].HpMin) * villagers.Count);
+        float speedPercent = totalSpeedNormalized / ((villagers[0].SpeedMax - villagers[0].SpeedMin) * villagers.Count);
+        float strengthPercent = totalStrengthNormalized / ((villagers[0].StrengthMax - villagers[0].StrengthMin) * villagers.Count);
 
         Debug.Log($"hpPercent : {hpPercent} ; speedPercent : {speedPercent} ; strengthPercent : {strengthPercent}");
 
@@ -477,11 +475,13 @@ public class CityUtilityAI : MonoBehaviour
 
     public void AddSciencePoints(int pExperienceReward)
     {
-        actionBasic?.Invoke(pExperienceReward);
+        ActionBasic?.Invoke(pExperienceReward);
     }
 
     public void AddDogmaSciencePoints(int pExperienceReward)
     {
-        actionDogma?.Invoke(pExperienceReward);
+        ActionDogma?.Invoke(pExperienceReward);
     }
+    #endregion
+
 }

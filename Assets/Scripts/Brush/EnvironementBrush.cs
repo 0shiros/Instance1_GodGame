@@ -11,6 +11,7 @@ public class EnvironementBrush : MonoBehaviour
     [SerializeField] private CustomTile currentTile;
     [SerializeField] Camera camera;
     [SerializeField] SO_Tiles eraseTile;
+    [SerializeField] List<Tilemap> tilemaps;
     [SerializeField] Tilemap target;
     [SerializeField] private NavMeshSurface navMesh;
     bool canDraw;
@@ -23,11 +24,6 @@ public class EnvironementBrush : MonoBehaviour
         colorBlender = ColorBlender.Instance;
     }
 
-    private void OnDisable()
-    {
-        navMesh.RemoveData();
-    }
-
     public void SetTile(CustomTile pTile)
     {
         currentTile = pTile;
@@ -37,6 +33,11 @@ public class EnvironementBrush : MonoBehaviour
     public void TileSelected(bool pIsSelected)
     {
         isSelected = pIsSelected;
+        if (isSelected)
+        {
+            GetComponent<BrushPreview>().HidePreview();
+            Debug.Log("Selected");
+        }
     }
 
     private void Update()
@@ -62,7 +63,7 @@ public class EnvironementBrush : MonoBehaviour
     public void CanDraw(InputAction.CallbackContext context)
     {
         if (currentTile == null || !isSelected) return;
-        if (context.started) canDraw = true;
+        if (context.started && HasTileGroundAtPosition()) canDraw = true;
         if (context.canceled)
         {
             canDraw = false;
@@ -71,6 +72,21 @@ public class EnvironementBrush : MonoBehaviour
                 navMesh.UpdateNavMesh(navMesh.navMeshData);
             }
         }
+    }
+
+    private bool HasTileGroundAtPosition()
+    {
+        Vector3Int pPosition = target.WorldToCell(camera.ScreenToWorldPoint(Input.mousePosition));
+
+        foreach (Tilemap tilemap in tilemaps)
+        {
+            if (tilemap.GetTile(pPosition) != null)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void DrawTiles()
@@ -88,27 +104,29 @@ public class EnvironementBrush : MonoBehaviour
         Vector3 worldPos = camera.ScreenToWorldPoint(mouse);
         Vector3Int midCell = target.WorldToCell(new Vector3(worldPos.x, worldPos.y, 0f));
 
-
-
         for (int i = 0; i < pRuleTile.Sources.Count; i++)
         {
             switch (pRuleTile.Sources[i].Direction)
             {
                 case ETileDirection.Top:
                     target.SetTile(new Vector3Int(midCell.x, midCell.y + 1, 0), pRuleTile.Sources[i].Sprites);
-                    target.SetColor(new Vector3Int(midCell.x, midCell.y + 1, 0), colorBlender.BlendColorForCustomTile(i));
+                    target.SetColor(new Vector3Int(midCell.x, midCell.y + 1, 0),
+                        colorBlender.BlendColorForCustomTile(i));
                     break;
                 case ETileDirection.Bottom:
                     target.SetTile(new Vector3Int(midCell.x, midCell.y - 1, 0), pRuleTile.Sources[i].Sprites);
-                    target.SetColor(new Vector3Int(midCell.x, midCell.y - 1, 0), colorBlender.BlendColorForCustomTile(i));
+                    target.SetColor(new Vector3Int(midCell.x, midCell.y - 1, 0),
+                        colorBlender.BlendColorForCustomTile(i));
                     break;
                 case ETileDirection.Left:
                     target.SetTile(new Vector3Int(midCell.x - 1, midCell.y, 0), pRuleTile.Sources[i].Sprites);
-                    target.SetColor(new Vector3Int(midCell.x - 1, midCell.y, 0), colorBlender.BlendColorForCustomTile(i));
+                    target.SetColor(new Vector3Int(midCell.x - 1, midCell.y, 0),
+                        colorBlender.BlendColorForCustomTile(i));
                     break;
                 case ETileDirection.Right:
                     target.SetTile(new Vector3Int(midCell.x + 1, midCell.y + 1, 0), pRuleTile.Sources[i].Sprites);
-                    target.SetColor(new Vector3Int(midCell.x + 1, midCell.y, 0), colorBlender.BlendColorForCustomTile(i));
+                    target.SetColor(new Vector3Int(midCell.x + 1, midCell.y, 0),
+                        colorBlender.BlendColorForCustomTile(i));
                     break;
                 default:
                     target.SetTile(new Vector3Int(midCell.x, midCell.y, 0), pRuleTile.Sources[i].Sprites);
@@ -116,5 +134,11 @@ public class EnvironementBrush : MonoBehaviour
                     break;
             }
         }
+    }
+
+    public void ClearCurrentTileEnvironement()
+    {
+        if (currentTile == null) return;
+        currentTile = null;
     }
 }

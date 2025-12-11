@@ -181,9 +181,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28d1f988646ec0b499fe109be79557db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceNode
-  resourceType: 3
-  amount: 10
-  harvestPerAction: 1
+  ResourceType: 3
+  Amount: 10
+  HarvestPerAction: 1
 --- !u!61 &189446944
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -500,6 +500,159 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &386246727
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 386246731}
+  - component: {fileID: 386246730}
+  - component: {fileID: 386246729}
+  - component: {fileID: 386246728}
+  m_Layer: 0
+  m_Name: Triangle (5)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &386246728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 386246727}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ea30d07809adba48a575189daf420b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AgentMovement
+  role: 0
+  CarryCapacity: 5
+  HarvestPerAction: 2
+  HarvestDistance: 2
+  Hunger: 0
+  Fatigue: 0
+  HungerRate: 0.5
+  FatigueRate: 0.2
+  HungerThreshold: 50
+  FatigueThreshold: 80
+  FoodPerEat: 1
+  EatDurationPerUnit: 0.5
+  EatRate: 20
+  Hp: 0
+  Strength: 0
+  HpMin: 85
+  HpMax: 100
+  SpeedMin: 5
+  SpeedMax: 20
+  strengthMin: 5
+  strengthMax: 20
+  stoppingDistance: 0.2
+  city: {fileID: 0}
+  defaultBuildTime: 2
+  agent: {fileID: 0}
+  carrying: 0
+  carryingType: 0
+--- !u!195 &386246729
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 386246727}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0.71133333
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 0
+--- !u!212 &386246730
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 386246727}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 4
+  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!4 &386246731
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 386246727}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 78.8, y: 36.7, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -802,9 +955,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10349dcc4bf981c4097cec01cd929af6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridManager
-  Width: 125
-  Height: 176
-  CellSize: 1.65
+  Width: 50
+  Height: 25
+  CellSize: 10
 --- !u!4 &679806103
 Transform:
   m_ObjectHideFlags: 0
@@ -814,7 +967,7 @@ Transform:
   m_GameObject: {fileID: 679806101}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -21.94, y: -1.25, z: 0}
+  m_LocalPosition: {x: -159, y: -141.98, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -829,6 +982,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 739686058}
+  - component: {fileID: 739686060}
   - component: {fileID: 739686057}
   - component: {fileID: 739686059}
   m_Layer: 0
@@ -850,24 +1004,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af5135fd2e3b8784b904af23b03acff7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CityUtilityAI
-  taskDataList:
+  TaskDataList:
+  - {fileID: 11400000, guid: 66013da55694d234eb4ca79222227701, type: 2}
   - {fileID: 11400000, guid: defd67ae90d1e744d8daaa1a1d0d9b50, type: 2}
   - {fileID: 11400000, guid: 87e00471e12ebe9499e4206422a95294, type: 2}
   - {fileID: 11400000, guid: 5429ffa2c8ee6c84d8289a6c91eaccd6, type: 2}
-  buildingTypes:
+  BuildingTypes:
   - {fileID: 11400000, guid: 4147b3572a674824b9799d9f9b735b27, type: 2}
-  CurrentDogma: 0
-  AgentsQuantity: 0
-  agentsQuantityNeedToSetDogma: 0
-  villager: {fileID: 0}
-  gridSize: {x: 50, y: 50}
-  taskScanInterval: 0.2
-  houseSpawnDistance: 5
-  buildingMinDistance: 2
-  totalWood: 0
-  totalStone: 0
-  totalFood: 0
-  workerDistributionCurve:
+  GridManager: {fileID: 0}
+  GridSize: {x: 50, y: 50}
+  TaskScanInterval: 0.2
+  HouseSpawnDistance: 5
+  BuildingMinDistance: 2
+  TotalWood: 0
+  TotalStone: 0
+  TotalFood: 0
+  WorkerDistributionCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
@@ -891,9 +1043,12 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  maxWorkerPercent: 0.717
+  MaxWorkerPercent: 0.5
   villagers: []
-  activeTasks: []
+  ActiveTasks: []
+  CurrentDogma: 0
+  AgentsQuantity: 0
+  agentsQuantityNeedToSetDogma: 0
 --- !u!4 &739686058
 Transform:
   m_ObjectHideFlags: 0
@@ -947,6 +1102,125 @@ MonoBehaviour:
   currentDogmaSciencePoints: 0
   TechnologiesAvailable: []
   TechnologiesUnlock: []
+--- !u!212 &739686060
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 739686056}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 0
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!1001 &788068681
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2134854056468781722, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_Name
+      value: Wood (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2260266108793296439, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 77.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 48
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
 --- !u!1 &1066584153
 GameObject:
   m_ObjectHideFlags: 0
@@ -1135,24 +1409,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AgentMovement
   role: 0
-  carryCapacity: 5
-  harvestPerAction: 2
-  harvestDistance: 2
-  hunger: 0
-  fatigue: 0
-  hungerRate: 4
-  fatigueRate: 0.5
-  hungerThreshold: 50
-  fatigueThreshold: 50
-  foodPerEat: 1
-  eatDurationPerUnit: 0.5
-  eatRate: 20
+  CarryCapacity: 5
+  HarvestPerAction: 2
+  HarvestDistance: 2
+  Hunger: 0
+  Fatigue: 0
+  HungerRate: 0.5
+  FatigueRate: 0.2
+  HungerThreshold: 50
+  FatigueThreshold: 80
+  FoodPerEat: 1
+  EatDurationPerUnit: 0.5
+  EatRate: 20
   Hp: 0
   Strength: 0
-  hpMin: 85
-  hpMax: 100
-  speedMin: 5
-  speedMax: 10
+  HpMin: 85
+  HpMax: 100
+  SpeedMin: 5
+  SpeedMax: 20
   strengthMin: 5
   strengthMax: 20
   stoppingDistance: 0.2
@@ -1560,24 +1834,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AgentMovement
   role: 0
-  carryCapacity: 5
-  harvestPerAction: 2
-  harvestDistance: 2
-  hunger: 0
-  fatigue: 0
-  hungerRate: 4
-  fatigueRate: 0.5
-  hungerThreshold: 50
-  fatigueThreshold: 50
-  foodPerEat: 1
-  eatDurationPerUnit: 0.5
-  eatRate: 20
+  CarryCapacity: 5
+  HarvestPerAction: 2
+  HarvestDistance: 2
+  Hunger: 0
+  Fatigue: 0
+  HungerRate: 0.5
+  FatigueRate: 0.2
+  HungerThreshold: 50
+  FatigueThreshold: 80
+  FoodPerEat: 1
+  EatDurationPerUnit: 0.5
+  EatRate: 20
   Hp: 0
   Strength: 0
-  hpMin: 85
-  hpMax: 100
-  speedMin: 5
-  speedMax: 10
+  HpMin: 85
+  HpMax: 100
+  SpeedMin: 5
+  SpeedMax: 20
   strengthMin: 5
   strengthMax: 20
   stoppingDistance: 0.2
@@ -1756,6 +2030,159 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 2.29, y: 0.14, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1902452457
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1902452461}
+  - component: {fileID: 1902452460}
+  - component: {fileID: 1902452459}
+  - component: {fileID: 1902452458}
+  m_Layer: 0
+  m_Name: Triangle (6)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1902452458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902452457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ea30d07809adba48a575189daf420b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AgentMovement
+  role: 0
+  CarryCapacity: 5
+  HarvestPerAction: 2
+  HarvestDistance: 2
+  Hunger: 0
+  Fatigue: 0
+  HungerRate: 0.5
+  FatigueRate: 0.2
+  HungerThreshold: 50
+  FatigueThreshold: 80
+  FoodPerEat: 1
+  EatDurationPerUnit: 0.5
+  EatRate: 20
+  Hp: 0
+  Strength: 0
+  HpMin: 85
+  HpMax: 100
+  SpeedMin: 5
+  SpeedMax: 20
+  strengthMin: 5
+  strengthMax: 20
+  stoppingDistance: 0.2
+  city: {fileID: 0}
+  defaultBuildTime: 2
+  agent: {fileID: 0}
+  carrying: 0
+  carryingType: 0
+--- !u!195 &1902452459
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902452457}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 1
+  m_BaseOffset: 0.71133333
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 0
+--- !u!212 &1902452460
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902452457}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 4
+  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!4 &1902452461
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902452457}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 78.8, y: 36.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1955,7 +2382,6 @@ GameObject:
   - component: {fileID: 1966497737}
   - component: {fileID: 1966497736}
   - component: {fileID: 1966497738}
-  - component: {fileID: 1966497739}
   m_Layer: 0
   m_Name: Tilemap
   m_TagString: Untagged
@@ -47659,7 +48085,7 @@ Tilemap:
     m_Data: {r: 1, g: 1, b: 1, a: 1}
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
-  m_Color: {r: 0.0024206638, g: 1, b: 0, a: 0}
+  m_Color: {r: 0.0024206638, g: 1, b: 0, a: 1}
   m_Origin: {x: -58, y: -21, z: 0}
   m_Size: {x: 93, y: 49, z: 1}
   m_TileAnchor: {x: 0.5, y: 0.5, z: 0}
@@ -47697,21 +48123,6 @@ MonoBehaviour:
   m_Area: 0
   m_IgnoreFromBuild: 0
   m_AffectedAgents: ffffffff
---- !u!114 &1966497739
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1966497734}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10349dcc4bf981c4097cec01cd929af6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GridManager
-  Width: 10
-  Height: 10
-  CellSize: 1
 --- !u!1 &2019654546
 GameObject:
   m_ObjectHideFlags: 0
@@ -47742,9 +48153,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f28ac96649cde348b8dc1994f6115ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StorageBuilding
-  storedWood: 0
-  storedStone: 100
-  storedFood: 10
+  StoredWood: 0
+  StoredStone: 0
+  StoredFood: 0
 --- !u!212 &2019654548
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -47818,6 +48229,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &2024936208
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2134854056468781722, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_Name
+      value: Wood (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2260266108793296439, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 81.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 28.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
 --- !u!1001 &1852779960791323942
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -47829,6 +48301,10 @@ PrefabInstance:
     - target: {fileID: 2134854056468781722, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
       propertyPath: m_Name
       value: Wood
+      objectReference: {fileID: 0}
+    - target: {fileID: 2260266108793296439, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4156566693014188436, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
       propertyPath: m_LocalPosition.x
@@ -47944,8 +48420,12 @@ SceneRoots:
   - {fileID: 1353663317}
   - {fileID: 1339808168}
   - {fileID: 1852779960791323942}
+  - {fileID: 788068681}
+  - {fileID: 2024936208}
   - {fileID: 1745197559}
+  - {fileID: 386246731}
   - {fileID: 1240663726}
+  - {fileID: 1902452461}
   - {fileID: 9010198947087409440}
   - {fileID: 223571418}
   - {fileID: 739686058}
