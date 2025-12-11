@@ -23,13 +23,13 @@ public class SearchTree : MonoBehaviour
 
     private void OnEnable()
     {
-        CityUtilityAI.actionBasic += AddExperience;
-        CityUtilityAI.actionDogma += AddDogmaExperience;
+        CityUtilityAI.ActionBasic += AddExperience;
+        CityUtilityAI.ActionDogma += AddDogmaExperience;
     }
     private void OnDisable()
     {
-        CityUtilityAI.actionBasic -= AddExperience;
-        CityUtilityAI.actionDogma -= AddDogmaExperience;
+        CityUtilityAI.ActionBasic -= AddExperience;
+        CityUtilityAI.ActionDogma -= AddDogmaExperience;
     }
 
     private void AddExperience(int pExperienceReward)

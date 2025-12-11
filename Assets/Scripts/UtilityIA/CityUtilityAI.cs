@@ -19,7 +19,6 @@ public class CityUtilityAI : MonoBehaviour
     public List<TaskData> taskDataList = new List<TaskData>();
     public List<BuildingData> buildingTypes = new List<BuildingData>();
     public E_Dogma CurrentDogma = E_Dogma.None;
-    public int AgentsQuantity;
     [SerializeField] private int agentsQuantityNeedToSetDogma;
     [SerializeField] private GameObject villager;
     public string cityName = "";
@@ -50,16 +49,18 @@ public class CityUtilityAI : MonoBehaviour
     private List<ResourceNode> resourceNodes = new List<ResourceNode>();
     private List<StorageBuilding> storages = new List<StorageBuilding>();
     public List<CityTask> activeTasks = new List<CityTask>();
+    private readonly string [] nationNames = { "Avaloria", "Brumecity", "Celestia", "Draemor", "Eldoria", "Frosthaven", "Glimmerdale", "Harmonia", "Ironforge", "Jadewood" };
 
     private float timer = 0f;
     private float debugTimer = 0f;
 
-    public static Action<int> actionBasic;
-    public static Action<int> actionDogma;
+    public static Action<int> ActionBasic;
+    public static Action<int> ActionDogma;
 
     private void Awake()
     {
-        cityName = gameObject.name;
+        cityName = nationNames[UnityEngine.Random.Range(0, nationNames.Length)];
+        gameObject.name = cityName;
     }
 
     void Start()
@@ -484,11 +485,11 @@ public class CityUtilityAI : MonoBehaviour
 
     public void AddSciencePoints(int pExperienceReward)
     {
-        actionBasic?.Invoke(pExperienceReward);
+        ActionBasic?.Invoke(pExperienceReward);
     }
 
     public void AddDogmaSciencePoints(int pExperienceReward)
     {
-        actionDogma?.Invoke(pExperienceReward);
+        ActionDogma?.Invoke(pExperienceReward);
     }
 }

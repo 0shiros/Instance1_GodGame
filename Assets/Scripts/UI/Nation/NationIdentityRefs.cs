@@ -46,10 +46,6 @@ public class NationIdentityRefs : MonoBehaviour
         currentDogmaSearchTreeProgressBarText = CurrentDogmaSearchTreeProgressBar.GetComponent<TextMeshProUGUI>();
         
         NationEvents.OnNationSelected += UpdateUI;
-    }
-
-    private void Start()
-    {
         gameObject.SetActive(false);
     }
 
@@ -60,13 +56,11 @@ public class NationIdentityRefs : MonoBehaviour
     
     private void UpdateUI(SearchTree nation)
     {
-        Debug.Log("NationIdentityRefs.UpdateUI");
-        
-        gameObject.SetActive(true);
+        if(!gameObject.activeSelf) gameObject.SetActive(true);
         
         nationNameText.text = nation.cityUtilityAI.cityName;
         
-        populationText.text = "Population : " + nation.cityUtilityAI.AgentsQuantity;
+        populationText.text = "Population : " + nation.cityUtilityAI.villagers.Count;
         dogmaText.text = "Dogma : " + nation.cityUtilityAI.CurrentDogma;
         foodText.text = "Food : " + nation.cityUtilityAI.TotalFood;
         woodText.text = "Wood : " + nation.cityUtilityAI.TotalWood;
@@ -85,5 +79,5 @@ public class NationIdentityRefs : MonoBehaviour
 
 public static class NationEvents
 {
-    public static System.Action<SearchTree> OnNationSelected;
+    public static Action<SearchTree> OnNationSelected;
 }

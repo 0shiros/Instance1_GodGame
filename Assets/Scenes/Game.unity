@@ -2277,7 +2277,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2306512433955541289, guid: b1d47e8ecf3361649a75e8327648187d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3359040109468471961, guid: b1d47e8ecf3361649a75e8327648187d, type: 3}
       propertyPath: mainCamera
@@ -2285,7 +2285,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4445753488178551138, guid: b1d47e8ecf3361649a75e8327648187d, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6363691211319412912, guid: b1d47e8ecf3361649a75e8327648187d, type: 3}
       propertyPath: m_Pivot.x
@@ -2297,19 +2297,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6363691211319412912, guid: b1d47e8ecf3361649a75e8327648187d, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6363691211319412912, guid: b1d47e8ecf3361649a75e8327648187d, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6363691211319412912, guid: b1d47e8ecf3361649a75e8327648187d, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0.5
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6363691211319412912, guid: b1d47e8ecf3361649a75e8327648187d, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6363691211319412912, guid: b1d47e8ecf3361649a75e8327648187d, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2349,11 +2349,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6363691211319412912, guid: b1d47e8ecf3361649a75e8327648187d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 160
       objectReference: {fileID: 0}
     - target: {fileID: 6363691211319412912, guid: b1d47e8ecf3361649a75e8327648187d, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -180
       objectReference: {fileID: 0}
     - target: {fileID: 6363691211319412912, guid: b1d47e8ecf3361649a75e8327648187d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2369,7 +2369,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8336176324395738434, guid: b1d47e8ecf3361649a75e8327648187d, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3385,7 +3385,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d07ba333c19880244be8a563efa0f91e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnvironementBrush
-  nationIdentityRefs: {fileID: 0}
   currentTile: {fileID: 0}
   camera: {fileID: 645553421}
   eraseTile: {fileID: 11400000, guid: 18c420ceab39c33499f2a288bc1e184f, type: 2}
@@ -5974,8 +5973,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InputManager
   cameraController: {fileID: 645553423}
   mainCamera: {fileID: 0}
-  hubTile: {fileID: 11400000, guid: 1ec81431bb6380145a22bbae99d7b28f, type: 2}
-  nationIdentityRefs: {fileID: 1739200003}
 --- !u!114 &1066584156
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6375,10 +6372,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38aaceb501cd28e44bc5d8362666ca41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ColorBlender
-  redSlider: {fileID: 941368725}
-  greenSlider: {fileID: 953287277}
-  blueSlider: {fileID: 978878904}
-  alphaSlider: {fileID: 723349395}
   previewImage: {fileID: 975456013}
   spriteSelectorDropdown: {fileID: 14187243}
   saveTile: []
@@ -7848,17 +7841,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1701490202}
   m_CullTransparentMesh: 1
---- !u!114 &1739200003 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3359040109468471961, guid: b1d47e8ecf3361649a75e8327648187d, type: 3}
-  m_PrefabInstance: {fileID: 485701058}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ebcb95f5c381aa40a9753c4f70dd8c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NationIdentityRefs
 --- !u!1 &1745341255
 GameObject:
   m_ObjectHideFlags: 0

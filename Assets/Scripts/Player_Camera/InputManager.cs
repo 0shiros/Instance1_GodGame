@@ -64,9 +64,7 @@ public class InputManager : MonoBehaviour
             
             if (nation != null)
             {
-                Debug.Log("Before invoke: " + nation.cityUtilityAI.cityName);
                 NationEvents.OnNationSelected?.Invoke(nation);
-                Debug.Log("After invoke");
             }
         }
     }
