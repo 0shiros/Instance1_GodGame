@@ -71,7 +71,7 @@ public class SearchTree : MonoBehaviour
     {
         foreach (TechnologyData technologyData in technologiesData)
         {
-            if (technologyData.Dogma == cityUtilityAI.CurrentDogma)
+            if (technologyData.Dogma != E_Dogma.None && technologyData.Dogma == cityUtilityAI.CurrentDogma)
             {
                 Debug.Log(technologyData);
                 dogmaTechUnlockQuantityMax++;

@@ -11,15 +11,13 @@ public class CityUtilityAI : MonoBehaviour
     [Header("Datas & Références")]
     public List<TaskData> TaskDataList = new List<TaskData>();
     public List<BuildingData> BuildingTypes = new List<BuildingData>();
-
-    [Header("Grid")]
-    public GridManager2D GridManager;
-    public List<TaskData> taskDataList = new List<TaskData>();
-    public List<BuildingData> buildingTypes = new List<BuildingData>();
     public E_Dogma CurrentDogma = E_Dogma.None;
     [SerializeField] private int agentsQuantityNeedToSetDogma;
     [SerializeField] private GameObject villager;
     public string cityName = "";
+
+    [Header("Grid")]
+    public GridManager2D GridManager;
 
     [Header("Monde")]
     public Vector2Int GridSize = new Vector2Int(50, 50);
@@ -41,12 +39,11 @@ public class CityUtilityAI : MonoBehaviour
     public float MaxWorkerPercent = 0.5f;
 
     // internes
-    [HideInInspector] public List<VillagerUtilityAI> villagers = new List<VillagerUtilityAI>();
+    public List<VillagerUtilityAI> villagers = new List<VillagerUtilityAI>();
     private List<ResourceNode> resourceNodes = new List<ResourceNode>();
     private List<StorageBuilding> storages = new List<StorageBuilding>();
     public List<CityTask> ActiveTasks = new List<CityTask>();
     private readonly string [] nationNames = { "Avaloria", "Brumecity", "Celestia", "Draemor", "Eldoria", "Frosthaven", "Glimmerdale", "Harmonia", "Ironforge", "Jadewood" };
-
 
     private float timer = 0f;
     private float debugTimer = 0f;
@@ -75,9 +72,17 @@ public class CityUtilityAI : MonoBehaviour
         AggregateStorage();
 
         // ne touche pas au bloc CalculateAverages/SetDogma/AddSciencePoints
+        AddVillagers(6);
+    }
+
+    private void AddVillagers(int pQuantity)
+    {
+        for (int i = 0; i < pQuantity; i++)
+        {
+            Instantiate(villager, transform);
+        }
+        
         SetDogma();
-        AddSciencePoints(6);
-        AddDogmaSciencePoints(4);
     }
 
     void Update()

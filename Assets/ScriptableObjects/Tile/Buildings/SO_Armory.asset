@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b71718aaf02795142b1cadf76097b884, type: 3}
+  m_Name: SO_Armory
+  m_EditorClassIdentifier: Assembly-CSharp::CustomTile
+  Sources:
+  - Sprites: {fileID: 11400000, guid: d486675eb10ea5641999c45467cbf53a, type: 2}
+    Direction: 0
+    Color: {r: 1, g: 1, b: 1, a: 1}
+    Name: roof
+  - Sprites: {fileID: 11400000, guid: 314ec0d677cb1d04aa9b1fd9194d60f5, type: 2}
+    Direction: 1
+    Color: {r: 1, g: 1, b: 1, a: 1}
+    Name: body
+  - Sprites: {fileID: 11400000, guid: 82cd8d557833ae940a83ffd7bb8b19da, type: 2}
+    Direction: 3
+    Color: {r: 1, g: 1, b: 1, a: 1}
+    Name: wall
