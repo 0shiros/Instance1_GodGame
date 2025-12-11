@@ -24,13 +24,13 @@ public class SearchTree : MonoBehaviour
 
     private void OnEnable()
     {
-        CityUtilityAI.actionBasic += AddExperience;
-        CityUtilityAI.actionDogma += AddDogmaExperience;
+        CityUtilityAI.ActionBasic += AddExperience;
+        CityUtilityAI.ActionDogma += AddDogmaExperience;
     }
     private void OnDisable()
     {
-        CityUtilityAI.actionBasic -= AddExperience;
-        CityUtilityAI.actionDogma -= AddDogmaExperience;
+        CityUtilityAI.ActionBasic -= AddExperience;
+        CityUtilityAI.ActionDogma -= AddDogmaExperience;
     }
 
     private void AddExperience(int pExperienceReward)
@@ -139,7 +139,7 @@ private void UnlockTechnology()
         Debug.Log(tech.technologyData.Buildings);
             for (int i = 0; i < tech.Buildings.Count; i++)
             {
-                cityUtilityAI.buildingTypes.Add(tech.Buildings[i]);
+                cityUtilityAI.BuildingTypes.Add(tech.Buildings[i]);
             }
         TechnologiesUnlock.Add(tech);
         Debug.Log(tech.TechnologyName);

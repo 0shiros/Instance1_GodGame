@@ -6,7 +6,8 @@ public enum ResourceType
     None,
     Wood,
     Stone,
-    Food
+    Food,
+    Maital
 }
 
 public enum TaskType

@@ -21,12 +21,12 @@ public class SetDogmaToPopulation : MonoBehaviour
     private float averageHp;
     private float averageSpeed;
     private float averageStrength;
-    private static int hpMin = 10;//
-    private static int hpMax = 100;//
-    private static int speedMin = 1;//
-    private static int speedMax = 10;//
-    private static int strengthMin = 5;//
-    private static int strengthMax = 20;///
+    private static int hpMin = 10;
+    private static int hpMax = 100;
+    private static int speedMin = 1;
+    private static int speedMax = 10;
+    private static int strengthMin = 5;
+    private static int strengthMax = 20;
     private static readonly float referenceHp = (hpMax + hpMin) / 2;
     private static readonly float referenceSpeed = (speedMax + speedMin) / 2;
     private static readonly float referenceStrength = (strengthMax + strengthMin) / 2;
