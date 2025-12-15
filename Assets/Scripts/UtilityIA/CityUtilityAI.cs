@@ -72,12 +72,10 @@ public class CityUtilityAI : MonoBehaviour
 
 
 
-    // ---------- gestion d'inscription (optimisation FindObjectsOfType) ----------
+   
     #region Registration API (optimisation)
 
-    /// <summary>
-    /// Enregistre un villageois dans la liste interne (évite FindObjectsOfType fréquents).
-    /// </summary>
+   
     public void RegisterVillager(VillagerUtilityAI v)
     {
         if (v == null) return;
@@ -86,9 +84,7 @@ public class CityUtilityAI : MonoBehaviour
         v.city = this;
     }
 
-    /// <summary>
-    /// Retire un villageois de la liste interne.
-    /// </summary>
+   
     public void UnregisterVillager(VillagerUtilityAI v)
     {
         if (v == null) return;
@@ -97,9 +93,7 @@ public class CityUtilityAI : MonoBehaviour
         if (v.city == this) v.city = null;
     }
 
-    /// <summary>
-    /// Enregistre un ResourceNode (si besoin par d'autres scripts).
-    /// </summary>
+   
     public void RegisterResourceNode(ResourceNode rn)
     {
         if (rn == null) return;
@@ -150,18 +144,14 @@ public class CityUtilityAI : MonoBehaviour
     }
 
 
-    /// <summary>
-    /// Retire un ResourceNode.
-    /// </summary>
+  
     public void UnregisterResourceNode(ResourceNode rn)
     {
         if (rn == null) return;
         resourceNodes.Remove(rn);
     }
 
-    /// <summary>
-    /// Enregistre un StorageBuilding (si le Storage s'instancie lui-même, il peut appeler ceci).
-    /// </summary>
+   
     public void RegisterStorage(StorageBuilding st)
     {
         if (st == null) return;
@@ -169,9 +159,7 @@ public class CityUtilityAI : MonoBehaviour
             storages.Add(st);
     }
 
-    /// <summary>
-    /// Retire un StorageBuilding.
-    /// </summary>
+   
     public void UnregisterStorage(StorageBuilding st)
     {
         if (st == null) return;
