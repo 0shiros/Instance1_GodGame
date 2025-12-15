@@ -128,14 +128,20 @@ public class CityCombatController : MonoBehaviour
         while (t < 1f)
         {
             t += Time.deltaTime * moveSpeed;
-            attacker.transform.position = Vector3.Lerp(originalPos, attackPos, t);
+            if(attacker!=null)
+            {
+                attacker.transform.position = Vector3.Lerp(originalPos, attackPos, t);
+            }
+        
             yield return null;
         }
 
         yield return new WaitForSeconds(attackDelay);
 
-       
-        defender.TakeDamage(attacker.Strength);
+        if (defender != null) {
+            defender.TakeDamage(attacker.Strength);
+        }
+        
         Debug.Log($"{attacker.name} inflige {attacker.Strength} à {defender.name}");
 
        
