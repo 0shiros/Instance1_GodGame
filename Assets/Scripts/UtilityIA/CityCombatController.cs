@@ -10,7 +10,7 @@ public class CityCombatController : MonoBehaviour
 
     public CityUtilityAI enemyCity;
 
-    public  List<VillagerUtilityAI> attackers = new();
+    public List<VillagerUtilityAI> attackers = new();
     public List<VillagerUtilityAI> defenders = new();
 
     private bool combatRunning = false;
@@ -79,7 +79,7 @@ public class CityCombatController : MonoBehaviour
 
     private IEnumerator CombatRoutine()
     {
-        // Placer attaquants et défenseurs autour du combatCenter
+       
         for (int i = 0; i < attackers.Count; i++)
             attackers[i].transform.position = combatCenter.position + new Vector3(-combatOffset, i * 1f, 0);
 
@@ -88,8 +88,8 @@ public class CityCombatController : MonoBehaviour
 
         while (attackers.Any(a => a != null && a.Hp > 0) && defenders.Any(d => d != null && d.Hp > 0))
         {
-            // Nettoyage des morts
-            attackers = attackers.Where(a => a != null && a.Hp > 0).ToList();
+           
+           attackers = attackers.Where(a => a != null && a.Hp > 0).ToList();
             defenders = defenders.Where(d => d != null && d.Hp > 0).ToList();
 
             int maxCount = Mathf.Max(attackers.Count, defenders.Count);
@@ -134,18 +134,18 @@ public class CityCombatController : MonoBehaviour
 
         yield return new WaitForSeconds(attackDelay);
 
-        // Appliquer les dégâts
+       
         defender.TakeDamage(attacker.Strength);
         Debug.Log($"{attacker.name} inflige {attacker.Strength} à {defender.name}");
 
-        // Retirer de la liste seulement si le villageois meurt
+       
         if (defender.Hp <= 0)
         {
             defender.Die();
         }
 
-        // Retour à la position initiale
-        t = 0f;
+       
+       t = 0f;
         while (t < 1f)
         {
             t += Time.deltaTime * moveSpeed;
@@ -161,21 +161,21 @@ public class CityCombatController : MonoBehaviour
     {
         combatRunning = false;
 
-        // Retirer les villageois morts des listes
+        
         attackers = attackers.Where(a => a != null && a.Hp > 0).ToList();
         defenders = defenders.Where(d => d != null && d.Hp > 0).ToList();
 
-        // Faire sortir tous les villageois du mode combat
+       
         foreach (var v in attackers)
             v.ExitCombat();
         foreach (var v in defenders)
             v.ExitCombat();
 
-        if (enemyCity != null&& OwnerCity.villagers.Count>0)
+        if (enemyCity != null && OwnerCity.villagers.Count > 0)
         {
             LootEnemyCity(enemyCity);
-            // Ne pas détruire la ville ici si tu veux garder les survivants
-            // Destroy(enemyCity.gameObject);
+           
+             Destroy(enemyCity.gameObject);
         }
 
         attackers.Clear();

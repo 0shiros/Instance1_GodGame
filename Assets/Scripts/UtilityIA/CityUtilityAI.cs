@@ -36,7 +36,7 @@ public class CityUtilityAI : MonoBehaviour
     [Header("Stats bâtiments")]
     public int HousesBuilt = 0;
 
-    // 🟩 AJOUT REPRODUCTION
+
     [Header("Reproduction villageois")]
     public int MinFoodForReproduction = 10;
     public int MinHousesForReproduction = 2;
@@ -45,7 +45,7 @@ public class CityUtilityAI : MonoBehaviour
     public int MaxBorn = 3;
     private float reproductionTimer = 0f;
 
-    // internes
+   
     public List<VillagerUtilityAI> villagers = new List<VillagerUtilityAI>();
     private List<ResourceNode> resourceNodes = new List<ResourceNode>();
     private List<StorageBuilding> storages = new List<StorageBuilding>();
@@ -72,10 +72,10 @@ public class CityUtilityAI : MonoBehaviour
 
 
 
-   
+
     #region Registration API (optimisation)
 
-   
+
     public void RegisterVillager(VillagerUtilityAI v)
     {
         if (v == null) return;
@@ -84,7 +84,7 @@ public class CityUtilityAI : MonoBehaviour
         v.city = this;
     }
 
-   
+
     public void UnregisterVillager(VillagerUtilityAI v)
     {
         if (v == null) return;
@@ -93,7 +93,7 @@ public class CityUtilityAI : MonoBehaviour
         if (v.city == this) v.city = null;
     }
 
-   
+
     public void RegisterResourceNode(ResourceNode rn)
     {
         if (rn == null) return;
@@ -144,14 +144,14 @@ public class CityUtilityAI : MonoBehaviour
     }
 
 
-  
+
     public void UnregisterResourceNode(ResourceNode rn)
     {
         if (rn == null) return;
         resourceNodes.Remove(rn);
     }
 
-   
+
     public void RegisterStorage(StorageBuilding st)
     {
         if (st == null) return;
@@ -159,7 +159,7 @@ public class CityUtilityAI : MonoBehaviour
             storages.Add(st);
     }
 
-   
+
     public void UnregisterStorage(StorageBuilding st)
     {
         if (st == null) return;
@@ -184,7 +184,7 @@ public class CityUtilityAI : MonoBehaviour
         {
             GridManager = FindObjectOfType<GridManager2D>();
             if (GridManager == null) ;
-                //debug.LogWarning("[City] GridManager2D not found in scene.");
+           
         }
 
         RefreshSceneListsForce();
@@ -211,7 +211,7 @@ public class CityUtilityAI : MonoBehaviour
         timer += Time.deltaTime;
         debugTimer += Time.deltaTime;
 
-        // 🟩 AJOUT REPRODUCTION
+        
         reproductionTimer += Time.deltaTime;
         if (reproductionTimer >= ReproductionCooldown)
         {
@@ -235,7 +235,7 @@ public class CityUtilityAI : MonoBehaviour
         if (debugTimer >= 1f)
         {
             debugTimer = 0f;
-            //DebugActiveTasks();
+            
         }
         attackScanTimer += Time.deltaTime;
         if (attackScanTimer >= AttackScanInterval)
@@ -307,10 +307,10 @@ public class CityUtilityAI : MonoBehaviour
             if (v != null) RegisterVillager(v);
         }
 
-        // On consomme seulement une fois la nourriture nécessaire (ou modifie selon ton gameplay).
+       
         TotalFood -= MinFoodForReproduction;
 
-        //debug.Log($"🍼 {born} nouveaux villageois sont nés ! Total = {villagers.Count}");
+        
     }
 
 
@@ -322,8 +322,8 @@ public class CityUtilityAI : MonoBehaviour
         ActiveTasks.RemoveAll(t => t == null || t.IsCompleted);
     }
 
-    
-    // (Tout ton script continue pareil)
+
+   
 
 
 
@@ -378,7 +378,7 @@ public class CityUtilityAI : MonoBehaviour
                 Vector2Int targetCell;
                 bool foundCell = false;
 
-                // Cherche une cellule valide autour de la ville ou des maisons
+               
                 if (GridManager.GetCellsOwnedByCity(this).Count == 0)
                 {
                     foundCell = GridManager.TryFindNearestFreeCell(transform.position, building.Size, out targetCell);
@@ -391,15 +391,15 @@ public class CityUtilityAI : MonoBehaviour
 
                 if (!foundCell) continue;
 
-                // Vérifie que la cellule est "navigable" (optionnel, si tu veux NavMesh)
+               
                 Vector3 worldPos = GridManager.CellToWorld(targetCell.x, targetCell.y);
                 if (!UnityEngine.AI.NavMesh.SamplePosition(worldPos, out UnityEngine.AI.NavMeshHit hit, 0.1f, UnityEngine.AI.NavMesh.AllAreas))
                 {
-                    continue; // cellule non valide sur NavMesh
+                    continue; 
                 }
                 worldPos = hit.position;
 
-                // Réserve la cellule via ton système de grille
+               
                 if (GridManager.TryReserveCell(this, targetCell, building, out Vector3 reservedWorldPos))
                 {
                     reservedWorldPos += new Vector3(
@@ -413,7 +413,7 @@ public class CityUtilityAI : MonoBehaviour
                         continue;
                     }
 
-                    
+
 
 
                     var buildTaskData = TaskDataList.Find(td =>
@@ -438,7 +438,7 @@ public class CityUtilityAI : MonoBehaviour
                     if (building.BuildingType == BuildingType.House)
                     {
                         HousesBuilt++;
-                        //debug.Log($"[City] Nouvelle maison construite ! Total maisons : {HousesBuilt}");
+                       
                     }
                 }
             }
@@ -496,7 +496,7 @@ public class CityUtilityAI : MonoBehaviour
                 best.AassignedVillagers.Add(pVillager);
 
             pVillager.AssignTask(best);
-            //debug.Log($"[City] AssignTask: {pVillager.name} -> {best.Data.TaskName} ({best.Data.Type})");
+           
         }
     }
 
@@ -532,27 +532,27 @@ public class CityUtilityAI : MonoBehaviour
 
     void TryRecruitNearbyVillagers()
     {
-        // Recrute localement : on fait une recherche physique locale autour du centre de la ville.
+       
         Vector3 cityCenter = transform.position;
         float recruitRadius = 15f;
 
-        // Utilise OverlapSphere pour limiter la recherche locale (moins coûteux que FindObjectsOfType global).
-        Collider[] cols = Physics.OverlapSphere(cityCenter, recruitRadius);
+       
+       Collider[] cols = Physics.OverlapSphere(cityCenter, recruitRadius);
         foreach (var col in cols)
         {
             if (col == null) continue;
             var v = col.GetComponent<VillagerUtilityAI>();
             if (v == null) continue;
 
-            // Si déjà enregistré par nous ou lié à une autre ville => skip
+           
             if (villagers.Contains(v) || v.city != null) continue;
 
-            // On recrute
+            
             RegisterVillager(v);
-            //debug.Log($"[City] Nouveau villageois rejoint la ville : {v.name}");
+           
         }
 
-        // nettoie les entrées nulles qui pourraient apparaître
+       
         villagers.RemoveAll(x => x == null);
     }
 
@@ -560,7 +560,7 @@ public class CityUtilityAI : MonoBehaviour
 
     void AggregateStorage()
     {
-        
+
         int w = 0, s = 0, f = 0;
         foreach (var st in storages)
         {
@@ -611,7 +611,7 @@ public class CityUtilityAI : MonoBehaviour
     {
         if (ActiveTasks == null || ActiveTasks.Count == 0)
         {
-            //debug.Log("[City] Aucune tâche active");
+           
             return;
         }
 
@@ -628,32 +628,30 @@ public class CityUtilityAI : MonoBehaviour
             log += $"[{t.Data.TaskName}:{t.Data.Type}->{target} assigned:{t.AassignedVillagers.Count}] ";
         }
 
-        //Debug.Log(log);
+        Debug.Log(log);
     }
 
     private float slowRefreshTimer = 0f;
-private const float slowRefreshInterval = 30f; // toutes les 30 secondes
+    private const float slowRefreshInterval = 30f; // toutes les 30 secondes
 
     void RefreshSceneListsIfNeeded()
     {
-        // Nettoyage simple des références nulles
+        
         resourceNodes.RemoveAll(x => x == null);
         villagers.RemoveAll(x => x == null);
-       
 
-        // NOTE : on n'appelle plus FindObjectsOfType à chaque frame.
-        // Si tu as d'autres systèmes qui instancient ResourceNode / StorageBuilding,
-        // ils doivent appeler RegisterResourceNode / RegisterStorage sur cette instance.
+
+   
     }
 
 
     void RefreshSceneListsForce()
     {
         resourceNodes = FindObjectsOfType<ResourceNode>().ToList();
-       
-        
+
+
     }
-   
+
 
 
     #endregion
@@ -721,7 +719,7 @@ private const float slowRefreshInterval = 30f; // toutes les 30 secondes
         float speedPercent = totalSpeedNormalized / ((villagers[0].SpeedMax - villagers[0].SpeedMin) * villagers.Count);
         float strengthPercent = totalStrengthNormalized / ((villagers[0].StrengthMax - villagers[0].StrengthMin) * villagers.Count);
 
-        //debug.Log($"hpPercent : {hpPercent} ; speedPercent : {speedPercent} ; strengthPercent : {strengthPercent}");
+       
 
         return new float[] { hpPercent, speedPercent, strengthPercent };
     }
@@ -768,15 +766,11 @@ private const float slowRefreshInterval = 30f; // toutes les 30 secondes
 
         if (myCombat == null || enemyCombat == null)
         {
-            //debug.LogError("[City] CityCombatController manquant");
+            
             return;
         }
 
-        // Je démarre mon attaque
-        myCombat.StartCombat(targetCity);
-
-        // La ville cible est informée immédiatement
-        enemyCombat.StartDefense(this);
+       
     }
 
 }
