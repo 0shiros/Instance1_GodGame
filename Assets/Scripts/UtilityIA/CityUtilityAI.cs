@@ -28,7 +28,7 @@ public class CityUtilityAI : MonoBehaviour
 
     [Header("Monde")]
     public Vector2Int GridSize = new Vector2Int(50, 50);
-    public float TaskScanInterval = 0.2f;
+    public float TaskScanInterval = 10f;
 
     public AnimationCurve WorkerDistributionCurve = AnimationCurve.Linear(0f, 0.1f, 1f, 1f);
     public float MaxWorkerPercent = 0.5f;
@@ -173,6 +173,7 @@ public class CityUtilityAI : MonoBehaviour
                 AddDogmaSciencePoints(1);
             }
             AddSciencePoints(1);
+            HandleBuildTasks();
         }
             
     }
@@ -221,7 +222,7 @@ public class CityUtilityAI : MonoBehaviour
             if (GridManager == null) ;
         }
 
-
+        HandleBuildTasks();
         AggregateStorage();
 
         AddVillagers(6);
