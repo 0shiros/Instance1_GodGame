@@ -61,7 +61,7 @@ public class SearchTree : MonoBehaviour
         {
             if (technologyData.Dogma == E_Dogma.None)
             {
-                Debug.Log(technologyData);
+                //////////debug.Log(technologyData);
                 basicTechUnlockQuantityMax++;
             }
         }
@@ -73,7 +73,7 @@ public class SearchTree : MonoBehaviour
         {
             if (technologyData.Dogma != E_Dogma.None && technologyData.Dogma == cityUtilityAI.CurrentDogma)
             {
-                Debug.Log(technologyData);
+                //////////debug.Log(technologyData);
                 dogmaTechUnlockQuantityMax++;
             }
         }
@@ -84,7 +84,7 @@ public class SearchTree : MonoBehaviour
         foreach (TechnologyData technologyData in technologiesData)
         {
             E_Dogma dogma = technologyData.Dogma;
-            Debug.Log(dogma);
+            //////////debug.Log(dogma);
 
             if (dogma == E_Dogma.None || dogma == cityUtilityAI.CurrentDogma)
             {
