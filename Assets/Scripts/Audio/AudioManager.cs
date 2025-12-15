@@ -45,15 +45,8 @@ public class AudioManager : MonoBehaviour
         PlaySound("Music");
     }
     private void Update() {
+        ChangeVolume("music", !musicPlaying ? 0 : 1);
         timeBetweenMusics += Time.deltaTime;
-        mixer.GetFloat("MusicVolume", out float temp);
-        if (temp == 0 && musicPlaying) {
-            musicPlaying = false; 
-        }
-        else if (musicPlaying == false) {
-            musicPlaying = true;
-        }
-        
         if (timeBetweenMusics >= GetLength("Music") && musicPlaying) { 
             PlaySound("Music");
         }
@@ -79,13 +72,14 @@ public class AudioManager : MonoBehaviour
         catch {
             Debug.LogWarning(pName + " sound not found");
         }
+        
     }
 
     public void PlayDelay(string pName,float pDelay) {
-        StartCoroutine(PlayDelayCoroutine(pName, pDelay));
+        StartCoroutine(PlayDelayOverlapCoroutine(pName, pDelay));
     }
 
-    private IEnumerator PlayDelayCoroutine(string pName, float pDelay) {
+    private IEnumerator PlayDelayOverlapCoroutine(string pName, float pDelay) {
         yield return new WaitForSeconds(pDelay);
         PlayOverlap(pName);
     }
@@ -149,6 +143,12 @@ public class AudioManager : MonoBehaviour
     public float GetLength(string pName) {
         Sound s = Array.Find(Sounds, sound => sound.name == pName);
         return s.source.clip.length;
+    }
+
+    public bool IsPlaying(string pName)
+    {
+        Sound s = Array.Find(Sounds, sound => sound.name == pName);
+        return s.source.isPlaying;
     }
     #endregion
 

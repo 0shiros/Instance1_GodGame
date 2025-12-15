@@ -28,6 +28,7 @@ public class TileBrush : MonoBehaviour
     bool isSelected;
     ColorBlender colorBlender;
     private BrushPreview previewBrush;
+    private Vector3Int oldMidCell;
     private void OnDisable()
     {
         NavMesh.RemoveData();
@@ -158,6 +159,17 @@ public class TileBrush : MonoBehaviour
         if (tilemaps == null || tilemaps.Count == 0 || camera == null) return;
 
         var midCell = GetMidCell();
+        
+        if (midCell != oldMidCell && pRuleTile != EraseTile && AudioManager.Instance.IsPlaying("Draw"))
+        {
+            AudioManager.Instance.PlayOverlap("Draw");
+        }
+        else if (midCell != oldMidCell && AudioManager.Instance.IsPlaying("Erase"))
+        {
+            AudioManager.Instance.PlayOverlap("Erase");
+        }
+
+        oldMidCell = midCell;
 
         int size = Mathf.Max(0, (int)BrushSizeSlider.value);
         int rSq = size * size;
