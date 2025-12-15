@@ -217,7 +217,6 @@ public class CityUtilityAI : MonoBehaviour
         {
             GridManager = FindObjectOfType<GridManager2D>();
             if (GridManager == null) ;
-           
         }
 
         RefreshSceneListsForce();
