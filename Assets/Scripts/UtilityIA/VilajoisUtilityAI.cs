@@ -8,6 +8,8 @@ public class VillagerUtilityAI : MonoBehaviour
 {
     public VillagerRole role = VillagerRole.Generalist;
 
+    [Header("City Assignment")]
+
     [Header("Capacités")]
     public int CarryCapacity = 5;
     public int HarvestPerAction = 2;
@@ -61,6 +63,9 @@ public class VillagerUtilityAI : MonoBehaviour
 
     public bool isBusy => state != EState.Idle;
 
+    private bool isInCombat = false;
+    public bool isAttacker = false;
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -97,9 +102,25 @@ public class VillagerUtilityAI : MonoBehaviour
     }
 
     #region Task Management
+    
+    public void ExitCombat()
+    {
+        isInCombat = false;
+        isAttacker = false;
+
+        
+        if (currentTask != null)
+        {
+            AssignTask(currentTask);
+        }
+        else
+        {
+            StartIdle();
+        }
+    }
     public void AssignTask(CityTask task)
     {
-        if (task == null || currentTask == task) return;
+        if (task == null) return;
 
         StopCurrentAction();
         currentTask = task;
@@ -116,6 +137,20 @@ public class VillagerUtilityAI : MonoBehaviour
                 StartIdle();
                 break;
         }
+    }
+
+
+    public void EnterCombat(Vector3 combatCenter, bool attacker)
+    {
+        StopCurrentAction();
+
+        isInCombat = true;
+        isAttacker = attacker;
+
+        Vector3 offset = Random.insideUnitSphere * 2f;
+        offset.y = 0f;
+
+        GoToPosition(combatCenter + offset);
     }
 
     public void AbandonCurrentTask()
@@ -204,11 +239,15 @@ public class VillagerUtilityAI : MonoBehaviour
 
     private StorageBuilding FindNearestStorageWithFood()
     {
+        if (city == null) return null;
+
         StorageBuilding best = null;
         float bestDist = float.PositiveInfinity;
-        foreach (var s in FindObjectsOfType<StorageBuilding>())
+
+        foreach (var s in city.GetComponentsInChildren<StorageBuilding>())
         {
             if (s == null || s.StoredFood <= 0) continue;
+
             float d = Vector3.Distance(transform.position, s.transform.position);
             if (d < bestDist)
             {
@@ -218,6 +257,7 @@ public class VillagerUtilityAI : MonoBehaviour
         }
         return best;
     }
+
     #endregion
 
     #region Sleep
@@ -250,23 +290,25 @@ public class VillagerUtilityAI : MonoBehaviour
 
     private GameObject FindNearestHouseObject()
     {
-        GameObject[] houses = GameObject.FindGameObjectsWithTag("Building");
-        if (houses.Length == 0) return null;
+        if (city == null) return null;
 
         GameObject best = null;
         float bestDist = float.PositiveInfinity;
 
-        foreach (var h in houses)
+        foreach (Transform child in city.transform)
         {
-            float d = Vector3.Distance(transform.position, h.transform.position);
+            if (!child.CompareTag("Building")) continue;
+
+            float d = Vector3.Distance(transform.position, child.position);
             if (d < bestDist)
             {
                 bestDist = d;
-                best = h;
+                best = child.gameObject;
             }
         }
         return best;
     }
+
     #endregion
 
     #region Collect / Build routines
@@ -320,8 +362,11 @@ public class VillagerUtilityAI : MonoBehaviour
         }
 
         if (task.BuildingData?.Prefab != null)
-            Instantiate(task.BuildingData.Prefab, task.BuildPosition, Quaternion.identity);
-
+        {
+            GameObject go = Instantiate(task.BuildingData.Prefab, task.BuildPosition, Quaternion.identity);
+            go.transform.SetParent(city.transform);
+            city.RegisterCityBuilding(go.GetComponent<MonoBehaviour>());
+        }
         FinishCurrentTask();
     }
 
@@ -431,4 +476,18 @@ public class VillagerUtilityAI : MonoBehaviour
         animator.SetBool("isSleeping", state == EState.Sleeping);
     }
     #endregion
+
+    public void TakeDamage(int amount)
+    {
+        Hp -= amount;
+        if (Hp < 0) Hp = 0;
+    }
+
+    public void Die()
+    {
+        if (city != null)
+            city.UnregisterVillager(this);
+
+        Destroy(gameObject);
+    }
 }

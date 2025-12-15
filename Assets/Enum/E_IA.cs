@@ -17,6 +17,7 @@ public enum TaskType
     Deposit,
     Idle,
     exploring,
+    Combat,
     Custom
 }
 
