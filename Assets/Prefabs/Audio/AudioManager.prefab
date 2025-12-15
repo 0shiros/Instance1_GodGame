@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5367951835492610121
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 641659327166215975}
+  - component: {fileID: 1878591473299964110}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &641659327166215975
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5367951835492610121}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1878591473299964110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5367951835492610121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68dfbab125b540245989c0ca9485db96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  Sounds:
+  - name: Music
+    clip: {fileID: 8300000, guid: 7b1f5814510015149b140a5c70829096, type: 3}
+    audioMixerGroup: {fileID: -4748606026852655191, guid: ba0ea7f712d6e164c924d720f2776925, type: 2}
+    volume: 0
+    pitch: 1
+    loop: 0
+    playOnAwake: 0
+    source: {fileID: 0}
+  - name: Button
+    clip: {fileID: 8300000, guid: c19066c74b519da4f8cb912a4b121221, type: 3}
+    audioMixerGroup: {fileID: -987557382187698857, guid: ba0ea7f712d6e164c924d720f2776925, type: 2}
+    volume: 1
+    pitch: 1
+    loop: 0
+    playOnAwake: 0
+    source: {fileID: 0}
+  - name: Draw
+    clip: {fileID: 8300000, guid: d0a39cd7060afb64db192f2c4b0a06ad, type: 3}
+    audioMixerGroup: {fileID: -987557382187698857, guid: ba0ea7f712d6e164c924d720f2776925, type: 2}
+    volume: 1
+    pitch: 1
+    loop: 0
+    playOnAwake: 0
+    source: {fileID: 0}
+  - name: Erase
+    clip: {fileID: 8300000, guid: f7c43ca3a2132a94693ba46676fa5897, type: 3}
+    audioMixerGroup: {fileID: -987557382187698857, guid: ba0ea7f712d6e164c924d720f2776925, type: 2}
+    volume: 1
+    pitch: 1
+    loop: 0
+    playOnAwake: 0
+    source: {fileID: 0}
+  - name: Reasearch
+    clip: {fileID: 8300000, guid: 6deb2c7ebc0f13a4f92d11e6c87a98b0, type: 3}
+    audioMixerGroup: {fileID: -987557382187698857, guid: ba0ea7f712d6e164c924d720f2776925, type: 2}
+    volume: 1
+    pitch: 1
+    loop: 0
+    playOnAwake: 0
+    source: {fileID: 0}
+  - name: BuildingPlaced
+    clip: {fileID: 8300000, guid: d83d4f9a7fcf13043851d7d2069d1fb1, type: 3}
+    audioMixerGroup: {fileID: -987557382187698857, guid: ba0ea7f712d6e164c924d720f2776925, type: 2}
+    volume: 1
+    pitch: 1
+    loop: 0
+    playOnAwake: 0
+    source: {fileID: 0}
+  mixer: {fileID: 24100000, guid: ba0ea7f712d6e164c924d720f2776925, type: 2}
+  Master: {fileID: 24300002, guid: ba0ea7f712d6e164c924d720f2776925, type: 2}
+  Music: {fileID: -4748606026852655191, guid: ba0ea7f712d6e164c924d720f2776925, type: 2}
+  SFX: {fileID: -987557382187698857, guid: ba0ea7f712d6e164c924d720f2776925, type: 2}
+  musicPlaying: 1
