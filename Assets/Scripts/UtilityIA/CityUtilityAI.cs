@@ -165,7 +165,15 @@ public class CityUtilityAI : MonoBehaviour
         if (building == null) return;
 
         if (!CityBuildings.Contains(building))
+        {
             CityBuildings.Add(building);
+            if (CurrentDogma == E_Dogma.Craft)
+            {
+                AddDogmaSciencePoints(1);
+            }
+            AddSciencePoints(1);
+        }
+            
     }
 
 
@@ -628,6 +636,11 @@ public class CityUtilityAI : MonoBehaviour
             w += st.StoredWood;
             s += st.StoredStone;
             f += st.StoredFood;
+            if(CurrentDogma== E_Dogma.Development)
+            {
+                AddDogmaSciencePoints(1);
+            }
+            AddSciencePoints(1);
         }
         TotalWood = w;
         TotalStone = s;

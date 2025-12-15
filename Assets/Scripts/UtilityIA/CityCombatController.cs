@@ -197,6 +197,11 @@ public class CityCombatController : MonoBehaviour
         defeatedCity.TotalStone = 0;
         defeatedCity.TotalFood = 0;
         defeatedCity.TotalMetal = 0;
+        if (OwnerCity.CurrentDogma == E_Dogma.Military)
+        {
+            OwnerCity.AddDogmaSciencePoints(1);
+        }
+        OwnerCity.AddDogmaSciencePoints(1);
 
         Debug.Log($"💰 {OwnerCity.cityName} pille toutes les ressources de {defeatedCity.cityName}");
     }
