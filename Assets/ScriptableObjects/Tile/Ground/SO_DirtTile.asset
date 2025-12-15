@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: SO_DirtTile
   m_EditorClassIdentifier: Assembly-CSharp::SO_Tiles
   RuleTiles: {fileID: 11400000, guid: b0511297ea10e374fb34d8cccd620bbd, type: 2}
-  color: {r: 0.7254902, g: 0.5803922, b: 0.4392157, a: 1}
-  layerMask:
+  Color: {r: 0.7254902, g: 0.5803922, b: 0.4392157, a: 1}
+  LayerMask:
     serializedVersion: 2
     m_Bits: 256
+  TileType: 4

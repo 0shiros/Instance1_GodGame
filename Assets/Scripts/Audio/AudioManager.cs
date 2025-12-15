@@ -11,22 +11,28 @@ public class AudioManager : MonoBehaviour
     public AudioMixerGroup Master;
     public AudioMixerGroup Music;
     public AudioMixerGroup SFX;
-    
+
     public bool musicPlaying = true;
     private float timeBetweenMusics;
-    
+
+    public bool IsPlayingSound = false;
+
     public static AudioManager Instance;
 
     void Awake()
     {
-        if (Instance == null) {
+        if (Instance == null)
+        {
             Instance = this;
-        } else {
+        }
+        else
+        {
             Destroy(gameObject);
             return;
         }
-        
-        foreach (Sound s in Sounds) {
+
+        foreach (Sound s in Sounds)
+        {
             s.source = gameObject.AddComponent<AudioSource>();
             s.source.clip = s.clip;
             s.source.outputAudioMixerGroup = s.audioMixerGroup;
@@ -35,66 +41,82 @@ public class AudioManager : MonoBehaviour
             s.source.pitch = s.pitch;
             s.source.loop = s.loop;
             s.source.playOnAwake = s.playOnAwake;
-            
         }
     }
-    
+
     #region music
-    
-    private void Start() {
+
+    private void Start()
+    {
         PlaySound("Music");
     }
-    private void Update() {
+
+    private void Update()
+    {
         ChangeVolume("Music", !musicPlaying ? 0 : 1);
         timeBetweenMusics += Time.deltaTime;
-        if (timeBetweenMusics >= GetLength("Music") && musicPlaying) { 
+        if (timeBetweenMusics >= GetLength("Music") && musicPlaying)
+        {
             PlaySound("Music");
         }
     }
+
     #endregion
-    
+
     #region sfx
-    public void PlaySound (string pName) {
-        try {
+
+    public void PlaySound(string pName)
+    {
+        try
+        {
             Sound s = Array.Find(Sounds, sound => sound.name == pName);
             s.source.Play();
         }
-        catch {
+        catch
+        {
             Debug.LogWarning(pName + " sound not found");
         }
     }
 
-    public void PlayOverlap(string pName) {
-        try {
+    public void PlayOverlap(string pName)
+    {
+        try
+        {
             Sound s = Array.Find(Sounds, sound => sound.name == pName);
             s.source.PlayOneShot(s.source.clip, s.source.volume);
         }
-        catch {
+        catch
+        {
             Debug.LogWarning(pName + " sound not found");
         }
-        
     }
 
-    public void PlayDelay(string pName,float pDelay) {
+    public void PlayDelay(string pName, float pDelay)
+    {
         StartCoroutine(PlayDelayOverlapCoroutine(pName, pDelay));
     }
 
-    private IEnumerator PlayDelayOverlapCoroutine(string pName, float pDelay) {
+    private IEnumerator PlayDelayOverlapCoroutine(string pName, float pDelay)
+    {
         yield return new WaitForSeconds(pDelay);
         PlayOverlap(pName);
     }
 
-    public void StopSound(string pName) {
-        try {
+    public void StopSound(string pName)
+    {
+        try
+        {
             Sound s = Array.Find(Sounds, sound => sound.name == pName);
             s.source.Stop();
         }
-        catch {
+        catch
+        {
             Debug.LogWarning(pName + " sound not found");
         }
     }
 
-    public void stopAllSounds() {
+    public void stopAllSounds()
+    {
         foreach (Sound s in Sounds)
         {
             if (s.source.isPlaying)
@@ -103,44 +125,58 @@ public class AudioManager : MonoBehaviour
             }
         }
     }
+
     #endregion
-    
+
     #region effects
+
     public void ChangeVolume(string pName, float pVolume)
     {
         Sound s = Array.Find(Sounds, sound => sound.name == pName);
         s.source.volume = pVolume;
     }
+
     public void ChangeMixerVolume(float pVolume, AudioMixerGroup pMixer)
     {
-        mixer.SetFloat(pMixer.name ,pVolume);
+        mixer.SetFloat(pMixer.name, pVolume);
     }
-    
-    public void ChangePitch(string pName, float pPitch) { //pas utilisé
+
+    public void ChangePitch(string pName, float pPitch)
+    {
+        //pas utilisé
         Sound s = Array.Find(Sounds, sound => sound.name == pName);
         s.source.pitch = pPitch;
     }
-    
-    public void FadeVolume(string pName, float pDuration, float pTargetVolume) {
+
+    public void FadeVolume(string pName, float pDuration, float pTargetVolume)
+    {
         StartCoroutine(FadeVolumeCoroutine(pName, pDuration, pTargetVolume));
     }
 
-    private IEnumerator FadeVolumeCoroutine(string pName, float pDuration, float pTargetVolume) {
-        try {
+    private IEnumerator FadeVolumeCoroutine(string pName, float pDuration, float pTargetVolume)
+    {
+        try
+        {
             Sound s = Array.Find(Sounds, sound => sound.name == pName);
-            while (Mathf.Approximately(s.source.volume, pTargetVolume)) {
+            while (Mathf.Approximately(s.source.volume, pTargetVolume))
+            {
                 s.source.DOFade(pTargetVolume, pDuration);
             }
         }
-        catch {
+        catch
+        {
             Debug.LogWarning(pName + " sound not found");
         }
+
         yield return null;
     }
+
     #endregion
-    
+
     #region parameters
-    public float GetLength(string pName) {
+
+    public float GetLength(string pName)
+    {
         Sound s = Array.Find(Sounds, sound => sound.name == pName);
         return s.source.clip.length;
     }
@@ -150,6 +186,7 @@ public class AudioManager : MonoBehaviour
         Sound s = Array.Find(Sounds, sound => sound.name == pName);
         return s.source.isPlaying;
     }
+
     #endregion
 
     //placer dans nimporte quel scrypt avec le bon nom dans les "" pour jouer un son

@@ -14,14 +14,16 @@ public class ButtonContainerTile : MonoBehaviour
         if (Tiles != null)
         {
             image.sprite = Tiles.RuleTiles?.m_DefaultSprite;
-            image.color = Tiles.color;
+            image.color = Tiles.Color;
             return;
         }
-        
+
         if (CustomTile != null)
         {
-            image.sprite = CustomTile.Sources[0].Sprites.sprite;
-            image.color = CustomTile.Sources[0].Color;
+            if (CustomTile.Sprite != null)
+            {
+                image.sprite = CustomTile.Sprite;
+            }
         }
     }
 }

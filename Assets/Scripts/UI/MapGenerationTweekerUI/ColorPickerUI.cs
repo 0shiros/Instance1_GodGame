@@ -34,7 +34,7 @@ public class ColorPickerUI : MonoBehaviour
 
     private void UpdateForWaterTile()
     {
-        Color.RGBToHSV(waterTile.color, out CurrentHue, out CurrentSet, out CurrentVal);
+        Color.RGBToHSV(waterTile.Color, out CurrentHue, out CurrentSet, out CurrentVal);
         
         SetSV(CurrentSet, CurrentVal);
         hueSlider.value = CurrentHue;
@@ -45,7 +45,7 @@ public class ColorPickerUI : MonoBehaviour
 
     public void Play()
     {
-        waterTile.color = testImage.color;
+        waterTile.Color = testImage.color;
     }
 
     private void CreateHueImage()

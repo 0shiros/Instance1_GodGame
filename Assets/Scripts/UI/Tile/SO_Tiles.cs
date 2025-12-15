@@ -5,6 +5,16 @@ using UnityEngine;
 public class SO_Tiles : ScriptableObject
 {
     public RuleTile RuleTiles;
-    public Color color;
-    public LayerMask layerMask;
+    public Color Color;
+    public LayerMask LayerMask;
+    public ETileType  TileType;
+}
+
+public enum ETileType
+{
+    Sand,
+    Water,
+    Grass,
+    HeightGrass,
+    Dirt
 }

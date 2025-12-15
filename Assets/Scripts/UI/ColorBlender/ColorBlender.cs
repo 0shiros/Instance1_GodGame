@@ -49,7 +49,7 @@ public class ColorBlender : MonoBehaviour
         if (pTile.RuleTiles != null)
         {
             previewImage.sprite = pTile.RuleTiles.m_DefaultSprite;
-            previewImage.color = pTile.color;
+            previewImage.color = pTile.Color;
         }
         else
         {
