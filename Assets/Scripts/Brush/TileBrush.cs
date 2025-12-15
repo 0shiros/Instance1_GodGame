@@ -16,7 +16,7 @@ public class TileBrush : MonoBehaviour
     [SerializeField] Tilemap waterTileMap;
     [SerializeField] Slider BrushSizeSlider;
     [SerializeField] int radius;
-    [SerializeField] private Vector2Int mapBounds;
+    [SerializeField] private SO_MapData mapBounds;
     [SerializeField] int minRadius;
     [SerializeField] int maxRadius;
     [SerializeField] private NavMeshSurface NavMesh;
@@ -36,9 +36,9 @@ public class TileBrush : MonoBehaviour
     private void Start()
     {
         colorBlender = ColorBlender.Instance;
-        for (int x = Mathf.CeilToInt((mapBounds.x / 2) * -1); x < Mathf.CeilToInt(mapBounds.x / 2); x++)
+        for (int x = Mathf.CeilToInt((mapBounds.MapBounds.x / 2) * -1); x < Mathf.CeilToInt(mapBounds.MapBounds.x / 2); x++)
         {
-            for (int y = Mathf.CeilToInt((mapBounds.y / 2) * -1); y < Mathf.CeilToInt(mapBounds.x / 2); y++)
+            for (int y = Mathf.CeilToInt((mapBounds.MapBounds.y / 2) * -1); y < Mathf.CeilToInt(mapBounds.MapBounds.x / 2); y++)
             {
                 waterTileMap.SetTile(new Vector3Int(x, y, 0), waterTile.RuleTiles);
                 waterTileMap.SetColor(new Vector3Int(x, y, 0), waterTile.color);

@@ -3691,7 +3691,7 @@ MonoBehaviour:
   waterTileMap: {fileID: 1060145726}
   BrushSizeSlider: {fileID: 734856603}
   radius: 0
-  mapBounds: {x: 500, y: 500}
+  mapBounds: {fileID: 11400000, guid: 0a8bb1adcacbc5a48846e8c2e6cf8163, type: 2}
   minRadius: 1
   maxRadius: 5
   NavMesh: {fileID: 1165953081}
