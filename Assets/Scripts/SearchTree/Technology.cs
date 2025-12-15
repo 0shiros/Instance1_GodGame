@@ -11,6 +11,8 @@ public class Technology
     [SerializeField] List<E_Technologies> technologiesNeedToBeUnlock;
     public E_Dogma Dogma;
     public List<BuildingData> Buildings;
+    public St_Bonus Bonuses;
+
 
     public void Initialize(TechnologyData pData)
     {
@@ -22,6 +24,7 @@ public class Technology
             technologiesNeedToBeUnlock = technologyData.TechnologiesNeedToBeUnlock;
             Dogma = technologyData.Dogma;
             Buildings = technologyData.Buildings;
+            Bonuses = technologyData.Bonuses;
         }
     }
 

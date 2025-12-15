@@ -9,4 +9,13 @@ public class TechnologyData : ScriptableObject
     public List<E_Technologies> TechnologiesNeedToBeUnlock;
     public E_Dogma Dogma;
     public List<BuildingData> Buildings;
+    public St_Bonus Bonuses;
+}
+
+[System.Serializable]
+public struct St_Bonus
+{
+    public int HpBonus;
+    public int SpeedBonus;
+    public int StrenghtBonus;
 }
