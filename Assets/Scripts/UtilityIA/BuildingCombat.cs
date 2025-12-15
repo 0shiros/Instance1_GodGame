@@ -15,7 +15,7 @@ public class BuildingCombat : MonoBehaviour
 
     private void DestroyBuilding()
     {
-        // Effet ou animation possible ici
+       
         Destroy(gameObject);
     }
 }
