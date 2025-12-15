@@ -149,7 +149,11 @@ public class CityCombatController : MonoBehaviour
         while (t < 1f)
         {
             t += Time.deltaTime * moveSpeed;
-            attacker.transform.position = Vector3.Lerp(attackPos, originalPos, t);
+            if(attacker!=null)
+            {
+                attacker.transform.position = Vector3.Lerp(attackPos, originalPos, t);
+            }
+           
             yield return null;
         }
 

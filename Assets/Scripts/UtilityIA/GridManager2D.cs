@@ -9,7 +9,7 @@ public class GridManager2D : MonoBehaviour
     public int Height = 10;
     public float CellSize = 1f;
 
-
+    
     public class GridCell
     {
         public CityUtilityAI ownerCityAI = null;
@@ -25,6 +25,7 @@ public class GridManager2D : MonoBehaviour
     void Awake()
     {
         InitGrid();
+        
     }
 
     void OnValidate()
@@ -106,6 +107,7 @@ public class GridManager2D : MonoBehaviour
 
     public bool TryReserveCell(CityUtilityAI owner, Vector2Int cell, BuildingData buildingData, out Vector3 reservedWorldPos)
     {
+       
         reservedWorldPos = Vector3.zero;
         if (!IsValidCell(cell)) return false;
 
@@ -123,6 +125,7 @@ public class GridManager2D : MonoBehaviour
 
         reservedWorldPos = RandomPosInsideCell(cell, offsetRadius);
         return true;
+
     }
 
     public void ReleaseReservation(Vector2Int cell)
@@ -130,6 +133,7 @@ public class GridManager2D : MonoBehaviour
         if (!IsValidCell(cell)) return;
         var c = grid[cell.x, cell.y];
         c.reservedCount = Mathf.Max(0, c.reservedCount - 1);
+        Debug.Log(c.ownerCityAI);
     }
 
     public bool CommitPlacement(Vector2Int cell, GameObject placed)
@@ -139,7 +143,7 @@ public class GridManager2D : MonoBehaviour
 
         c.placedBuildings.Add(placed);
         if (c.reservedCount > 0) c.reservedCount--;
-
+        
 
         UpdateCellVisual(cell);
 
@@ -253,14 +257,14 @@ public class GridManager2D : MonoBehaviour
     }
 
     #endregion
-
+   
     #region Visualisation runtime pour les maisons
 
     private void UpdateCellVisual(Vector2Int cell)
     {
         var c = grid[cell.x, cell.y];
         bool hasHouse = c.placedBuildings.Any(b => b != null && b.CompareTag("Maison"));
-
+        
         if (hasHouse)
         {
             if (cellVisuals[cell.x, cell.y] == null)

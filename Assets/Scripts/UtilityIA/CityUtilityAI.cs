@@ -13,6 +13,7 @@ public class CityUtilityAI : MonoBehaviour
     [SerializeField] private int agentsQuantityNeedToSetDogma;
     [SerializeField] private GameObject villager;
     public string cityName = "";
+    private EvironementContainer evironementContainer;
 
     [Header("Grid")]
     public GridManager2D GridManager;
@@ -37,10 +38,10 @@ public class CityUtilityAI : MonoBehaviour
     public float BuildingMinDistance = 2f;
 
     [Header("Ressources globales")]
-    public int TotalWood;
-    public int TotalStone;
-    public int TotalFood;
-    public int TotalMetal;
+    public float TotalWood;
+    public float TotalStone;
+    public float TotalFood;
+    public float TotalMetal;
 
     [Header("Stats bâtiments")]
     public int HousesBuilt = 0;
@@ -56,7 +57,7 @@ public class CityUtilityAI : MonoBehaviour
 
    
     public List<VillagerUtilityAI> villagers = new List<VillagerUtilityAI>();
-    private List<ResourceNode> resourceNodes = new List<ResourceNode>();
+    
     private List<StorageBuilding> storages = new List<StorageBuilding>();
     public List<CityTask> ActiveTasks = new List<CityTask>();
     
@@ -89,9 +90,9 @@ public class CityUtilityAI : MonoBehaviour
 
     [Header("Combat Decision")]
     public float AttackScanInterval = 10f;
-    public float AttackRange = 50f;
+    public float AttackRange = 150f;
     public float ResourceGreedFactor = 0.7f;
-    public int MinVillagersToAttack = 4;
+    public int MinVillagersToAttack = 2;
 
     private float attackScanTimer = 0f;
 
@@ -122,8 +123,8 @@ public class CityUtilityAI : MonoBehaviour
     public void RegisterResourceNode(ResourceNode rn)
     {
         if (rn == null) return;
-        if (!resourceNodes.Contains(rn))
-            resourceNodes.Add(rn);
+        if (!evironementContainer.resourceNodes.Contains(rn))
+            evironementContainer.resourceNodes.Add(rn);
     }
     public void UnregisterCityBuilding(MonoBehaviour building)
     {
@@ -181,7 +182,7 @@ public class CityUtilityAI : MonoBehaviour
     public void UnregisterResourceNode(ResourceNode rn)
     {
         if (rn == null) return;
-        resourceNodes.Remove(rn);
+        evironementContainer.resourceNodes.Remove(rn);
     }
 
 
@@ -209,6 +210,7 @@ public class CityUtilityAI : MonoBehaviour
         gameObject.name = cityName;
         storages.Clear();
         storages.AddRange(GetComponentsInChildren<StorageBuilding>());
+        
     }
 
     void Start()
@@ -219,10 +221,11 @@ public class CityUtilityAI : MonoBehaviour
             if (GridManager == null) ;
         }
 
-        RefreshSceneListsForce();
+
         AggregateStorage();
 
         AddVillagers(6);
+        evironementContainer = EvironementContainer.Instance;
     }
 
     private void AddVillagers(int pQuantity)
@@ -278,7 +281,7 @@ public class CityUtilityAI : MonoBehaviour
         timer += Time.deltaTime;
         debugTimer += Time.deltaTime;
 
-        
+       
         reproductionTimer += Time.deltaTime;
         if (reproductionTimer >= ReproductionCooldown)
         {
@@ -305,7 +308,7 @@ public class CityUtilityAI : MonoBehaviour
             
         }
         attackScanTimer += Time.deltaTime;
-        if (attackScanTimer >= AttackScanInterval)
+        if (attackScanTimer > AttackScanInterval)
         {
             attackScanTimer = 0f;
             EvaluateAttackOpportunity();
@@ -320,11 +323,14 @@ public class CityUtilityAI : MonoBehaviour
     {
         if (villagers.Count < MinVillagersToAttack)
             return;
-
+       
         CityUtilityAI bestTarget = null;
         float bestScore = float.NegativeInfinity;
 
         var allCities = FindObjectsByType<CityUtilityAI>(FindObjectsSortMode.None);
+
+        
+
 
         foreach (var other in allCities)
         {
@@ -350,11 +356,13 @@ public class CityUtilityAI : MonoBehaviour
             {
                 bestScore = finalScore;
                 bestTarget = other;
+                
             }
         }
 
         if (bestTarget != null && bestScore > 0f)
         {
+           
             OrderAttack(bestTarget);
         }
     }
@@ -400,7 +408,7 @@ public class CityUtilityAI : MonoBehaviour
 
     void HandleResourceTasks()
     {
-        foreach (var node in resourceNodes)
+        foreach (var node in evironementContainer.resourceNodes)
         {
             if (node == null || node.Amount <= 0) continue;
 
@@ -647,7 +655,7 @@ public class CityUtilityAI : MonoBehaviour
     }
 
 
-    public void NotifyResourceCollected(ResourceType pType, int pAmount)
+    public void NotifyResourceCollected(ResourceType pType, float pAmount)
     {
         if (pAmount <= 0) return;
 
@@ -708,8 +716,8 @@ public class CityUtilityAI : MonoBehaviour
 
     void RefreshSceneListsIfNeeded()
     {
-        
-        resourceNodes.RemoveAll(x => x == null);
+
+        evironementContainer.resourceNodes.RemoveAll(x => x == null);
         villagers.RemoveAll(x => x == null);
 
 
@@ -717,12 +725,7 @@ public class CityUtilityAI : MonoBehaviour
     }
 
 
-    void RefreshSceneListsForce()
-    {
-        resourceNodes = FindObjectsOfType<ResourceNode>().ToList();
-
-
-    }
+    
 
 
 
@@ -795,7 +798,7 @@ public class CityUtilityAI : MonoBehaviour
 
         return new float[] { hpPercent, speedPercent, strengthPercent };
     }
-
+   
     private void SetDogma()
     {
         if (villagers.Count < agentsQuantityNeedToSetDogma)
@@ -832,6 +835,7 @@ public class CityUtilityAI : MonoBehaviour
     public void OrderAttack(CityUtilityAI targetCity)
     {
         if (targetCity == null) return;
+        Debug.Log("marche!!!!!!!!"+targetCity);
 
         CityCombatController myCombat = GetComponent<CityCombatController>();
         CityCombatController enemyCombat = targetCity.GetComponent<CityCombatController>();
@@ -842,7 +846,8 @@ public class CityUtilityAI : MonoBehaviour
             return;
         }
 
-       
+        myCombat.StartCombat(targetCity);
+        enemyCombat.StartDefense(this);
     }
 
 }
