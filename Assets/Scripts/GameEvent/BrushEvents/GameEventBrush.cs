@@ -44,6 +44,7 @@ public class GameEventBrush : MonoBehaviour
     }
     public IEnumerator CircleDraw(SO_Tiles pRuleTile, Vector3Int pMidCell, int pRadius, List<Tilemap> tilemaps, float pDelay = 0)
     {
+        int tempOffSet = offset;
         
         foreach (Tilemap tilemap in tilemaps)
         {
@@ -79,5 +80,7 @@ public class GameEventBrush : MonoBehaviour
             offset++;
             yield return new WaitForSeconds(pDelay);
         }
+        
+        offset = tempOffSet;
     }
 }
