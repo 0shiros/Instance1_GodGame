@@ -45,7 +45,7 @@ public class AudioManager : MonoBehaviour
         PlaySound("Music");
     }
     private void Update() {
-        ChangeVolume("music", !musicPlaying ? 0 : 1);
+        ChangeVolume("Music", !musicPlaying ? 0 : 1);
         timeBetweenMusics += Time.deltaTime;
         if (timeBetweenMusics >= GetLength("Music") && musicPlaying) { 
             PlaySound("Music");

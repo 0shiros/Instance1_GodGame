@@ -52,6 +52,7 @@ public class TileBrush : MonoBehaviour
 
     private void SizeChanged(float pArg0)
     {
+        Quest.Instance.Next(0, 3);
         previewBrush.SetSize((int)pArg0);
     }
 
@@ -61,6 +62,7 @@ public class TileBrush : MonoBehaviour
         colorBlender.SetColorForTile(pTile);
         FindTargetTilemap(GetMidCell(), currentTile);
         target = null;
+        Quest.Instance.Next(0, 1);
     }
 
     public void TileSelected(bool pIsSelected)
@@ -168,7 +170,7 @@ public class TileBrush : MonoBehaviour
         {
             AudioManager.Instance.PlayOverlap("Erase");
         }
-
+        Quest.Instance.Next(0, 2);
         oldMidCell = midCell;
 
         int size = Mathf.Max(0, (int)BrushSizeSlider.value);
