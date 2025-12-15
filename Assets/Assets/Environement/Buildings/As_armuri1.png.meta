@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: f5826bbb5896f9c49bcbfb9ab482e637
+guid: 9805336a22f1ec745ac24d42a9229b1e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6396605252790137768
-    second: As_armurie toit_0
+      213: -4834323655592538266
+    second: As_armuri1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: As_armurie toit_0
+      name: As_armuri1_0
       rect:
         serializedVersion: 2
-        x: 17
-        y: 12
-        width: 44
-        height: 42
+        x: 0
+        y: 0
+        width: 25
+        height: 64
       alignment: 9
-      pivot: {x: 0.5, y: 0.85}
+      pivot: {x: 0.49999997, y: 0.35}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 85ccb0bc961ba37a0800000000000000
-      internalID: -6396605252790137768
+      spriteID: 66f8323af3809ecb0800000000000000
+      internalID: -4834323655592538266
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 13632f07f112c834daa76c9f04d3c56b
+    spriteID: cb49b9f7f3f00174992a6f6c685684aa
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      As_armurie toit_0: -6396605252790137768
+      As_armuri1_0: -4834323655592538266
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

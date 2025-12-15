@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 25df986b1c7b99a4e82f4e06a77612d1
+guid: bdac08ce785461d48bab9b554be2f024
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6829322902321071969
-    second: As_armurie bois_0
+      213: -4436385993128141052
+    second: As_armuri2_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: As_armurie bois_0
+      name: As_armuri2_0
       rect:
         serializedVersion: 2
-        x: 21
+        x: 13
         y: 0
-        width: 38
-        height: 45
+        width: 47
+        height: 64
       alignment: 9
-      pivot: {x: 0.5, y: 0.35}
+      pivot: {x: 0.65, y: 0.35}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f9876bee00f5931a0800000000000000
-      internalID: -6829322902321071969
+      spriteID: 40f1419b17ace62c0800000000000000
+      internalID: -4436385993128141052
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 66d6d552683e8894ca0630a74d1ea9f5
+    spriteID: 88158c7cebd2b2247960a06ee8832618
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      As_armurie bois_0: -6829322902321071969
+      As_armuri2_0: -4436385993128141052
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

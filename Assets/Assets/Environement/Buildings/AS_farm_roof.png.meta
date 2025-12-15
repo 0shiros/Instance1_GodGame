@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 0bd9580ce87092749be80a2d7de55912
+guid: e4c95fdb9b290c14bbbc4182ffc54f46
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5337836577459904968
-    second: As_armurie roche_0
+      213: -4811523415064405870
+    second: AS_farm_roof_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: As_armurie roche_0
+      name: AS_farm_roof_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 59
-        height: 64
+        width: 61
+        height: 16
       alignment: 9
-      pivot: {x: 0.1, y: 0.25}
+      pivot: {x: 0.5, y: 1.9}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8c1a59c061ec31a40800000000000000
-      internalID: 5337836577459904968
+      spriteID: 2989c9052f80a3db0800000000000000
+      internalID: -4811523415064405870
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: a4329b295ae48a24d99098a5b2b824fd
+    spriteID: 76ba6ac3b2c19a24eab58da7e42b05f0
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      As_armurie roche_0: 5337836577459904968
+      AS_farm_roof_0: -4811523415064405870
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
