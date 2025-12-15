@@ -3,15 +3,15 @@ using Random = UnityEngine.Random;
 
 public class GameEventManager : MonoBehaviour
 {
-    [SerializeField] Vector2Int xLocationMinMax;
-    [SerializeField] Vector2Int yLocationMinMax;
-     public St_Event[] events;
-    //ref à la clock du jeu
+    public Vector2Int xLocationMinMax;
+    public Vector2Int yLocationMinMax;
+    public St_Event[] events;
+    [HideInInspector] public bool IsRandom = true;
 
-    private void Update()
-    {
-        if (Input.GetKeyDown("up")) TryInitializeEvent();
-    }
+    // private void Update()
+    // {
+    //     if (Input.GetKeyDown("up")) TryInitializeEvent();
+    // }
 
     void TryInitializeEvent()
     {
@@ -22,10 +22,9 @@ public class GameEventManager : MonoBehaviour
             //condition de la popula° et villages ici
             float timer = Random.Range(0.0f , 60.0f);
             int random = Random.Range(0, 100);
-            if (random > e.chanceActivation) continue;
+            if (random > e.chanceActivation && IsRandom) continue;
             e.gameEvent.SetupEvent(x, y);
         }
-        
     }
 }
 
