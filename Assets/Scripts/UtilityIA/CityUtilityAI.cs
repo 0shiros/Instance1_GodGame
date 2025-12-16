@@ -695,10 +695,27 @@ public class CityUtilityAI : MonoBehaviour
             }
             AddSciencePoints(1);
         }
-        TotalWood = w;
-        TotalStone = s;
-        TotalFood = f;
-        TotalMetal = m;
+        if (TotalWood < w)
+        {
+            TotalWood = w;
+        }
+        if(TotalStone < s)
+        {
+            TotalStone = s;
+        }
+        if(TotalFood < f)
+        {
+            TotalFood = f;
+        }
+
+        if(TotalMetal < m)
+        {
+            TotalMetal = m;
+        }
+            
+            
+        
+       
     }
 
 
