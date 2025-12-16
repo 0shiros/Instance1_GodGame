@@ -213,6 +213,7 @@ public class CityCombatController : MonoBehaviour
             OwnerCity.AddDogmaSciencePoints(1);
         }
         OwnerCity.AddDogmaSciencePoints(1);
+        ParticleManager.Instance.StartParticle(0);
         Destroy(enemyCity.gameObject);
         Debug.Log($"💰 {OwnerCity.cityName} pille toutes les ressources de {defeatedCity.cityName}");
     }

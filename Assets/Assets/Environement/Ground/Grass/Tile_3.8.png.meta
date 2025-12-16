@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: eab87bf344d59f145917b9121de3b6fd
+guid: c9bffb6a607659045af9b6e50cccfd32
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3592330268037010413
-    second: herbe 4_0
+      213: -2889692134794806254
+    second: Tile_3.8_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: herbe 4_0
+      name: Tile_3.8_0
       rect:
         serializedVersion: 2
         x: 0
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 31c25c977aa752ec0800000000000000
-      internalID: -3592330268037010413
+      spriteID: 21cb05b4050c5e7d0800000000000000
+      internalID: -2889692134794806254
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      herbe 4_0: -3592330268037010413
+      Tile_3.8_0: -2889692134794806254
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
