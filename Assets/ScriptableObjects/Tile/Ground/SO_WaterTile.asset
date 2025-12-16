@@ -18,3 +18,4 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 16
   TileType: 1
+  Name: Water
