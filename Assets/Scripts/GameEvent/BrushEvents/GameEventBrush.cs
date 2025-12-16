@@ -76,11 +76,9 @@ public class GameEventBrush : MonoBehaviour
                     }
                 }
             }
-            pRadius -= offset;
-            offset++;
+            pRadius -= tempOffSet;
+            tempOffSet++;
             yield return new WaitForSeconds(pDelay);
         }
-        
-        offset = tempOffSet;
     }
 }
