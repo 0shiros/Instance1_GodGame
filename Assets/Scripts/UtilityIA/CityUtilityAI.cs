@@ -454,8 +454,10 @@ public class CityUtilityAI : MonoBehaviour
 
        
         TotalFood -= MinFoodForReproduction;
+        SetDogma();
 
-        
+
+
     }
 
 
