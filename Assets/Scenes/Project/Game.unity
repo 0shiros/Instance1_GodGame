@@ -1162,7 +1162,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &97961700
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2496,6 +2496,10 @@ PrefabInstance:
     - target: {fileID: 2110480550054122269, guid: 511da9720961dfc42b18f625b31a0f54, type: 3}
       propertyPath: m_Name
       value: Tornado
+      objectReference: {fileID: 0}
+    - target: {fileID: 2110480550054122269, guid: 511da9720961dfc42b18f625b31a0f54, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2844123003782905065, guid: 511da9720961dfc42b18f625b31a0f54, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6164,6 +6168,7 @@ GameObject:
   - component: {fileID: 913484745}
   - component: {fileID: 913484748}
   - component: {fileID: 913484746}
+  - component: {fileID: 913484749}
   m_Layer: 5
   m_Name: ColorUI
   m_TagString: Untagged
@@ -6210,7 +6215,7 @@ MonoBehaviour:
   satValImage: {fileID: 1441227384}
   outputImage: {fileID: 1808219641}
   hueSlider: {fileID: 848448732}
-  colorBlender: {fileID: 1876862335}
+  colorBlender: {fileID: 0}
   hexInputField: {fileID: 475456351}
   testImage: {fileID: 1278210292}
 --- !u!222 &913484748
@@ -6221,6 +6226,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 913484744}
   m_CullTransparentMesh: 1
+--- !u!114 &913484749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 913484744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38aaceb501cd28e44bc5d8362666ca41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ColorBlender
+  previewImage: {fileID: 1278210292}
+  spriteSelectorDropdown: {fileID: 1017142127}
+  saveTile: []
 --- !u!1 &922704393
 GameObject:
   m_ObjectHideFlags: 0
@@ -8450,7 +8470,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1231804472
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10300,7 +10320,7 @@ RectTransform:
   m_Father: {fileID: 2094316315}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -6, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -10436,7 +10456,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1750223686
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10452,10 +10472,10 @@ RectTransform:
   - {fileID: 1220716795}
   m_Father: {fileID: 1158797106}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 72, y: -137}
+  m_SizeDelta: {x: 64, y: 64}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1750223687
 MonoBehaviour:
@@ -11200,7 +11220,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1876862337}
   - component: {fileID: 1876862336}
-  - component: {fileID: 1876862335}
   m_Layer: 5
   m_Name: ColorSliders
   m_TagString: Untagged
@@ -11208,21 +11227,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1876862335
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1876862334}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38aaceb501cd28e44bc5d8362666ca41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ColorBlender
-  previewImage: {fileID: 1278210292}
-  spriteSelectorDropdown: {fileID: 1017142127}
-  saveTile: []
 --- !u!222 &1876862336
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -12583,6 +12587,10 @@ PrefabInstance:
       value: GameEventManager
       objectReference: {fileID: 0}
     - target: {fileID: 9159394629681191225, guid: a14a678d300cda348b130925b51054d4, type: 3}
+      propertyPath: events.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9159394629681191225, guid: a14a678d300cda348b130925b51054d4, type: 3}
       propertyPath: events.Array.data[0].gameEvent
       value: 
       objectReference: {fileID: 1825280401}
@@ -12713,6 +12721,12 @@ MonoBehaviour:
   quests:
   - {fileID: 11400000, guid: 9320ac03ac17e3f4082e29d76f0be887, type: 2}
   - {fileID: 11400000, guid: f5b1d709b2a500f4fac7c76098b949ee, type: 2}
+  - {fileID: 11400000, guid: f6d58c3be92e6554eb84c794fa849841, type: 2}
+  - {fileID: 11400000, guid: 41a9e050cd3af3048ae9448c0facb7f9, type: 2}
+  - {fileID: 11400000, guid: 5ce61c09e4547634d972241c096c0e37, type: 2}
+  - {fileID: 11400000, guid: aaeed96ed62fe7c46a1db53582c8fdf5, type: 2}
+  - {fileID: 11400000, guid: 0b7073c675873024daae71b43f98ae91, type: 2}
+  - {fileID: 11400000, guid: d2340062b341c2549914577310b38efb, type: 2}
   tutorialPanel: {fileID: 1817513556}
   previewImage: {fileID: 2021485913}
   questName: {fileID: 888490354}
@@ -12750,7 +12764,7 @@ RectTransform:
   m_Father: {fileID: 1159437799}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}

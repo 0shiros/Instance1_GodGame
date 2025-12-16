@@ -15,6 +15,6 @@ MonoBehaviour:
   QuestName: I love Grass
   QuestDescription: You can also add some grass to add some greenrey to your world
   QuestRequirement: 1
-  QuestImage: {fileID: -5681169825606967803, guid: e716b6f267b2b444f92d58025fecd436, type: 3}
+  QuestImage: {fileID: -7648731824411162702, guid: ef6c8533240fa694d92e4eb0c27ca463, type: 3}
   QuestID: 2
-  HasBeenCompleted: 0
+  HasBeenCompleted: 1

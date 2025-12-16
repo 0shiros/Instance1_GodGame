@@ -14,7 +14,7 @@ public class CityUtilityAI : MonoBehaviour
     [SerializeField] private int agentsQuantityNeedToSetDogma;
     [SerializeField] private GameObject villager;
     public string cityName = "";
-    private EnvironementContainer evironementContainer;
+    private EnvironementContainer environementContainer;
 
     [Header("Grid")]
     public GridManager2D GridManager;
@@ -192,7 +192,7 @@ public class CityUtilityAI : MonoBehaviour
     public void UnregisterResourceNode(ResourceNode rn)
     {
         if (rn == null) return;
-        evironementContainer.resourceNodes.Remove(rn);
+        environementContainer.resourceNodes.Remove(rn);
     }
 
 
@@ -242,7 +242,7 @@ public class CityUtilityAI : MonoBehaviour
         AggregateStorage();
 
         AddVillagers(6);
-        evironementContainer = EnvironementContainer.Instance;
+        environementContainer = EnvironementContainer.Instance;
     }
 
     private void AddVillagers(int pQuantity)
@@ -357,7 +357,7 @@ public class CityUtilityAI : MonoBehaviour
 
             case BuildingType.Mine:
                 // intérêt seulement si du minerai existe sur la map
-                int metalNodes = evironementContainer.resourceNodes
+                int metalNodes = environementContainer.resourceNodes
                     .Count(r => r != null && r.ResourceType == ResourceType.Metal);
 
                 if (metalNodes == 0)
@@ -480,7 +480,7 @@ public class CityUtilityAI : MonoBehaviour
 
     void HandleResourceTasks()
     {
-        foreach (var node in evironementContainer.resourceNodes)
+        foreach (var node in environementContainer.resourceNodes)
         {
             if (node == null || node.Amount <= 0) continue;
 
@@ -785,7 +785,7 @@ public class CityUtilityAI : MonoBehaviour
     void RefreshSceneListsIfNeeded()
     {
 
-        evironementContainer.resourceNodes.RemoveAll(x => x == null);
+        environementContainer.resourceNodes.RemoveAll(x => x == null);
         villagers.RemoveAll(x => x == null);
 
 
