@@ -9,6 +9,7 @@ public class BuildingData : ScriptableObject
     public Vector2Int Size = Vector2Int.one; 
     public int WoodCost = 5;
     public int StoneCost = 3;
+    public int MetalCost = 4;
     public int HousingCapacity = 2;
     public BuildingType BuildingType = BuildingType.None;
     public bool isStorage = false; 

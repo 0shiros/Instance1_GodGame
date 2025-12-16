@@ -112,7 +112,7 @@ MonoBehaviour:
   StrengthMin: 5
   StrengthMax: 20
   GridSize: {x: 50, y: 50}
-  TaskScanInterval: 0.2
+  TaskScanInterval: 5
   WorkerDistributionCurve:
     serializedVersion: 2
     m_Curve:
@@ -138,7 +138,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   MaxWorkerPercent: 0.5
-  HouseSpawnDistance: 5
+  HouseSpawnDistance: 10
   BuildingMinDistance: 2
   TotalWood: 0
   TotalStone: 0

@@ -7115,9 +7115,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10349dcc4bf981c4097cec01cd929af6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GridManager2D
-  Width: 500
-  Height: 500
-  CellSize: 2
+  Width: 100
+  Height: 100
+  CellSize: 5
 --- !u!4 &1231804473
 Transform:
   m_ObjectHideFlags: 0
