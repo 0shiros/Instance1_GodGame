@@ -103,6 +103,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28d1f988646ec0b499fe109be79557db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceNode
-  ResourceType: 5
+  ResourceType: 4
   Amount: 2147483647
   HarvestPerAction: 1
