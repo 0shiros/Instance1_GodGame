@@ -13,6 +13,11 @@ public class ButtonContainerTile : MonoBehaviour
         image = GetComponent<Image>();
         if (Tiles != null)
         {
+            if (Tiles.RuleTiles == null)
+            {
+                return;
+            }
+            
             image.sprite = Tiles.RuleTiles?.m_DefaultSprite;
             image.color = Tiles.Color;
             return;
