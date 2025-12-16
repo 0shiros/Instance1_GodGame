@@ -7,7 +7,7 @@ public enum ResourceType
     Wood,
     Stone,
     Food,
-    Maital
+    Metal
 }
 
 public enum TaskType
@@ -16,7 +16,7 @@ public enum TaskType
     Build,
     Deposit,
     Idle,
-    exploring,
+    Exploration,
     Combat,
     Custom
 }
@@ -27,7 +27,21 @@ public enum BuildingType
     House,
     Warehouse,
     Farm,
+    Forge,
+    Granary,
+    HouseStone,
+    WarehouseStone,
+    FarmStone,
+    ForgeStone,
+    GranaryStone,
+    HouseMetal,
+    WarehouseMetal,
+    FarmMetal,
+    ForgeMetal,
+    GranaryMetal,
+    Mine,
     Custom
+
 }
 
 public enum VillagerRole

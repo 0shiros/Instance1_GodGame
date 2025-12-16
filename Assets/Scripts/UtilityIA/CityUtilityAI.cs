@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,7 +14,7 @@ public class CityUtilityAI : MonoBehaviour
     [SerializeField] private int agentsQuantityNeedToSetDogma;
     [SerializeField] private GameObject villager;
     public string cityName = "";
-    private EvironementContainer evironementContainer;
+    private EnvironementContainer evironementContainer;
 
     [Header("Grid")]
     public GridManager2D GridManager;
@@ -28,7 +29,7 @@ public class CityUtilityAI : MonoBehaviour
 
     [Header("Monde")]
     public Vector2Int GridSize = new Vector2Int(50, 50);
-    public float TaskScanInterval = 10f;
+    public float TaskScanInterval = 40f;
 
     public AnimationCurve WorkerDistributionCurve = AnimationCurve.Linear(0f, 0.1f, 1f, 1f);
     public float MaxWorkerPercent = 0.5f;
@@ -101,7 +102,15 @@ public class CityUtilityAI : MonoBehaviour
 
     #region Registration API (optimisation)
 
-
+   
+    private IEnumerator BuildTaskRoutine()
+    {
+        while (true)
+        {
+            HandleBuildTasks();
+            yield return new WaitForSeconds(TaskScanInterval); // 40s dans ton code
+        }
+    }
     public void RegisterVillager(VillagerUtilityAI v)
     {
         if (v == null) return;
@@ -131,9 +140,9 @@ public class CityUtilityAI : MonoBehaviour
         if (building == null) return;
         CityBuildings.Remove(building);
     }
-    bool ConsumeResourcesForBuilding(int wood, int stone, int food = 0)
+    bool ConsumeResourcesForBuilding(int wood, int stone, int metal, int food = 0)
     {
-        if (TotalWood < wood || TotalStone < stone || TotalFood < food)
+        if (TotalWood < wood || TotalStone < stone || TotalFood < food|| TotalMetal<metal)
             return false;
 
         var validStorages = storages.FindAll(s =>
@@ -156,6 +165,7 @@ public class CityUtilityAI : MonoBehaviour
         TotalWood -= wood;
         TotalStone -= stone;
         TotalFood -= food;
+        TotalMetal -= metal;
 
         return true;
     }
@@ -205,9 +215,16 @@ public class CityUtilityAI : MonoBehaviour
 
 
 
+    private Dictionary<BuildingType, TaskData> buildTaskLookup;
+
     private void Awake()
     {
-        cityName = nationNames[UnityEngine.Random.Range(0, nationNames.Length)];
+        buildTaskLookup = TaskDataList
+            .Where(td => td.Type == TaskType.Build)
+            .ToDictionary(td => td.TargetBuildingType, td => td);
+    
+
+    cityName = nationNames[UnityEngine.Random.Range(0, nationNames.Length)];
         gameObject.name = cityName;
         storages.Clear();
         storages.AddRange(GetComponentsInChildren<StorageBuilding>());
@@ -221,12 +238,12 @@ public class CityUtilityAI : MonoBehaviour
             GridManager = FindObjectOfType<GridManager2D>();
             if (GridManager == null) ;
         }
+        StartCoroutine(BuildTaskRoutine());
 
-        HandleBuildTasks();
         AggregateStorage();
 
         AddVillagers(6);
-        evironementContainer = EvironementContainer.Instance;
+        evironementContainer = EnvironementContainer.Instance;
     }
 
     private void AddVillagers(int pQuantity)
@@ -298,7 +315,7 @@ public class CityUtilityAI : MonoBehaviour
             CleanupFinishedTasks();
             RefreshSceneListsIfNeeded();
             HandleResourceTasks();
-            HandleBuildTasks();
+            
             AssignTasksToVillagers();
             AggregateStorage();
         }
@@ -315,6 +332,59 @@ public class CityUtilityAI : MonoBehaviour
             EvaluateAttackOpportunity();
         }
     }
+    float GetBuildingInterest(BuildingData building)
+    {
+        float score = 0f;
+
+        switch (building.BuildingType)
+        {
+            case BuildingType.House:
+                // besoin de logement
+                score += Mathf.Max(0, villagers.Count - HousesBuilt * 2);
+                break;
+
+            case BuildingType.Farm:
+                // besoin de nourriture
+                if (TotalFood < villagers.Count * 3)
+                    score += 30;
+
+                score += villagers.Count;
+
+                // pénalité si déjà plusieurs fermes
+                int farms = CityBuildings.Count(b =>
+                    b != null && b.GetType().Name.Contains("Farm"));
+                score -= farms * 15;
+                break;
+
+            case BuildingType.Mine:
+                // intérêt seulement si du minerai existe sur la map
+                int metalNodes = evironementContainer.resourceNodes
+                    .Count(r => r != null && r.ResourceType == ResourceType.Metal);
+
+                if (metalNodes == 0)
+                    return -1000f;
+
+                score += metalNodes * 10;
+
+                if (TotalMetal < 5)
+                    score += 25;
+                break;
+
+            case BuildingType.Forge:
+                // forge utile seulement si métal + population
+                if (TotalMetal < 5)
+                    return -1000f;
+
+                score += villagers.Count * 2;
+
+                if (CurrentDogma == E_Dogma.Military)
+                    score += 40;
+                break;
+        }
+
+        return score;
+    }
+
     float GetTotalResources()
     {
         return TotalWood + TotalStone + TotalFood + TotalMetal;
@@ -438,88 +508,63 @@ public class CityUtilityAI : MonoBehaviour
     {
         if (GridManager == null) return;
 
-        foreach (var building in BuildingTypes)
+        var buildableBuildings = BuildingTypes
+            .Where(b => b != null && b.Prefab != null)
+            .Where(b => !ActiveTasks.Exists(t => t != null && t.Data != null && t.Data.Type == TaskType.Build && t.BuildingData == b))
+            .Where(b => TotalWood >= b.WoodCost && TotalStone >= b.StoneCost && TotalMetal >= b.MetalCost)
+            .ToList();
+
+        foreach (var building in buildableBuildings)
         {
-            if (building == null || building.Prefab == null) continue;
+            Vector2Int targetCell;
+            bool foundCell = GridManager.GetCellsOwnedByCity(this).Count == 0 ?
+                GridManager.TryFindNearestFreeCell(transform.position, building.Size, out targetCell) :
+                GridManager.TryFindCellAdjacentToCity(this, building, out targetCell) ||
+                GridManager.TryFindNearestFreeCell(transform.position, building.Size, out targetCell);
 
-            bool alreadyPlanned = ActiveTasks.Exists(t =>
-                t.Data != null &&
-                t.Data.Type == TaskType.Build &&
-                t.BuildingData == building);
+            if (!foundCell) continue;
 
-            if (alreadyPlanned) continue;
+            Vector3 worldPos = GridManager.CellToWorld(targetCell.x, targetCell.y);
 
-            if (TotalWood >= building.WoodCost && TotalStone >= building.StoneCost)
+            if (!UnityEngine.AI.NavMesh.SamplePosition(worldPos, out var hit, 0.5f, UnityEngine.AI.NavMesh.AllAreas))
+                continue;
+
+            worldPos = hit.position;
+
+            if (!GridManager.TryReserveCell(this, targetCell, building, out Vector3 reservedWorldPos))
+                continue;
+
+            reservedWorldPos += new Vector3(
+                Random.Range(-0.45f, 0.45f) * GridManager.CellSize,
+                Random.Range(-0.45f, 0.45f) * GridManager.CellSize,
+                0f
+            );
+
+            if (!ConsumeResourcesForBuilding(building.WoodCost, building.StoneCost, building.MetalCost))
             {
-                Vector2Int targetCell;
-                bool foundCell = false;
-
-               
-                if (GridManager.GetCellsOwnedByCity(this).Count == 0)
-                {
-                    foundCell = GridManager.TryFindNearestFreeCell(transform.position, building.Size, out targetCell);
-                }
-                else
-                {
-                    foundCell = GridManager.TryFindCellAdjacentToCity(this, building, out targetCell)
-                                || GridManager.TryFindRandomCellAroundHouse(building.Size, out targetCell);
-                }
-
-                if (!foundCell) continue;
-
-               
-                Vector3 worldPos = GridManager.CellToWorld(targetCell.x, targetCell.y);
-                if (!UnityEngine.AI.NavMesh.SamplePosition(worldPos, out UnityEngine.AI.NavMeshHit hit, 0.1f, UnityEngine.AI.NavMesh.AllAreas))
-                {
-                    continue; 
-                }
-                worldPos = hit.position;
-
-               
-                if (GridManager.TryReserveCell(this, targetCell, building, out Vector3 reservedWorldPos))
-                {
-                    reservedWorldPos += new Vector3(
-                        UnityEngine.Random.Range(-0.4f, 0.4f) * GridManager.CellSize,
-                        UnityEngine.Random.Range(-0.4f, 0.4f) * GridManager.CellSize,
-                        0f
-                    );
-                    if (!ConsumeResourcesForBuilding(building.WoodCost, building.StoneCost))
-                    {
-                        GridManager.ReleaseReservation(targetCell);
-                        continue;
-                    }
-
-
-
-
-                    var buildTaskData = TaskDataList.Find(td =>
-                        td.Type == TaskType.Build &&
-                        td.TargetBuildingType == building.BuildingType);
-
-                    if (buildTaskData == null)
-                    {
-                        GridManager.ReleaseReservation(targetCell);
-                        continue;
-                    }
-
-                    CityTask t = new CityTask
-                    {
-                        Data = buildTaskData,
-                        BuildingData = building,
-                        BuildPosition = reservedWorldPos
-                    };
-
-                    ActiveTasks.Add(t);
-
-                    if (building.BuildingType == BuildingType.House)
-                    {
-                        HousesBuilt++;
-                       
-                    }
-                }
+                GridManager.ReleaseReservation(targetCell);
+                continue;
             }
+
+            if (!buildTaskLookup.TryGetValue(building.BuildingType, out var buildTaskData))
+            {
+                GridManager.ReleaseReservation(targetCell);
+                continue;
+            }
+
+            ActiveTasks.Add(new CityTask
+            {
+                Data = buildTaskData,
+                BuildingData = building,
+                BuildPosition = reservedWorldPos
+            });
+
+            if (building.BuildingType == BuildingType.House)
+                HousesBuilt++;
         }
     }
+
+
 
 
     #endregion
@@ -585,6 +630,7 @@ public class CityUtilityAI : MonoBehaviour
         {
             if (pTask.ResourceTarget.ResourceType == ResourceType.Wood && TotalWood < 5) score += 10f;
             if (pTask.ResourceTarget.ResourceType == ResourceType.Stone && TotalStone < 3) score += 8f;
+            if (pTask.ResourceTarget.ResourceType == ResourceType.Metal && TotalMetal < 3) score += 8f;
 
             float dist = Vector3.Distance(pVillager.transform.position, pTask.ResourceTarget.transform.position);
             score -= dist * 0.1f;
@@ -637,7 +683,7 @@ public class CityUtilityAI : MonoBehaviour
     void AggregateStorage()
     {
 
-        int w = 0, s = 0, f = 0;
+        int w = 0, s = 0, f = 0,m=0;
         foreach (var st in storages)
         {
             if (st == null) continue;
@@ -653,6 +699,7 @@ public class CityUtilityAI : MonoBehaviour
         TotalWood = w;
         TotalStone = s;
         TotalFood = f;
+        TotalMetal = m;
     }
 
 
@@ -665,6 +712,8 @@ public class CityUtilityAI : MonoBehaviour
             case ResourceType.Wood: TotalWood += pAmount; break;
             case ResourceType.Stone: TotalStone += pAmount; break;
             case ResourceType.Food: TotalFood += pAmount; break;
+            case ResourceType.Metal: TotalMetal += pAmount; break;
+
         }
     }
 
@@ -836,7 +885,7 @@ public class CityUtilityAI : MonoBehaviour
     public void OrderAttack(CityUtilityAI targetCity)
     {
         if (targetCity == null) return;
-        Debug.Log("marche!!!!!!!!"+targetCity);
+
 
         CityCombatController myCombat = GetComponent<CityCombatController>();
         CityCombatController enemyCombat = targetCity.GetComponent<CityCombatController>();

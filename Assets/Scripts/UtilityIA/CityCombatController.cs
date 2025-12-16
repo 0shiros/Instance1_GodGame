@@ -140,9 +140,10 @@ public class CityCombatController : MonoBehaviour
 
         if (defender != null) {
             defender.TakeDamage(attacker.Strength);
+            Debug.Log($"{attacker.name} inflige {attacker.Strength} à {defender.name}");
         }
         
-        Debug.Log($"{attacker.name} inflige {attacker.Strength} à {defender.name}");
+        
 
        
         if (defender.Hp <= 0)
