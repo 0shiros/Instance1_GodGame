@@ -16,6 +16,6 @@ MonoBehaviour:
   Type: 0
   TargetResource: 4
   TargetBuildingType: 0
-  BasePriority: 1
+  BasePriority: 0
   RecommendedVillagers: 1
   WorkDuration: 2

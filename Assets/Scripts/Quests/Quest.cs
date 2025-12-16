@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class Quest : MonoBehaviour
 {
     [SerializeField] List<SO_Quest> quests = new List<SO_Quest>();
+    [SerializeField] private GameObject tutorialPanel;
     [SerializeField] private Image previewImage;
     [SerializeField] private TextMeshProUGUI questName;
     [SerializeField] private TextMeshProUGUI questDescription;
@@ -35,6 +36,8 @@ public class Quest : MonoBehaviour
     public void StartQuest(int pQuestID)
     {
         if (pQuestID > quests.Count - 1 || pQuestID < 0) return;
+        
+        quests[pQuestID].HasBeenCompleted = false;
 
         if (quests[pQuestID].QuestImage != null)
         {
@@ -66,8 +69,8 @@ public class Quest : MonoBehaviour
                 {
                     AudioManager.Instance.PlaySound("QuestComplete");
                     quests[pQuestID].HasBeenCompleted = true;
+                    StartCoroutine(NextQuest(pQuestID));
                 }
-                StartCoroutine(NextQuest(pQuestID));
             }
         }
     }
@@ -77,8 +80,14 @@ public class Quest : MonoBehaviour
         yield return new WaitForSeconds(2);
 
         pQuestID++;
-        if (pQuestID > quests.Count - 1 || pQuestID < 0) yield break;
+        if (pQuestID > quests.Count - 1 || pQuestID < 0)
+        {
+            tutorialPanel.SetActive(false);
+            yield break;
+        }
 
         StartQuest(pQuestID);
+        
+        yield return null;
     }
 }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SO_granary
   m_EditorClassIdentifier: Assembly-CSharp::BuildingData
   BuildingName: New Building
-  Prefab: {fileID: 2953286491786590815, guid: cac0a8e764651d8409ee4caaf1cc9205, type: 3}
+  Prefab: {fileID: 2953286491786590815, guid: 6dbf2f9ef49ca9a4f8796859ed1d9a00, type: 3}
   Size: {x: 1, y: 1}
   WoodCost: 5
   StoneCost: 0

@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: SO_GranaryMetal
   m_EditorClassIdentifier: Assembly-CSharp::BuildingData
   BuildingName: New Building
-  Prefab: {fileID: 2953286491786590815, guid: cac0a8e764651d8409ee4caaf1cc9205, type: 3}
+  Prefab: {fileID: 2953286491786590815, guid: 52bcb61a4815221459fedbc95ea586f5, type: 3}
   Size: {x: 1, y: 1}
   WoodCost: 0
   StoneCost: 0
-  MaitalCost: 4
+  MetalCost: 4
   HousingCapacity: 2
   BuildingType: 15
   isStorage: 0

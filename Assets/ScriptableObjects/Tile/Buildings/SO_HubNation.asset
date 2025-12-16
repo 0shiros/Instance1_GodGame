@@ -15,11 +15,11 @@ MonoBehaviour:
   Sources:
   - Sprites: {fileID: 11400000, guid: 64afd6510fa7e8f4ebc62f1c632549c6, type: 2}
     Direction: 0
-    Color: {r: 1, g: 1, b: 1, a: 1}
+    Color: {r: 0.69411767, g: 0.24313726, b: 0.13725491, a: 1}
     Name: roof
   - Sprites: {fileID: 11400000, guid: 1ec81431bb6380145a22bbae99d7b28f, type: 2}
     Direction: 1
-    Color: {r: 1, g: 1, b: 1, a: 1}
+    Color: {r: 0.85882354, g: 0.57254905, b: 0.37254903, a: 1}
     Name: body
   Sprite: {fileID: -2828792731324806410, guid: 49350250b57ddbd4886c7e5522f79bfb, type: 3}
   id: 4

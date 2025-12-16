@@ -138,7 +138,7 @@ public class CityCombatController : MonoBehaviour
 
         yield return new WaitForSeconds(attackDelay);
 
-        if (defender != null) {
+        if (defender != null && attacker != null) {
             defender.TakeDamage(attacker.Strength);
             Debug.Log($"{attacker.name} inflige {attacker.Strength} à {defender.name}");
         }
@@ -186,7 +186,7 @@ public class CityCombatController : MonoBehaviour
         {
             LootEnemyCity(enemyCity);
            
-             Destroy(enemyCity.gameObject);
+            
         }
 
         attackers.Clear();
@@ -213,7 +213,8 @@ public class CityCombatController : MonoBehaviour
             OwnerCity.AddDogmaSciencePoints(1);
         }
         OwnerCity.AddDogmaSciencePoints(1);
-
+        ParticleManager.Instance.StartParticle(0);
+        Destroy(enemyCity.gameObject);
         Debug.Log($"💰 {OwnerCity.cityName} pille toutes les ressources de {defeatedCity.cityName}");
     }
 }
