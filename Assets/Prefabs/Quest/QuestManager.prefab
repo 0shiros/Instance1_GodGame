@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1290758094362704840
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5872656294987424920}
+  - component: {fileID: 4762304206768248128}
+  m_Layer: 0
+  m_Name: QuestManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5872656294987424920
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1290758094362704840}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4762304206768248128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1290758094362704840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee0a78903e808de469fb6e50f45dbe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Quest
+  quests:
+  - {fileID: 11400000, guid: 9320ac03ac17e3f4082e29d76f0be887, type: 2}
+  - {fileID: 11400000, guid: f5b1d709b2a500f4fac7c76098b949ee, type: 2}
+  - {fileID: 11400000, guid: f6d58c3be92e6554eb84c794fa849841, type: 2}
+  - {fileID: 11400000, guid: 41a9e050cd3af3048ae9448c0facb7f9, type: 2}
+  - {fileID: 11400000, guid: 5ce61c09e4547634d972241c096c0e37, type: 2}
+  - {fileID: 11400000, guid: aaeed96ed62fe7c46a1db53582c8fdf5, type: 2}
+  - {fileID: 11400000, guid: 0b7073c675873024daae71b43f98ae91, type: 2}
+  - {fileID: 11400000, guid: d2340062b341c2549914577310b38efb, type: 2}
+  previewImage: {fileID: 0}
+  questName: {fileID: 0}
+  questDescription: {fileID: 0}

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65ea9b8b7e930224dbb5fc1db4426624, type: 3}
+  m_Name: SO_Metal
+  m_EditorClassIdentifier: Assembly-CSharp::TechnologyData
+  TechnologyName: 9
+  ExperienceNeedToUnlock: 8
+  TechnologiesNeedToBeUnlock: 
+  Dogma: 0
+  Buildings:
+  - {fileID: 11400000, guid: 107101f5e90b85240811116dd8be8dcd, type: 2}
+  - {fileID: 11400000, guid: 7c4a7610d884c414789fa32d4757a676, type: 2}
+  - {fileID: 11400000, guid: 24bf2e11191a3754186b69db30f13a04, type: 2}
+  - {fileID: 11400000, guid: 608f2d12106afb841bf05643fa683bf6, type: 2}
+  - {fileID: 11400000, guid: 671f6295336de2c40a828a1432e5753f, type: 2}
+  Bonuses:
+    HpBonus: 0
+    SpeedBonus: 0
+    StrenghtBonus: 0

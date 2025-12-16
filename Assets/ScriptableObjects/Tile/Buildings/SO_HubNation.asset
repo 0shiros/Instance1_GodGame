@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b71718aaf02795142b1cadf76097b884, type: 3}
+  m_Name: SO_HubNation
+  m_EditorClassIdentifier: Assembly-CSharp::CustomTile
+  Sources:
+  - Sprites: {fileID: 11400000, guid: 64afd6510fa7e8f4ebc62f1c632549c6, type: 2}
+    Direction: 0
+    Color: {r: 0.69411767, g: 0.24313726, b: 0.13725491, a: 1}
+    Name: roof
+  - Sprites: {fileID: 11400000, guid: 1ec81431bb6380145a22bbae99d7b28f, type: 2}
+    Direction: 1
+    Color: {r: 0.85882354, g: 0.57254905, b: 0.37254903, a: 1}
+    Name: body
+  Sprite: {fileID: -2828792731324806410, guid: 49350250b57ddbd4886c7e5522f79bfb, type: 3}
+  id: 4

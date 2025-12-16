@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8be02f61093378f48b0b38d7ce54a817, type: 3}
+  m_Name: SO_forge
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingData
+  BuildingName: New Building
+  Prefab: {fileID: 2953286491786590815, guid: cac0a8e764651d8409ee4caaf1cc9205, type: 3}
+  Size: {x: 1, y: 1}
+  WoodCost: 5
+  StoneCost: 0
+  MetalCost: 0
+  HousingCapacity: 2
+  BuildingType: 4
+  isStorage: 0
+  maxBuildingsPerCell: 3
+  placementOffsetRadius: 0.35
