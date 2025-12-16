@@ -77,8 +77,8 @@ MonoBehaviour:
     loop: 0
     playOnAwake: 0
     source: {fileID: 0}
-  - name: Reasearch
-    clip: {fileID: 8300000, guid: 6deb2c7ebc0f13a4f92d11e6c87a98b0, type: 3}
+  - name: QuestComplete
+    clip: {fileID: 8300000, guid: ca07f5787e1ab38488f0aacac617a22e, type: 3}
     audioMixerGroup: {fileID: -987557382187698857, guid: ba0ea7f712d6e164c924d720f2776925, type: 2}
     volume: 1
     pitch: 1
@@ -98,3 +98,4 @@ MonoBehaviour:
   Music: {fileID: -4748606026852655191, guid: ba0ea7f712d6e164c924d720f2776925, type: 2}
   SFX: {fileID: -987557382187698857, guid: ba0ea7f712d6e164c924d720f2776925, type: 2}
   musicPlaying: 1
+  IsPlayingSound: 0

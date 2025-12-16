@@ -10,10 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 61170915af6d2fb47b468ae3f0b83219, type: 3}
-  m_Name: SandTileQuest
+  m_Name: 5RockQuest
   m_EditorClassIdentifier: Assembly-CSharp::SO_Quest
-  QuestName: Beginning
-  QuestDescription: You nees to place at least 1 tile of sand on the map
+  QuestName: Strong Like a Rock
+  QuestDescription: 'A few rocks to allow your future inhabitants
+
+    to build more
+    complex tools and buildings'
   QuestRequirement: 1
-  QuestImage: {fileID: 21300000, guid: 7a479d821af632d4d93ed4b74e15b9e2, type: 3}
-  QuestID: 0
+  QuestImage: {fileID: -5681169825606967803, guid: e716b6f267b2b444f92d58025fecd436, type: 3}
+  QuestID: 5
+  HasBeenCompleted: 0

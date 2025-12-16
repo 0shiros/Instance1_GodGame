@@ -15,7 +15,7 @@ public class AudioManager : MonoBehaviour
     public bool musicPlaying = true;
     private float timeBetweenMusics;
 
-    public bool IsPlayingSound = false;
+    [HideInInspector] public bool IsPlayingSound = false;
 
     public static AudioManager Instance;
 

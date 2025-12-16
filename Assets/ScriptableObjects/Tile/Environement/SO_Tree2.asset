@@ -22,3 +22,4 @@ MonoBehaviour:
     Color: {r: 0.43529412, g: 0.17254902, b: 0.0627451, a: 1}
     Name: Log
   Sprite: {fileID: -8578863491298802161, guid: 20ebf7ad968accc4694a67f2aa582b23, type: 3}
+  id: 0
