@@ -12386,6 +12386,7 @@ MonoBehaviour:
   quests:
   - {fileID: 11400000, guid: 9320ac03ac17e3f4082e29d76f0be887, type: 2}
   - {fileID: 11400000, guid: f5b1d709b2a500f4fac7c76098b949ee, type: 2}
+  tutorialPanel: {fileID: 1817513556}
   previewImage: {fileID: 2021485913}
   questName: {fileID: 888490354}
   questDescription: {fileID: 551992014}
