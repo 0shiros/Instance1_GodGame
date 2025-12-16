@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b71718aaf02795142b1cadf76097b884, type: 3}
+  m_Name: SO_Stone
+  m_EditorClassIdentifier: Assembly-CSharp::CustomTile
+  Sources:
+  - Sprites: {fileID: 11400000, guid: 88d9ed8a3a0cf884ca2eab248350e820, type: 2}
+    Direction: 1
+    Color: {r: 0.5686275, g: 0.8156863, b: 0.11372549, a: 1}
+    Name: Bush
+  Sprite: {fileID: -2371339777062046054, guid: 9c04ee80982c80b4583db94f37106de5, type: 3}

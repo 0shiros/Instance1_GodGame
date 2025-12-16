@@ -24,6 +24,11 @@ public class EnvironementBrush : MonoBehaviour
         colorBlender = ColorBlender.Instance;
     }
 
+    public void Reset()
+    {
+        currentTile = null;
+    }
+
     public void SetTile(CustomTile pTile)
     {
         currentTile = pTile;
@@ -42,10 +47,6 @@ public class EnvironementBrush : MonoBehaviour
 
     private void Update()
     {
-        if (IsPointerOverUI()) return;
-
-        if (canDraw)
-            DrawTiles();
     }
 
     bool IsPointerOverUI()
@@ -63,7 +64,12 @@ public class EnvironementBrush : MonoBehaviour
     public void CanDraw(InputAction.CallbackContext context)
     {
         if (currentTile == null || !isSelected) return;
-        if (context.started && HasTileGroundAtPosition()) canDraw = true;
+        if (context.started && HasTileGroundAtPosition())
+        {
+            if (IsPointerOverUI()) return;
+            DrawTiles();
+        }
+
         if (context.canceled)
         {
             canDraw = false;

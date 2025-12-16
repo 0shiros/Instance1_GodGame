@@ -13,13 +13,13 @@ public class GameEventBrush : MonoBehaviour
     {
         if (tilemaps == null || tilemaps.Count == 0) return null;
 
-        if (pRuleTile != null && pRuleTile.layerMask != 0)
+        if (pRuleTile != null && pRuleTile.LayerMask != 0)
         {
             for (int i = tilemaps.Count - 1; i >= 0; i--)
             {
                 var tm = tilemaps[i];
                 if (tm == null) continue;
-                if ((pRuleTile.layerMask & (1 << tm.gameObject.layer)) != 0)
+                if ((pRuleTile.LayerMask & (1 << tm.gameObject.layer)) != 0)
                     return tm;
             }
         }

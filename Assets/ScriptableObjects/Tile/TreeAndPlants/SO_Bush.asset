@@ -17,3 +17,4 @@ MonoBehaviour:
     Direction: 1
     Color: {r: 0.5686275, g: 0.8156863, b: 0.11372549, a: 1}
     Name: Bush
+  Sprite: {fileID: -583661112473690981, guid: 2c5af98f94f730c4c9a1a8d13c7d57b6, type: 3}

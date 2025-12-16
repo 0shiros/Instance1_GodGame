@@ -16,7 +16,7 @@ public class TileBrush : MonoBehaviour
     [SerializeField] Tilemap waterTileMap;
     [SerializeField] Slider BrushSizeSlider;
     [SerializeField] int radius;
-    [SerializeField] private Vector2Int mapBounds;
+    [SerializeField] private SO_MapData mapBounds;
     [SerializeField] int minRadius;
     [SerializeField] int maxRadius;
     [SerializeField] private NavMeshSurface NavMesh;
@@ -28,6 +28,8 @@ public class TileBrush : MonoBehaviour
     bool isSelected;
     ColorBlender colorBlender;
     private BrushPreview previewBrush;
+    private Vector3Int oldMidCell;
+
     private void OnDisable()
     {
         NavMesh.RemoveData();
@@ -36,12 +38,16 @@ public class TileBrush : MonoBehaviour
     private void Start()
     {
         colorBlender = ColorBlender.Instance;
-        for (int x = Mathf.CeilToInt((mapBounds.x / 2) * -1); x < Mathf.CeilToInt(mapBounds.x / 2); x++)
+        for (int x = Mathf.CeilToInt((mapBounds.MapBounds.x / 2) * -1);
+             x < Mathf.CeilToInt(mapBounds.MapBounds.x / 2);
+             x++)
         {
-            for (int y = Mathf.CeilToInt((mapBounds.y / 2) * -1); y < Mathf.CeilToInt(mapBounds.x / 2); y++)
+            for (int y = Mathf.CeilToInt((mapBounds.MapBounds.y / 2) * -1);
+                 y < Mathf.CeilToInt(mapBounds.MapBounds.x / 2);
+                 y++)
             {
                 waterTileMap.SetTile(new Vector3Int(x, y, 0), waterTile.RuleTiles);
-                waterTileMap.SetColor(new Vector3Int(x, y, 0), waterTile.color);
+                waterTileMap.SetColor(new Vector3Int(x, y, 0), waterTile.Color);
             }
         }
 
@@ -49,8 +55,15 @@ public class TileBrush : MonoBehaviour
         BrushSizeSlider.onValueChanged.AddListener(SizeChanged);
     }
 
+    public void Reset()
+    {
+        currentTile = null;
+        previewBrush.HidePreview();
+    }
+    
     private void SizeChanged(float pArg0)
     {
+        Quest.Instance.CompleteQuest(1);
         previewBrush.SetSize((int)pArg0);
     }
 
@@ -59,7 +72,24 @@ public class TileBrush : MonoBehaviour
         currentTile = pTile;
         colorBlender.SetColorForTile(pTile);
         FindTargetTilemap(GetMidCell(), currentTile);
+        previewBrush.ShowPreview();
         target = null;
+
+
+        switch (pTile.TileType)
+        {
+            case ETileType.Water:
+                break;
+            case ETileType.Dirt:
+                break;
+            case ETileType.Grass:
+                break;
+            case ETileType.Sand:
+                Quest.Instance.CompleteQuest(0);
+                break;
+            case ETileType.HeightGrass:
+                break;
+        } 
     }
 
     public void TileSelected(bool pIsSelected)
@@ -107,18 +137,18 @@ public class TileBrush : MonoBehaviour
         if (currentTile == null) return;
         CircleDraw(currentTile);
     }
-    
+
     private Tilemap FindTargetTilemap(Vector3Int pos, SO_Tiles pRuleTile)
     {
         if (tilemaps == null || tilemaps.Count == 0) return null;
 
-        if (pRuleTile != null && pRuleTile.layerMask != 0)
+        if (pRuleTile != null && pRuleTile.LayerMask != 0)
         {
             for (int i = tilemaps.Count - 1; i >= 0; i--)
             {
                 var tm = tilemaps[i];
                 if (tm == null) continue;
-                if ((pRuleTile.layerMask & (1 << tm.gameObject.layer)) != 0)
+                if ((pRuleTile.LayerMask & (1 << tm.gameObject.layer)) != 0)
                 {
                     GetComponent<BrushPreview>().SetTargetTilemap(tm, (int)BrushSizeSlider.value, pRuleTile);
                     return tm;
@@ -159,6 +189,18 @@ public class TileBrush : MonoBehaviour
 
         var midCell = GetMidCell();
 
+        if (midCell != oldMidCell && pRuleTile != EraseTile && AudioManager.Instance.IsPlaying("Draw"))
+        {
+            AudioManager.Instance.PlayOverlap("Draw");
+        }
+        else if (midCell != oldMidCell && AudioManager.Instance.IsPlaying("Erase"))
+        {
+            AudioManager.Instance.PlayOverlap("Erase");
+        }
+
+        Quest.Instance.CompleteQuest(0);
+        oldMidCell = midCell;
+
         int size = Mathf.Max(0, (int)BrushSizeSlider.value);
         int rSq = size * size;
 
@@ -166,7 +208,7 @@ public class TileBrush : MonoBehaviour
         {
             target = FindTargetTilemap(midCell, pRuleTile);
         }
-        
+
         for (int dx = -size; dx <= size; dx++)
         {
             for (int dy = -size; dy <= size; dy++)
@@ -217,10 +259,10 @@ public class TileBrush : MonoBehaviour
             }
         }
     }
-    
+
     public void ClearCurrentTileGround()
     {
-        if(currentTile == null) return;
+        if (currentTile == null) return;
         currentTile = null;
     }
 }

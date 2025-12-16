@@ -7,6 +7,7 @@ using UnityEngine.Tilemaps;
 public class CustomTile : ScriptableObject
 {
     public List<CustomTileData> Sources = new List<CustomTileData>();
+    public Sprite Sprite;
 }
 
 

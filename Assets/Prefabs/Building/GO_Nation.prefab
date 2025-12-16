@@ -101,7 +101,7 @@ MonoBehaviour:
   BuildingTypes:
   - {fileID: 11400000, guid: 4147b3572a674824b9799d9f9b735b27, type: 2}
   CurrentDogma: 0
-  agentsQuantityNeedToSetDogma: 0
+  agentsQuantityNeedToSetDogma: 20
   villager: {fileID: 7121599808976688172, guid: f6c65556a0e1fa64e812d275222fad46, type: 3}
   cityName: Village
   GridManager: {fileID: 0}

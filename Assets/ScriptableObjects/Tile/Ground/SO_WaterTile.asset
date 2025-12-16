@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: SO_WaterTile
   m_EditorClassIdentifier: Assembly-CSharp::SO_Tiles
   RuleTiles: {fileID: 11400000, guid: a0d2658114dc49e42b142161b2ca3d7c, type: 2}
-  color: {r: 0.5254902, g: 0.7137255, b: 0.9647059, a: 1}
-  layerMask:
+  Color: {r: 0.5254902, g: 0.7137255, b: 0.9647059, a: 1}
+  LayerMask:
     serializedVersion: 2
     m_Bits: 16
+  TileType: 1
