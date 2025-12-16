@@ -78,7 +78,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 40
   m_Sprite: {fileID: 1190033318731829909, guid: 9091f5fa2d224d541a1508c1861a2008, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -147,3 +147,4 @@ MonoBehaviour:
   - {fileID: 0}
   SO_Tile: {fileID: 11400000, guid: 18c420ceab39c33499f2a288bc1e184f, type: 2}
   meteoriteEntity: {fileID: 3140160023663975637}
+  meteoriteStartPos: {x: 15, y: 15}
