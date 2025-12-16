@@ -15,3 +15,10 @@ MonoBehaviour:
   TechnologyName: 10
   ExperienceNeedToUnlock: 9
   TechnologiesNeedToBeUnlock: 
+  Dogma: 0
+  Buildings:
+  - {fileID: 11400000, guid: 7c4a7610d884c414789fa32d4757a676, type: 2}
+  Bonuses:
+    HpBonus: 5
+    SpeedBonus: 0
+    StrenghtBonus: 0

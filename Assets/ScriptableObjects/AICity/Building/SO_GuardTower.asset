@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8be02f61093378f48b0b38d7ce54a817, type: 3}
-  m_Name: SO_WarehouseStone
+  m_Name: SO_GuardTower
   m_EditorClassIdentifier: Assembly-CSharp::BuildingData
   BuildingName: New Building
-  Prefab: {fileID: 2953286491786590815, guid: cac0a8e764651d8409ee4caaf1cc9205, type: 3}
+  Prefab: {fileID: 2953286491786590815, guid: 43f7bd504439ae746a28772b173b7b84, type: 3}
   Size: {x: 1, y: 1}
-  WoodCost: 0
-  StoneCost: 4
-  MetalCost: 0
+  WoodCost: 100
+  StoneCost: 200
+  MetalCost: 4
   HousingCapacity: 2
-  BuildingType: 7
+  BuildingType: 17
   isStorage: 0
   maxBuildingsPerCell: 3
   placementOffsetRadius: 0.35
