@@ -140,6 +140,7 @@ public class SearchTree : MonoBehaviour
             cityUtilityAI.AddStrengthToAllVillagers(tech.Bonuses.StrenghtBonus);
             
             TechnologiesUnlock.Add(tech);
+            ParticleManager.Instance.StartParticle(1);
             TechnologiesAvailable.Remove(tech);
         }
     }

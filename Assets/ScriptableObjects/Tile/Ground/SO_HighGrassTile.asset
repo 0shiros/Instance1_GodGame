@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf24bf4bc4292964ebe2643407bf267d, type: 3}
   m_Name: SO_HighGrassTile
   m_EditorClassIdentifier: Assembly-CSharp::SO_Tiles
-  RuleTiles: {fileID: 11400000, guid: 6cd16602aee3d2f4f8bf77e81f2dd69a, type: 2}
+  RuleTiles: {fileID: 11400000, guid: 6f6fde0ee3b9d9c409b92e7008743446, type: 2}
   Color: {r: 0.6509804, g: 0.7019608, b: 0.49019608, a: 1}
   LayerMask:
     serializedVersion: 2
