@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.Tilemaps;
-using UnityEngine.UI;
 
 public class EnvironementBrush : MonoBehaviour
 {
@@ -139,6 +138,25 @@ public class EnvironementBrush : MonoBehaviour
                     target.SetColor(new Vector3Int(midCell.x, midCell.y, 0), colorBlender.BlendColorForCustomTile(i));
                     break;
             }
+        }
+        
+        switch (currentTile.id)
+        {
+            case 0: //tree quest
+                Quest.Instance.CompleteQuest(3);
+                break;
+            case 1: //bush quest
+                Quest.Instance.CompleteQuest(4);
+                break;
+            case 2: //stone quest
+                Quest.Instance.CompleteQuest(5);
+                break;
+            case 3: //metal quest
+                Quest.Instance.CompleteQuest(6);
+                break;
+            case 4: //townHall quest
+                Quest.Instance.CompleteQuest(7);
+                break;
         }
     }
 

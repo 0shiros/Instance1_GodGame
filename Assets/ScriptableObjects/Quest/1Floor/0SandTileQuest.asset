@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 61170915af6d2fb47b468ae3f0b83219, type: 3}
-  m_Name: ResizeQuest
+  m_Name: 0SandTileQuest
   m_EditorClassIdentifier: Assembly-CSharp::SO_Quest
-  QuestName: Time To fill
-  QuestDescription: "Oh sorry God, i forget to tell you can select the size of your
-    \nPencil if you want"
+  QuestName: In the beginning
+  QuestDescription: first you can place some sand in your world
   QuestRequirement: 1
   QuestImage: {fileID: 21300000, guid: 7a479d821af632d4d93ed4b74e15b9e2, type: 3}
-  QuestID: 1
+  QuestID: 0
+  HasBeenCompleted: 0

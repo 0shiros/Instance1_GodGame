@@ -18,3 +18,4 @@ MonoBehaviour:
     Color: {r: 0.6392157, g: 0.64705884, b: 0.6039216, a: 1}
     Name: Stone
   Sprite: {fileID: -2371339777062046054, guid: 9c04ee80982c80b4583db94f37106de5, type: 3}
+  id: 2

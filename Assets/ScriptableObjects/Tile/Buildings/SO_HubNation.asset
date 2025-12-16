@@ -22,3 +22,4 @@ MonoBehaviour:
     Color: {r: 1, g: 1, b: 1, a: 1}
     Name: body
   Sprite: {fileID: -2828792731324806410, guid: 49350250b57ddbd4886c7e5522f79bfb, type: 3}
+  id: 4

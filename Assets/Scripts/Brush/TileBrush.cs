@@ -83,6 +83,7 @@ public class TileBrush : MonoBehaviour
             case ETileType.Dirt:
                 break;
             case ETileType.Grass:
+                Quest.Instance.CompleteQuest(2);
                 break;
             case ETileType.Sand:
                 Quest.Instance.CompleteQuest(0);

@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CustomTile
   Sources: []
   Sprite: {fileID: -2731207335150734343, guid: 7646090118deebb46bf2c3afe11158df, type: 3}
+  id: -1
