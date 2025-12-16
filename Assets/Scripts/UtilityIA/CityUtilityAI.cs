@@ -29,7 +29,7 @@ public class CityUtilityAI : MonoBehaviour
 
     [Header("Monde")]
     public Vector2Int GridSize = new Vector2Int(50, 50);
-    public float TaskScanInterval = 40f;
+    public float TaskScanInterval = 1f;
 
     public AnimationCurve WorkerDistributionCurve = AnimationCurve.Linear(0f, 0.1f, 1f, 1f);
     public float MaxWorkerPercent = 0.5f;
@@ -129,17 +129,17 @@ public class CityUtilityAI : MonoBehaviour
     }
 
 
-    public void RegisterResourceNode(ResourceNode rn)
-    {
-        if (rn == null) return;
-        if (!evironementContainer.resourceNodes.Contains(rn))
-            evironementContainer.resourceNodes.Add(rn);
-    }
-    public void UnregisterCityBuilding(MonoBehaviour building)
-    {
-        if (building == null) return;
-        CityBuildings.Remove(building);
-    }
+    //public void RegisterResourceNode(ResourceNode rn)
+    //{
+    //    if (rn == null) return;
+    //    if (!evironementContainer.resourceNodes.Contains(rn))
+    //        evironementContainer.resourceNodes.Add(rn);
+    //}
+    //public void UnregisterCityBuilding(MonoBehaviour building)
+    //{
+    //    if (building == null) return;
+    //    CityBuildings.Remove(building);
+    //}
     bool ConsumeResourcesForBuilding(int wood, int stone, int metal, int food = 0)
     {
         if (TotalWood < wood || TotalStone < stone || TotalFood < food|| TotalMetal<metal)
@@ -175,8 +175,7 @@ public class CityUtilityAI : MonoBehaviour
     {
         if (building == null) return;
 
-        if (!CityBuildings.Contains(building))
-        {
+      
             CityBuildings.Add(building);
             if (CurrentDogma == E_Dogma.Craft)
             {
@@ -184,7 +183,7 @@ public class CityUtilityAI : MonoBehaviour
             }
             AddSciencePoints(1);
             HandleBuildTasks();
-        }
+        
             
     }
 
@@ -306,7 +305,7 @@ public class CityUtilityAI : MonoBehaviour
             reproductionTimer = 0f;
             TryReproduce();
         }
-
+        
         TryRecruitNearbyVillagers();
 
         if (timer >= TaskScanInterval)
@@ -384,7 +383,7 @@ public class CityUtilityAI : MonoBehaviour
 
         return score;
     }
-
+   
     float GetTotalResources()
     {
         return TotalWood + TotalStone + TotalFood + TotalMetal;

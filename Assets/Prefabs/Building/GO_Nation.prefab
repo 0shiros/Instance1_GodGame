@@ -152,8 +152,7 @@ MonoBehaviour:
   MaxBorn: 3
   villagers: []
   ActiveTasks: []
-  CityBuildings:
-  - {fileID: 2404124589276494461, guid: cac0a8e764651d8409ee4caaf1cc9205, type: 3}
+  CityBuildings: []
   AttackScanInterval: 10
   AttackRange: 50
   ResourceGreedFactor: 0.7

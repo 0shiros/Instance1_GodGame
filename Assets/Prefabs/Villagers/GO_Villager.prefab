@@ -127,29 +127,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AgentMovement
   role: 0
-  carryCapacity: 10
-  harvestPerAction: 2
-  harvestDistance: 2
-  hunger: 0
-  fatigue: 0
-  hungerRate: 4
-  fatigueRate: 0.5
-  hungerThreshold: 50
-  fatigueThreshold: 50
-  foodPerEat: 1
-  eatDurationPerUnit: 0.5
-  eatRate: 1
+  CarryCapacity: 5
+  HarvestPerAction: 2
+  HarvestDistance: 2
+  Hunger: 0
+  Fatigue: 0
+  HungerRate: 0.5
+  FatigueRate: 0.2
+  HungerThreshold: 50
+  FatigueThreshold: 80
+  FoodPerEat: 1
+  EatDurationPerUnit: 0.5
+  EatRate: 20
   Hp: 0
   Strength: 0
-  hpMin: 85
-  hpMax: 100
-  speedMin: 5
-  speedMax: 10
-  strengthMin: 5
-  strengthMax: 20
   stoppingDistance: 0.2
   city: {fileID: 0}
   defaultBuildTime: 2
   agent: {fileID: 0}
   carrying: 0
   carryingType: 0
+  isAttacker: 0

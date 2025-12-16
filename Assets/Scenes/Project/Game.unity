@@ -7879,7 +7879,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GridManager2D
   Width: 250
   Height: 250
-  CellSize: 2
+  CellSize: 5
 --- !u!4 &1231804473
 Transform:
   m_ObjectHideFlags: 0
