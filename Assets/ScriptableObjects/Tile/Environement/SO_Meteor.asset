@@ -10,11 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b71718aaf02795142b1cadf76097b884, type: 3}
-  m_Name: SO_Stone
+  m_Name: SO_Meteor
   m_EditorClassIdentifier: Assembly-CSharp::CustomTile
-  Sources:
-  - Sprites: {fileID: 11400000, guid: 88d9ed8a3a0cf884ca2eab248350e820, type: 2}
-    Direction: 1
-    Color: {r: 0.6392157, g: 0.64705884, b: 0.6039216, a: 1}
-    Name: Stone
-  Sprite: {fileID: -2371339777062046054, guid: 9c04ee80982c80b4583db94f37106de5, type: 3}
+  Sources: []
+  Sprite: {fileID: -4902400814585011028, guid: dd079e7d9798adb478eff0066225028d, type: 3}
