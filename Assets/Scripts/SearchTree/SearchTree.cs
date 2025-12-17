@@ -23,15 +23,16 @@ public class SearchTree : MonoBehaviour
 
     private void OnEnable()
     {
-        CityUtilityAI.ActionBasic += AddExperience;
-        CityUtilityAI.ActionDogma += AddDogmaExperience;
-        CityUtilityAI.ActionDogmaTechUnlockMax += SetMaxQuantityOfDogmaTech;
+        cityUtilityAI = gameObject.GetComponent<CityUtilityAI>();
+        cityUtilityAI.ActionBasic += AddExperience;
+        cityUtilityAI.ActionDogma += AddDogmaExperience;
+        cityUtilityAI.ActionDogmaTechUnlockMax += SetMaxQuantityOfDogmaTech;
     }
     private void OnDisable()
     {
-        CityUtilityAI.ActionBasic -= AddExperience;
-        CityUtilityAI.ActionDogma -= AddDogmaExperience;
-        CityUtilityAI.ActionDogmaTechUnlockMax += SetMaxQuantityOfDogmaTech;
+        cityUtilityAI.ActionBasic -= AddExperience;
+        cityUtilityAI.ActionDogma -= AddDogmaExperience;
+        cityUtilityAI.ActionDogmaTechUnlockMax += SetMaxQuantityOfDogmaTech;
     }
 
     private void AddExperience(int pExperienceReward)
@@ -46,7 +47,6 @@ public class SearchTree : MonoBehaviour
 
     private void Start()
     {
-        cityUtilityAI = gameObject.GetComponent<CityUtilityAI>();
         SetMaxQuantityOfBasicTech();
         SetMaxQuantityOfDogmaTech();
     }

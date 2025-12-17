@@ -91,9 +91,9 @@ public class CityUtilityAI : MonoBehaviour
     [Header("Bâtiments de la ville")] public List<MonoBehaviour> CityBuildings = new List<MonoBehaviour>();
 
 
-    public static Action<int> ActionBasic;
-    public static Action<int> ActionDogma;
-    public static Action ActionDogmaTechUnlockMax;
+    public Action<int> ActionBasic;
+    public Action<int> ActionDogma;
+    public Action ActionDogmaTechUnlockMax;
 
     [Header("Combat Decision")] public float AttackScanInterval = 10f;
     public float AttackRange = 150f;
@@ -670,12 +670,6 @@ public class CityUtilityAI : MonoBehaviour
             w += st.StoredWood;
             s += st.StoredStone;
             f += st.StoredFood;
-            if (CurrentDogma == E_Dogma.Development)
-            {
-                AddDogmaSciencePoints(1);
-            }
-
-            AddSciencePoints(1);
         }
 
         if (TotalWood < w)
@@ -711,6 +705,14 @@ public class CityUtilityAI : MonoBehaviour
             case ResourceType.Food: TotalFood += pAmount; break;
             case ResourceType.Metal: TotalMetal += pAmount; break;
         }
+        
+        AddSciencePoints(1);
+        
+        if (CurrentDogma == E_Dogma.Development)
+        {
+            AddDogmaSciencePoints(1);
+        }
+        
     }
 
     public StorageBuilding FindNearestStorage(Vector3 pFrom)

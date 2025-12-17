@@ -8,7 +8,6 @@ public class StorageBuilding : MonoBehaviour
     public int StoredStone = 0;
     public int StoredFood = 0;
 
-
     public void Deposit(ResourceType pType, int pAmount)
     {
         switch (pType)

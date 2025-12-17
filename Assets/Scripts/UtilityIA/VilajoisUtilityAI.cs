@@ -374,7 +374,7 @@ public class VillagerUtilityAI : MonoBehaviour
         if (!GoToPosition(storage.transform.position)) yield break;
         yield return WaitUntilArrived();
 
-        storage.Deposit(carryingType, carrying);
+        //storage.Deposit(carryingType, carrying);
         city?.NotifyResourceCollected(carryingType, carrying);
 
         carrying = 0;
