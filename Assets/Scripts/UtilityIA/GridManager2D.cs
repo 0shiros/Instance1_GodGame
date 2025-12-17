@@ -133,7 +133,7 @@ public class GridManager2D : MonoBehaviour
         if (!IsValidCell(cell)) return;
         var c = grid[cell.x, cell.y];
         c.reservedCount = Mathf.Max(0, c.reservedCount - 1);
-        
+        Debug.Log(c.ownerCityAI);
     }
 
     public bool CommitPlacement(Vector2Int cell, GameObject placed)
