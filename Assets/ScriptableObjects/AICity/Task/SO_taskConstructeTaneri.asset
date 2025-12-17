@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36b35d584e74bd14abf77096b13bf93e, type: 3}
-  m_Name: SO_explor
+  m_Name: SO_taskConstructeTaneri
   m_EditorClassIdentifier: Assembly-CSharp::TaskData
   TaskName: "Nouvelle T\xE2che"
   Type: 1
-  TargetResource: 1
-  TargetBuildingType: 17
-  BasePriority: 0
+  TargetResource: 0
+  TargetBuildingType: 4
+  BasePriority: 1
   RecommendedVillagers: 1
   WorkDuration: 2

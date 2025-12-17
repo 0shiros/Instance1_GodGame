@@ -103,6 +103,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 87e00471e12ebe9499e4206422a95294, type: 2}
   - {fileID: 11400000, guid: ad55ff5ef12a2c84a917212473ae5f45, type: 2}
   - {fileID: 11400000, guid: 26c7d254060ff4f4289bd57ec8c2eec6, type: 2}
+  - {fileID: 11400000, guid: 26c7d254060ff4f4289bd57ec8c2eec6, type: 2}
+  - {fileID: 11400000, guid: 61f237c021b151e4daa0e420b7976e2f, type: 2}
+  - {fileID: 11400000, guid: 885aa3d94bfb01e42a0e279d2eacd2c0, type: 2}
   BuildingTypes:
   - {fileID: 11400000, guid: 4147b3572a674824b9799d9f9b735b27, type: 2}
   CurrentDogma: 0
