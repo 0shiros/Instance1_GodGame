@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 32738c2825b38284695f04d5ab9cef74
+guid: 3713530aa26c25343af349c448d17468
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3592589875333193167
-    second: As_troncv2 (1)_0
+      213: 7757112432311325874
+    second: tronc 5_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,7 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: As_troncv2 (1)_0
+      name: tronc 5_0
       rect:
         serializedVersion: 2
         x: 3
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 132a911fa8e842ec0800000000000000
-      internalID: -3592589875333193167
+      spriteID: 2b4dea288acc6ab60800000000000000
+      internalID: 7757112432311325874
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 59ceaa1dfe0711242b5bac13f03eccac
+    spriteID: 06a210e231328b84c9b08bdc24dfbc28
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      As_troncv2 (1)_0: -3592589875333193167
+      tronc 5_0: 7757112432311325874
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
