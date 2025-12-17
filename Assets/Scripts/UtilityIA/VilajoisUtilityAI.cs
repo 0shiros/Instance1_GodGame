@@ -176,7 +176,7 @@ public class VillagerUtilityAI : MonoBehaviour
 
             state = EState.Eating;
 
-            while (Hunger > 0f && nearestStorage.StoredFood > 0)
+            while (Hunger > 0f && city.TotalFood > 0)
             {
                 int toTake = Mathf.Min(FoodPerEat, nearestStorage.StoredFood);
                 int taken = nearestStorage.Withdraw(ResourceType.Food, toTake);
@@ -234,7 +234,7 @@ public class VillagerUtilityAI : MonoBehaviour
 
         foreach (var s in city.GetComponentsInChildren<StorageBuilding>())
         {
-            if (s == null || s.StoredFood <= 0) continue;
+            if (s == null || city.TotalFood <= 0) continue;
 
             float d = Vector3.Distance(transform.position, s.transform.position);
             if (d < bestDist)
@@ -374,7 +374,6 @@ public class VillagerUtilityAI : MonoBehaviour
         if (!GoToPosition(storage.transform.position)) yield break;
         yield return WaitUntilArrived();
 
-        //storage.Deposit(carryingType, carrying);
         city?.NotifyResourceCollected(carryingType, carrying);
 
         carrying = 0;
