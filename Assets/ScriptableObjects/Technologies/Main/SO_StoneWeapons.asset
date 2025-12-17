@@ -20,4 +20,4 @@ MonoBehaviour:
   Bonuses:
     HpBonus: 0
     SpeedBonus: 0
-    StrenghtBonus: 5
+    StrenghtBonus: 10

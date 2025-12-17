@@ -16,3 +16,9 @@ MonoBehaviour:
   ExperienceNeedToUnlock: 4
   TechnologiesNeedToBeUnlock: 06000000
   Dogma: 2
+  Buildings:
+  - {fileID: 11400000, guid: ee78b12ea9133494c96799c6d759cc1d, type: 2}
+  Bonuses:
+    HpBonus: 0
+    SpeedBonus: 0
+    StrenghtBonus: 0

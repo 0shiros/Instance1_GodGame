@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using DG.Tweening;
 using UnityEngine.Audio;
+using UnityEngine.UI;
 
 public class AudioManager : MonoBehaviour
 {
@@ -11,11 +12,15 @@ public class AudioManager : MonoBehaviour
     public AudioMixerGroup Master;
     public AudioMixerGroup Music;
     public AudioMixerGroup SFX;
+    public SO_AudioVolumes saveVolume;
+    [SerializeField] Slider masterSlider;
+    [SerializeField] Slider musicSlider;
+    [SerializeField] Slider sfxSlider;
 
     public bool musicPlaying = true;
     private float timeBetweenMusics;
 
-    [HideInInspector] public bool IsPlayingSound = false;
+    [HideInInspector] public bool IsPlayingSound;
 
     public static AudioManager Instance;
 
@@ -30,7 +35,7 @@ public class AudioManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
+        
         foreach (Sound s in Sounds)
         {
             s.source = gameObject.AddComponent<AudioSource>();
@@ -53,6 +58,9 @@ public class AudioManager : MonoBehaviour
 
     private void Update()
     {
+        mixer.GetFloat("Master", out saveVolume.MasterVolume);
+        mixer.GetFloat("Music", out saveVolume.MusicVolume);
+        mixer.GetFloat("SFX", out saveVolume.SFXVolume);
         ChangeVolume("Music", !musicPlaying ? 0 : 1);
         timeBetweenMusics += Time.deltaTime;
         if (timeBetweenMusics >= GetLength("Music") && musicPlaying)
@@ -128,7 +136,12 @@ public class AudioManager : MonoBehaviour
 
     #endregion
 
-    #region effects
+    #region utility
+
+    public void LoadVolume(string pName, float pVolume)
+    {
+        
+    }
 
     public void ChangeVolume(string pName, float pVolume)
     {
@@ -139,6 +152,18 @@ public class AudioManager : MonoBehaviour
     public void ChangeMixerVolume(float pVolume, AudioMixerGroup pMixer)
     {
         mixer.SetFloat(pMixer.name, pVolume);
+    }
+    public void ChangeMasterMixerVolume()
+    {
+        mixer.SetFloat(Master.name, Mathf.Log10(masterSlider.value) * 20);
+    }
+    public void ChangeMusicMixerVolume()
+    {
+        mixer.SetFloat(Music.name, Mathf.Log10(musicSlider.value) * 20);
+    }
+    public void ChangeSFXMixerVolume()
+    {
+        mixer.SetFloat(SFX.name, Mathf.Log10(sfxSlider.value) * 20);
     }
 
     public void ChangePitch(string pName, float pPitch)

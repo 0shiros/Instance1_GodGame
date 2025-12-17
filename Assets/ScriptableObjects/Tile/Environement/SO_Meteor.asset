@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: SO_Meteor
   m_EditorClassIdentifier: Assembly-CSharp::CustomTile
   Sources: []
-  Sprite: {fileID: -4902400814585011028, guid: dd079e7d9798adb478eff0066225028d, type: 3}
+  Sprite: {fileID: 1190033318731829909, guid: 9091f5fa2d224d541a1508c1861a2008, type: 3}
   id: -1

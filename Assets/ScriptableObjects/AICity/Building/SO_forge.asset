@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: SO_forge
   m_EditorClassIdentifier: Assembly-CSharp::BuildingData
   BuildingName: New Building
-  Prefab: {fileID: 2953286491786590815, guid: cac0a8e764651d8409ee4caaf1cc9205, type: 3}
+  Prefab: {fileID: 2953286491786590815, guid: d47d3e1e2d428d946aeaa782dbb60560, type: 3}
   Size: {x: 1, y: 1}
-  WoodCost: 5
-  StoneCost: 0
-  MetalCost: 0
+  WoodCost: 150
+  StoneCost: 100
+  MetalCost: 75
   HousingCapacity: 2
   BuildingType: 4
   isStorage: 0
   maxBuildingsPerCell: 3
-  placementOffsetRadius: 0.35
+  placementOffsetRadius: 1
