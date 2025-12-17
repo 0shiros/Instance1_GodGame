@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 public class CityUtilityAI : MonoBehaviour
@@ -32,8 +33,7 @@ public class CityUtilityAI : MonoBehaviour
     public AnimationCurve WorkerDistributionCurve = AnimationCurve.Linear(0f, 0.1f, 1f, 1f);
     public float MaxWorkerPercent = 0.5f;
 
-    [Header("Placement bâtiments")] 
-    public float HouseSpawnDistance = 5f;
+    [Header("Placement bâtiments")] public float HouseSpawnDistance = 5f;
     public float BuildingMinDistance = 2f;
 
     [Header("Ressources globales")] public float TotalWood;
@@ -148,6 +148,29 @@ public class CityUtilityAI : MonoBehaviour
         if (TotalWood < wood || TotalStone < stone || TotalFood < food || TotalMetal < metal)
             return false;
 
+
+        if (wood < TotalWood)
+        {
+            TotalWood -= wood;
+            return true;
+        }
+        if (stone < TotalStone)
+        {
+            TotalStone -= wood;
+            return true;
+        }
+        if (metal < TotalMetal)
+        {
+            TotalMetal -= wood;
+            return true;
+        }
+        if (food < TotalFood)
+        {
+            TotalFood -= wood;
+            return true;
+        }
+
+        return false;
         var validStorages = storages.FindAll(s =>
             s != null &&
             s.StoredWood >= wood &&
@@ -227,6 +250,7 @@ public class CityUtilityAI : MonoBehaviour
         gameObject.name = cityName;
         storages.Clear();
         storages.AddRange(GetComponentsInChildren<StorageBuilding>());
+
     }
 
     void Start()
@@ -249,7 +273,7 @@ public class CityUtilityAI : MonoBehaviour
     {
         for (int i = 0; i < pQuantity; i++)
         {
-            var go = Instantiate(villager, transform.position + Vector3.down * 2,  Quaternion.identity, transform);
+            var go = Instantiate(villager, transform.position + Vector3.down * 2, Quaternion.identity, transform);
             var human = go.GetComponent<VillagerUtilityAI>();
             if (human != null) RegisterVillager(human);
             human.Hp = Random.Range(HpMin, HpMax);
@@ -705,14 +729,13 @@ public class CityUtilityAI : MonoBehaviour
             case ResourceType.Food: TotalFood += pAmount; break;
             case ResourceType.Metal: TotalMetal += pAmount; break;
         }
-        
+
         AddSciencePoints(1);
-        
+
         if (CurrentDogma == E_Dogma.Development)
         {
             AddDogmaSciencePoints(1);
         }
-        
     }
 
     public StorageBuilding FindNearestStorage(Vector3 pFrom)
@@ -869,7 +892,7 @@ public class CityUtilityAI : MonoBehaviour
     {
         ActionDogma?.Invoke(pExperienceReward);
     }
-    
+
     public void AddDogmaTechUnlockMax()
     {
         ActionDogmaTechUnlockMax?.Invoke();

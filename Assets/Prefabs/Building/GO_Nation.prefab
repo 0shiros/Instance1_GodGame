@@ -220,6 +220,8 @@ MonoBehaviour:
   StoredWood: 0
   StoredStone: 0
   StoredFood: 0
+  StoredMetal: 0
+  city: {fileID: 5979278287541560166}
 --- !u!114 &6439774105809816808
 MonoBehaviour:
   m_ObjectHideFlags: 0
