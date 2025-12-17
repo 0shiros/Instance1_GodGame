@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TaskData
   TaskName: "Nouvelle T\xE2che"
   Type: 1
-  TargetResource: 0
-  TargetBuildingType: 0
+  TargetResource: 1
+  TargetBuildingType: 4
   BasePriority: 2
   RecommendedVillagers: 1
   WorkDuration: 2

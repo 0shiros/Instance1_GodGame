@@ -40,10 +40,7 @@ public enum BuildingType
     ForgeMetal,
     GranaryMetal,
     Mine,
-    Custom,
-    Tanery,
-    Armory,
-    MineMetal
+    Custom
 
 }
 
