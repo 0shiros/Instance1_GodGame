@@ -10,8 +10,8 @@ public class CityCombatController : MonoBehaviour
 
     public CityUtilityAI enemyCity;
 
-    public List<VillagerUtilityAI> attackers = new();
-    public List<VillagerUtilityAI> defenders = new();
+    public List<villagersUtilityAI> attackers = new();
+    public List<villagersUtilityAI> defenders = new();
 
     private bool combatRunning = false;
 
@@ -117,7 +117,7 @@ public class CityCombatController : MonoBehaviour
     }
 
 
-    private IEnumerator PerformAttack(VillagerUtilityAI attacker, VillagerUtilityAI defender)
+    private IEnumerator PerformAttack(villagersUtilityAI attacker, villagersUtilityAI defender)
     {
         if (attacker == null || defender == null) yield break;
 
