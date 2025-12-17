@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class VillagerUtilityAI : MonoBehaviour
+public class villagersUtilityAI : MonoBehaviour
 {
     public VillagerRole role = VillagerRole.Generalist;
 

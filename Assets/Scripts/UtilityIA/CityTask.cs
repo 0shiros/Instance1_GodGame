@@ -13,7 +13,7 @@ public class CityTask
     public BuildingData BuildingData;
     public Vector3 BuildPosition;
 
-    public List<VillagerUtilityAI> AassignedVillagers = new List<VillagerUtilityAI>();
+    public List<villagersUtilityAI> AassignedVillagers = new List<villagersUtilityAI>();
 
     public bool IsCompleted = false;
 
