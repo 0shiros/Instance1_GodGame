@@ -360,14 +360,12 @@ public class CityUtilityAI : MonoBehaviour
     float GetBuildingInterest(BuildingData building)
     {
         float score = 0f;
-        Debug.Log(building);
 
         switch (building.BuildingType)
         {
             case BuildingType.House:
                 
                 score += Mathf.Max(0, villagers.Count - HousesBuilt * 2);
-                Debug.Log($"house  : {score}");
                 break;
 
             case BuildingType.Farm:
@@ -380,7 +378,6 @@ public class CityUtilityAI : MonoBehaviour
                 int farms = CityBuildings.Count(b =>
                     b != null && b.GetType().Name.Contains("Farm"));
                 score -= farms * 15;
-                Debug.Log($"farme  : {score}");
                 break;
 
             case BuildingType.Mine:
@@ -394,22 +391,18 @@ public class CityUtilityAI : MonoBehaviour
 
                 if (TotalMetal < 5)
                     score += 25;
-                Debug.Log($"mine  : {score}");
                 break;
 
             case BuildingType.Forge:
                 
                 if (TotalMetal < 5)
-
                     return -1000f;
 
                 score += villagers.Count * 2;
 
                 if (CurrentDogma == E_Dogma.Military)
                     score += 40;
-                Debug.Log($"forge  : {score}");
                 break;
-                
         }
 
         return score;
@@ -524,34 +517,19 @@ public class CityUtilityAI : MonoBehaviour
     void HandleBuildTasks()
     {
         if (GridManager == null) return;
-        if (TotalFood < 200) return;
 
         var buildableBuildings = BuildingTypes
      .Where(b => b != null && b.Prefab != null)
      .Where(b => !ActiveTasks.Exists(t =>
-         t != null &&
-         t.Data != null &&
+         t != null && t.Data != null &&
          t.Data.Type == TaskType.Build &&
-         t.BuildingData != null &&
-         t.BuildingData.BuildingType == b.BuildingType))
+         t.BuildingData == b))
      .Where(b => TotalWood >= b.WoodCost &&
                  TotalStone >= b.StoneCost &&
                  TotalMetal >= b.MetalCost)
-     .Where(b => GetBuildingInterest(b) > 0f)
      .OrderByDescending(b => GetBuildingInterest(b))
      .ToList();
-
-        var building = buildableBuildings.FirstOrDefault();
-        if (building == null)
-            return;
-
-
-        
-
-        
-
-
-        foreach (var buildinges in buildableBuildings)
+        foreach (var building in buildableBuildings)
         {
             Vector2Int targetCell;
             bool foundCell = GridManager.GetCellsOwnedByCity(this).Count == 0

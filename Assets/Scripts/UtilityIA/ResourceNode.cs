@@ -18,5 +18,4 @@ public class ResourceNode : MonoBehaviour
     {
         ActionResource?.Invoke(this);
     }
-
 }
