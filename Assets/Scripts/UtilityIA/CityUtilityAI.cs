@@ -32,7 +32,8 @@ public class CityUtilityAI : MonoBehaviour
     public AnimationCurve WorkerDistributionCurve = AnimationCurve.Linear(0f, 0.1f, 1f, 1f);
     public float MaxWorkerPercent = 0.5f;
 
-    [Header("Placement bâtiments")] public float HouseSpawnDistance = 5f;
+    [Header("Placement bâtiments")] 
+    public float HouseSpawnDistance = 5f;
     public float BuildingMinDistance = 2f;
 
     [Header("Ressources globales")] public float TotalWood;
@@ -92,6 +93,7 @@ public class CityUtilityAI : MonoBehaviour
 
     public static Action<int> ActionBasic;
     public static Action<int> ActionDogma;
+    public static Action ActionDogmaTechUnlockMax;
 
     [Header("Combat Decision")] public float AttackScanInterval = 10f;
     public float AttackRange = 150f;
@@ -852,6 +854,8 @@ public class CityUtilityAI : MonoBehaviour
             case 1: CurrentDogma = E_Dogma.Development; break;
             case 2: CurrentDogma = E_Dogma.Military; break;
         }
+
+        AddDogmaTechUnlockMax();
     }
 
     public void AddSciencePoints(int pExperienceReward)
@@ -862,6 +866,11 @@ public class CityUtilityAI : MonoBehaviour
     public void AddDogmaSciencePoints(int pExperienceReward)
     {
         ActionDogma?.Invoke(pExperienceReward);
+    }
+    
+    public void AddDogmaTechUnlockMax()
+    {
+        ActionDogmaTechUnlockMax?.Invoke();
     }
 
     #endregion
