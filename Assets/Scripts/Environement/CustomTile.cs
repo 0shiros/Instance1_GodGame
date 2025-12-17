@@ -10,6 +10,8 @@ public class CustomTile : ScriptableObject
     public Sprite Sprite;
     [Header("not mandatory")]
     public int id;
+    
+    public string Name;
 }
 
 

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SO_TrainingGround
   m_EditorClassIdentifier: Assembly-CSharp::TechnologyData
   TechnologyName: 13
-  ExperienceNeedToUnlock: 2
+  ExperienceNeedToUnlock: 20
   TechnologiesNeedToBeUnlock: 04000000
   Dogma: 3
   Buildings:

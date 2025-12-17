@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SO_GreatArmoury
   m_EditorClassIdentifier: Assembly-CSharp::TechnologyData
   TechnologyName: 14
-  ExperienceNeedToUnlock: 4
+  ExperienceNeedToUnlock: 40
   TechnologiesNeedToBeUnlock: 09000000
   Dogma: 3
   Buildings:

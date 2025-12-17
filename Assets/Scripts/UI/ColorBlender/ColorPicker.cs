@@ -97,6 +97,17 @@ public class ColorPicker : MonoBehaviour
         hexInputField.text = ColorUtility.ToHtmlStringRGB(currentColor);     
         
         testImage.color = currentColor;
+        if (colorBlender == null)
+        {
+            if (ColorBlender.Instance != null)
+            {
+                colorBlender = ColorBlender.Instance;
+            }
+            else
+            {
+                return;
+            }
+        }
         colorBlender.SaveColor();
     }
 

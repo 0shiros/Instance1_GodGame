@@ -15,6 +15,6 @@ MonoBehaviour:
   QuestName: Sharper Than Iron
   QuestDescription: Some iron ores for advanced crafting
   QuestRequirement: 1
-  QuestImage: {fileID: -5681169825606967803, guid: e716b6f267b2b444f92d58025fecd436, type: 3}
+  QuestImage: {fileID: -4200845481293325887, guid: 3f8fdb4297a83df4e8a2f6a82baa8a23, type: 3}
   QuestID: 6
-  HasBeenCompleted: 0
+  HasBeenCompleted: 1

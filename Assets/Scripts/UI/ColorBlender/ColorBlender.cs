@@ -91,7 +91,7 @@ public class ColorBlender : MonoBehaviour
     
     public void SaveColor()
     {
-        if (saveTile.Count == 0) return;
+        if (saveTile == null || saveTile.Count <= 0) return;
         var data = saveTile[spriteSelectorDropdown.value];
         data.Color = previewImage.color;
         saveTile[spriteSelectorDropdown.value] = data;

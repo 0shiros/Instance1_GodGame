@@ -108,6 +108,8 @@ public class EnvironementBrush : MonoBehaviour
         mouse.z = -camera.transform.position.z;
         Vector3 worldPos = camera.ScreenToWorldPoint(mouse);
         Vector3Int midCell = target.WorldToCell(new Vector3(worldPos.x, worldPos.y, 0f));
+        if (!CanPlaceTile(pRuleTile, midCell))
+            return;
 
         for (int i = 0; i < pRuleTile.Sources.Count; i++)
         {
@@ -139,7 +141,7 @@ public class EnvironementBrush : MonoBehaviour
                     break;
             }
         }
-        
+
         switch (currentTile.id)
         {
             case 0: //tree quest
@@ -160,9 +162,43 @@ public class EnvironementBrush : MonoBehaviour
         }
     }
 
+    private bool CanPlaceTile(CustomTile pRuleTile, Vector3Int midCell)
+    {
+        for (int i = 0; i < pRuleTile.Sources.Count; i++)
+        {
+            Vector3Int checkPos = midCell;
+
+            switch (pRuleTile.Sources[i].Direction)
+            {
+                case ETileDirection.Top:
+                    checkPos += Vector3Int.up;
+                    break;
+                case ETileDirection.Bottom:
+                    checkPos += Vector3Int.down;
+                    break;
+                case ETileDirection.Left:
+                    checkPos += Vector3Int.left;
+                    break;
+                case ETileDirection.Right:
+                    checkPos += Vector3Int.right;
+                    break;
+            }
+
+            if (target.GetTile(checkPos) != null)
+                return false;
+        }
+
+        return true;
+    }
+
     public void ClearCurrentTileEnvironement()
     {
         if (currentTile == null) return;
         currentTile = null;
+    }
+
+    public CustomTile GetTile()
+    {
+        return currentTile;
     }
 }

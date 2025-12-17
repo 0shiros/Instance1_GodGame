@@ -8,6 +8,7 @@ public class SO_Tiles : ScriptableObject
     public Color Color;
     public LayerMask LayerMask;
     public ETileType  TileType;
+    public string Name;
 }
 
 public enum ETileType

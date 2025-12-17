@@ -35,6 +35,11 @@ public class TileBrush : MonoBehaviour
         NavMesh.RemoveData();
     }
 
+    public SO_Tiles GetTile()
+    {
+        return currentTile;
+    }
+
     private void Start()
     {
         colorBlender = ColorBlender.Instance;

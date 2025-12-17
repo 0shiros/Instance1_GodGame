@@ -25,11 +25,13 @@ public class SearchTree : MonoBehaviour
     {
         CityUtilityAI.ActionBasic += AddExperience;
         CityUtilityAI.ActionDogma += AddDogmaExperience;
+        CityUtilityAI.ActionDogmaTechUnlockMax += SetMaxQuantityOfDogmaTech;
     }
     private void OnDisable()
     {
         CityUtilityAI.ActionBasic -= AddExperience;
         CityUtilityAI.ActionDogma -= AddDogmaExperience;
+        CityUtilityAI.ActionDogmaTechUnlockMax += SetMaxQuantityOfDogmaTech;
     }
 
     private void AddExperience(int pExperienceReward)
@@ -71,7 +73,7 @@ public class SearchTree : MonoBehaviour
     {
         foreach (TechnologyData technologyData in technologiesData)
         {
-            if (technologyData.Dogma != E_Dogma.None && technologyData.Dogma == cityUtilityAI.CurrentDogma)
+            if (technologyData.Dogma != E_Dogma.None && technologyData.Dogma == cityUtilityAI.CurrentDogma && dogmaTechUnlockQuantityMax < 3)
             {
                 //////////debug.Log(technologyData);
                 dogmaTechUnlockQuantityMax++;
@@ -140,8 +142,7 @@ public class SearchTree : MonoBehaviour
             cityUtilityAI.AddStrengthToAllVillagers(tech.Bonuses.StrenghtBonus);
             
             TechnologiesUnlock.Add(tech);
-            ParticleManager.Instance.StartParticle(1);
-            TechnologiesAvailable.Remove(tech);
+            TechnologiesAvailable.Remove(tech); 
         }
     }
 }

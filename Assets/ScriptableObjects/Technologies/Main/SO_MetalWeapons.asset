@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SO_MetalWeapons
   m_EditorClassIdentifier: Assembly-CSharp::TechnologyData
   TechnologyName: 12
-  ExperienceNeedToUnlock: 11
+  ExperienceNeedToUnlock: 220
   TechnologiesNeedToBeUnlock: 
   Dogma: 0
   Buildings: []
