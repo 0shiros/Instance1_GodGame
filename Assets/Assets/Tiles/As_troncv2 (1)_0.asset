@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 13312, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: As_tronc2_0
+  m_Name: As_troncv2 (1)_0
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.Tilemaps.Tile
-  m_Sprite: {fileID: 8034090092939243501, guid: e51f2785fb256a849848de973eaaface, type: 3}
+  m_Sprite: {fileID: -3592589875333193167, guid: 32738c2825b38284695f04d5ab9cef74, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Transform:
     e00: 1
@@ -31,6 +31,6 @@ MonoBehaviour:
     e31: 0
     e32: 0
     e33: 1
-  m_InstancedGameObject: {fileID: 2134854056468781722, guid: aece20fe27f54214ebbd38bba27c5422, type: 3}
+  m_InstancedGameObject: {fileID: 0}
   m_Flags: 0
   m_ColliderType: 1
