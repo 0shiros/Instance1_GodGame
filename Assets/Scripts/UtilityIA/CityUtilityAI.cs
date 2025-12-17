@@ -52,12 +52,12 @@ public class CityUtilityAI : MonoBehaviour
     private float reproductionTimer = 0f;
 
 
-    public List<VillagerUtilityAI> villagers = new List<VillagerUtilityAI>();
+    public List<villagersUtilityAI> villagers = new List<villagersUtilityAI>();
 
     private List<StorageBuilding> storages = new List<StorageBuilding>();
     public List<CityTask> ActiveTasks = new List<CityTask>();
 
-    // Possible Names of nations/cities
+  
     private readonly string[] nationNames =
     {
         "Avaloria", "Brumecity", "Celestia", "Draemor", "Eldoria", "Frosthaven", "Glimmerdale", "Harmonia", "Ironforge",
@@ -110,11 +110,11 @@ public class CityUtilityAI : MonoBehaviour
         while (true)
         {
             HandleBuildTasks();
-            yield return new WaitForSeconds(TaskScanInterval); // 40s dans ton code
+            yield return new WaitForSeconds(TaskScanInterval); 
         }
     }
 
-    public void RegisterVillager(VillagerUtilityAI v)
+    public void RegisterVillager(villagersUtilityAI v)
     {
         if (v == null) return;
         if (!villagers.Contains(v))
@@ -123,7 +123,7 @@ public class CityUtilityAI : MonoBehaviour
     }
 
 
-    public void UnregisterVillager(VillagerUtilityAI v)
+    public void UnregisterVillager(villagersUtilityAI v)
     {
         if (v == null) return;
         if (villagers.Contains(v))
@@ -274,7 +274,7 @@ public class CityUtilityAI : MonoBehaviour
         for (int i = 0; i < pQuantity; i++)
         {
             var go = Instantiate(villager, transform.position + Vector3.down * 2, Quaternion.identity, transform);
-            var human = go.GetComponent<VillagerUtilityAI>();
+            var human = go.GetComponent<villagersUtilityAI>();
             if (human != null) RegisterVillager(human);
             human.Hp = Random.Range(HpMin, HpMax);
             human.agent.speed = Random.Range(SpeedMin, SpeedMax);
@@ -364,26 +364,24 @@ public class CityUtilityAI : MonoBehaviour
         switch (building.BuildingType)
         {
             case BuildingType.House:
-                // besoin de logement
+                
                 score += Mathf.Max(0, villagers.Count - HousesBuilt * 2);
                 break;
 
             case BuildingType.Farm:
-                // besoin de nourriture
+                
                 if (TotalFood < villagers.Count * 3)
                     score += 30;
 
                 score += villagers.Count;
 
-                // pénalité si déjà plusieurs fermes
                 int farms = CityBuildings.Count(b =>
                     b != null && b.GetType().Name.Contains("Farm"));
                 score -= farms * 15;
                 break;
 
             case BuildingType.Mine:
-                // intérêt seulement si du minerai existe sur la map
-                int metalNodes = environementContainer.resourceNodes
+                  int metalNodes = environementContainer.resourceNodes
                     .Count(r => r != null && r.ResourceType == ResourceType.Metal);
 
                 if (metalNodes == 0)
@@ -396,7 +394,7 @@ public class CityUtilityAI : MonoBehaviour
                 break;
 
             case BuildingType.Forge:
-                // forge utile seulement si métal + population
+                
                 if (TotalMetal < 5)
                     return -1000f;
 
@@ -470,9 +468,10 @@ public class CityUtilityAI : MonoBehaviour
         for (int i = 0; i < born; i++)
         {
             var go = Instantiate(villager, transform);
-            var v = go.GetComponent<VillagerUtilityAI>();
+            var v = go.GetComponent<villagersUtilityAI>();
             if (v != null) RegisterVillager(v);
         }
+        
 
 
         TotalFood -= MinFoodForReproduction;
@@ -520,12 +519,16 @@ public class CityUtilityAI : MonoBehaviour
         if (GridManager == null) return;
 
         var buildableBuildings = BuildingTypes
-            .Where(b => b != null && b.Prefab != null)
-            .Where(b => !ActiveTasks.Exists(t =>
-                t != null && t.Data != null && t.Data.Type == TaskType.Build && t.BuildingData == b))
-            .Where(b => TotalWood >= b.WoodCost && TotalStone >= b.StoneCost && TotalMetal >= b.MetalCost)
-            .ToList();
-
+     .Where(b => b != null && b.Prefab != null)
+     .Where(b => !ActiveTasks.Exists(t =>
+         t != null && t.Data != null &&
+         t.Data.Type == TaskType.Build &&
+         t.BuildingData == b))
+     .Where(b => TotalWood >= b.WoodCost &&
+                 TotalStone >= b.StoneCost &&
+                 TotalMetal >= b.MetalCost)
+     .OrderByDescending(b => GetBuildingInterest(b))
+     .ToList();
         foreach (var building in buildableBuildings)
         {
             Vector2Int targetCell;
@@ -590,12 +593,12 @@ public class CityUtilityAI : MonoBehaviour
         }
     }
 
-    public void AssignTaskToVillager(VillagerUtilityAI pVillager)
+    public void AssignTaskToVillager(villagersUtilityAI pVillager)
     {
         AssignTaskToVillager(pVillager, null);
     }
 
-    public void AssignTaskToVillager(VillagerUtilityAI pVillager, CityTask pForced)
+    public void AssignTaskToVillager(villagersUtilityAI pVillager, CityTask pForced)
     {
         if (pVillager == null || !pVillager.IsIdle()) return;
 
@@ -629,7 +632,7 @@ public class CityUtilityAI : MonoBehaviour
         }
     }
 
-    float ScoreTaskForVillager(CityTask pTask, VillagerUtilityAI pVillager)
+    float ScoreTaskForVillager(CityTask pTask, villagersUtilityAI pVillager)
     {
         float score = (pTask.Data != null) ? pTask.Data.BasePriority : 0f;
         if (pTask.Data == null) return score;
@@ -670,7 +673,7 @@ public class CityUtilityAI : MonoBehaviour
         foreach (var col in cols)
         {
             if (col == null) continue;
-            var v = col.GetComponent<VillagerUtilityAI>();
+            var v = col.GetComponent<villagersUtilityAI>();
             if (v == null) continue;
 
 
@@ -782,7 +785,7 @@ public class CityUtilityAI : MonoBehaviour
     }
 
     private float slowRefreshTimer = 0f;
-    private const float slowRefreshInterval = 30f; // toutes les 30 secondes
+    private const float slowRefreshInterval = 30f;
 
     void RefreshSceneListsIfNeeded()
     {
