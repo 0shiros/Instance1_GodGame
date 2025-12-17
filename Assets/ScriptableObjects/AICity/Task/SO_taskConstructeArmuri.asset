@@ -15,7 +15,7 @@ MonoBehaviour:
   TaskName: "Nouvelle T\xE2che"
   Type: 1
   TargetResource: 0
-  TargetBuildingType: 13
+  TargetBuildingType: 19
   BasePriority: 1
   RecommendedVillagers: 1
   WorkDuration: 2

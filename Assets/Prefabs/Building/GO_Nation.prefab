@@ -98,21 +98,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CityUtilityAI
   TaskDataList:
-  - {fileID: 11400000, guid: 66013da55694d234eb4ca79222227701, type: 2}
   - {fileID: 11400000, guid: 26c7d254060ff4f4289bd57ec8c2eec6, type: 2}
   - {fileID: 11400000, guid: ad55ff5ef12a2c84a917212473ae5f45, type: 2}
   - {fileID: 11400000, guid: defd67ae90d1e744d8daaa1a1d0d9b50, type: 2}
   - {fileID: 11400000, guid: 87e00471e12ebe9499e4206422a95294, type: 2}
-  - {fileID: 11400000, guid: 885aa3d94bfb01e42a0e279d2eacd2c0, type: 2}
   - {fileID: 11400000, guid: f03679cb05d00cb4abcad2f7a674682b, type: 2}
   - {fileID: 11400000, guid: 833bd2be3545a8b4e9255db95e57ed1f, type: 2}
   - {fileID: 11400000, guid: 448ad058241daee46bad9fea20c4b7d2, type: 2}
-  - {fileID: 11400000, guid: 5429ffa2c8ee6c84d8289a6c91eaccd6, type: 2}
-  - {fileID: 11400000, guid: 223ec13d8c4ef7c4cb960189b6481221, type: 2}
-  - {fileID: 11400000, guid: d7c3b2fdb0d973f47b246d7adf7b249d, type: 2}
-  - {fileID: 11400000, guid: 228db5dfcafa6d34d92ddd1b73c7d5f7, type: 2}
-  - {fileID: 11400000, guid: 61f237c021b151e4daa0e420b7976e2f, type: 2}
   - {fileID: 11400000, guid: c54acc864bb8b794093ee4dcfbd96410, type: 2}
+  - {fileID: 11400000, guid: 61f237c021b151e4daa0e420b7976e2f, type: 2}
+  - {fileID: 11400000, guid: 228db5dfcafa6d34d92ddd1b73c7d5f7, type: 2}
+  - {fileID: 11400000, guid: d7c3b2fdb0d973f47b246d7adf7b249d, type: 2}
+  - {fileID: 11400000, guid: 223ec13d8c4ef7c4cb960189b6481221, type: 2}
+  - {fileID: 11400000, guid: 5429ffa2c8ee6c84d8289a6c91eaccd6, type: 2}
   BuildingTypes:
   - {fileID: 11400000, guid: 4147b3572a674824b9799d9f9b735b27, type: 2}
   CurrentDogma: 0
