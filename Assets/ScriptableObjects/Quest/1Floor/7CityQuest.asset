@@ -18,6 +18,6 @@ MonoBehaviour:
     You can sit back or continue
     to modify your world as you want'
   QuestRequirement: 1
-  QuestImage: {fileID: -5681169825606967803, guid: e716b6f267b2b444f92d58025fecd436, type: 3}
+  QuestImage: {fileID: -2828792731324806410, guid: 49350250b57ddbd4886c7e5522f79bfb, type: 3}
   QuestID: 7
-  HasBeenCompleted: 0
+  HasBeenCompleted: 1

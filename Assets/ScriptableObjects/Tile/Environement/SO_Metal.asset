@@ -19,3 +19,4 @@ MonoBehaviour:
     Name: Metal
   Sprite: {fileID: -4200845481293325887, guid: 3f8fdb4297a83df4e8a2f6a82baa8a23, type: 3}
   id: 3
+  Name: Iron ore

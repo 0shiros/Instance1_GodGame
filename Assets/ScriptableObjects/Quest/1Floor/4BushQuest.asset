@@ -15,6 +15,6 @@ MonoBehaviour:
   QuestName: I want to eat
   QuestDescription: Then some bushes as a food source
   QuestRequirement: 1
-  QuestImage: {fileID: -5681169825606967803, guid: e716b6f267b2b444f92d58025fecd436, type: 3}
+  QuestImage: {fileID: -583661112473690981, guid: 2c5af98f94f730c4c9a1a8d13c7d57b6, type: 3}
   QuestID: 4
-  HasBeenCompleted: 0
+  HasBeenCompleted: 1

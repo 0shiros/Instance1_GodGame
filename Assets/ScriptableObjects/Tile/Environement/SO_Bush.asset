@@ -19,3 +19,4 @@ MonoBehaviour:
     Name: Bush
   Sprite: {fileID: -583661112473690981, guid: 2c5af98f94f730c4c9a1a8d13c7d57b6, type: 3}
   id: 1
+  Name: Berry Bush

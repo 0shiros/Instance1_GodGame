@@ -7,90 +7,95 @@ using Random = UnityEngine.Random;
 
 public class CityUtilityAI : MonoBehaviour
 {
-    [Header("Datas & Références")]
-    public List<TaskData> TaskDataList = new List<TaskData>();
+    [Header("Datas & Références")] public List<TaskData> TaskDataList = new List<TaskData>();
     public List<BuildingData> BuildingTypes = new List<BuildingData>();
     public E_Dogma CurrentDogma = E_Dogma.None;
     [SerializeField] private int agentsQuantityNeedToSetDogma;
     [SerializeField] private GameObject villager;
     public string cityName = "";
-    private EnvironementContainer evironementContainer;
+    private EnvironementContainer environementContainer;
 
-    [Header("Grid")]
-    public GridManager2D GridManager;
-    
+    [Header("Grid")] public GridManager2D GridManager;
+
     [Header("Villagers Statistics Limits")]
     public int HpMin = 85;
+
     public int HpMax = 100;
     public int SpeedMin = 5;
     public int SpeedMax = 20;
     public int StrengthMin = 5;
     public int StrengthMax = 20;
 
-    [Header("Monde")]
-    public Vector2Int GridSize = new Vector2Int(50, 50);
+    [Header("Monde")] public Vector2Int GridSize = new Vector2Int(50, 50);
     public float TaskScanInterval = 1f;
 
     public AnimationCurve WorkerDistributionCurve = AnimationCurve.Linear(0f, 0.1f, 1f, 1f);
     public float MaxWorkerPercent = 0.5f;
 
-    [Header("Placement bâtiments")]
+    [Header("Placement bâtiments")] 
     public float HouseSpawnDistance = 5f;
     public float BuildingMinDistance = 2f;
 
-    [Header("Ressources globales")]
-    public float TotalWood;
+    [Header("Ressources globales")] public float TotalWood;
     public float TotalStone;
     public float TotalFood;
     public float TotalMetal;
 
-    [Header("Stats bâtiments")]
-    public int HousesBuilt = 0;
+    [Header("Stats bâtiments")] public int HousesBuilt = 0;
 
 
-    [Header("Reproduction villageois")]
-    public int MinFoodForReproduction = 10;
+    [Header("Reproduction villageois")] public int MinFoodForReproduction = 10;
     public int MinHousesForReproduction = 2;
     public float ReproductionCooldown = 15f;
     public int MinBorn = 1;
     public int MaxBorn = 3;
     private float reproductionTimer = 0f;
 
-   
+
     public List<VillagerUtilityAI> villagers = new List<VillagerUtilityAI>();
-    
+
     private List<StorageBuilding> storages = new List<StorageBuilding>();
     public List<CityTask> ActiveTasks = new List<CityTask>();
-    
+
     // Possible Names of nations/cities
-    private readonly string[] nationNames = {
-        
-        "Avaloria", "Brumecity", "Celestia", "Draemor", "Eldoria", "Frosthaven", "Glimmerdale", "Harmonia", "Ironforge", "Jadewood",
-        "Sylvandor", "Luneris", "Verdanelle", "Thalowyn", "Elarion", "Sylvaeris", "Ardanor", "Faelwyn", "Thornewood", "Mystralis",
-        "Lysendell", "Evergrove", "Altheran", "Willowspire", "Amaranthil", "Frosthelm", "Nivorheim", "Skjoldvik", "Wintergate", "Icehaven", "Coldspire", "Hivernel", "Snowcrest", "Eldfrost", "Borealis Keep",
-        "Whitehold", "Stonewatch", "Ironpeak", "Deepdelve", "Hammerhold", "Copperhall", "Graniteforge", "Darkstone", "Mithrildeep", "Emberhall",
-        "Rocktide", "Solara", "Sandspire", "Mirazun", "Arkanesh", "Aridion", "Zahir’Kal", "Sunreach", "Dunespire", "Kalimora", "Orinar",
-        "Seabreak", "Marivelle", "Driftport", "Tidescar", "Pelagia", "Stormshore", "Crestfall", "Oceanreach", "Saltwind", "Havenbay",
-        "Kingsfall", "Highvalor", "Dawnmere", "Oakenguard", "Lioncrest", "Silverkeep", "Westford", "Varenholm", "Brightwall",
-        "Greenreach", "Sunbrook", "Arcanis", "Mythrendale", "Etherwyn", "Astralis", "Nocturnia", "Luminor", "Tempys", "Shadovar", "Vesperia", "Enchantel",
-        "Blackmoor", "Dreadfall", "Shadowfen", "Mor’Ghul", "Bloodfort", "Nightspire", "Ashencroft", "Thornkeep", "Voidreach",
-        "Ravenhold", "Stormhold", "Moonspire", "Amberfall", "Dragonstead", "Goldshore", "Runebrook", "Falconcrest", "Oakshade", "Windrest",
-        "Stonebrooke", "Riverhelm", "Wyrmwood", "Stormhollow", "Sunspire", "Ashenwald", "Clearhaven", "Faylen", "Northwyn",
+    private readonly string[] nationNames =
+    {
+        "Avaloria", "Brumecity", "Celestia", "Draemor", "Eldoria", "Frosthaven", "Glimmerdale", "Harmonia", "Ironforge",
+        "Jadewood",
+        "Sylvandor", "Luneris", "Verdanelle", "Thalowyn", "Elarion", "Sylvaeris", "Ardanor", "Faelwyn", "Thornewood",
+        "Mystralis",
+        "Lysendell", "Evergrove", "Altheran", "Willowspire", "Amaranthil", "Frosthelm", "Nivorheim", "Skjoldvik",
+        "Wintergate", "Icehaven", "Coldspire", "Hivernel", "Snowcrest", "Eldfrost", "Borealis Keep",
+        "Whitehold", "Stonewatch", "Ironpeak", "Deepdelve", "Hammerhold", "Copperhall", "Graniteforge", "Darkstone",
+        "Mithrildeep", "Emberhall",
+        "Rocktide", "Solara", "Sandspire", "Mirazun", "Arkanesh", "Aridion", "Zahir’Kal", "Sunreach", "Dunespire",
+        "Kalimora", "Orinar",
+        "Seabreak", "Marivelle", "Driftport", "Tidescar", "Pelagia", "Stormshore", "Crestfall", "Oceanreach",
+        "Saltwind", "Havenbay",
+        "Kingsfall", "Highvalor", "Dawnmere", "Oakenguard", "Lioncrest", "Silverkeep", "Westford", "Varenholm",
+        "Brightwall",
+        "Greenreach", "Sunbrook", "Arcanis", "Mythrendale", "Etherwyn", "Astralis", "Nocturnia", "Luminor", "Tempys",
+        "Shadovar", "Vesperia", "Enchantel",
+        "Blackmoor", "Dreadfall", "Shadowfen", "Mor’Ghul", "Bloodfort", "Nightspire", "Ashencroft", "Thornkeep",
+        "Voidreach",
+        "Ravenhold", "Stormhold", "Moonspire", "Amberfall", "Dragonstead", "Goldshore", "Runebrook", "Falconcrest",
+        "Oakshade", "Windrest",
+        "Stonebrooke", "Riverhelm", "Wyrmwood", "Stormhollow", "Sunspire", "Ashenwald", "Clearhaven", "Faylen",
+        "Northwyn",
         "Embertide", "Galehaven"
     };
-    
+
     private float timer = 0f;
     private float debugTimer = 0f;
 
-    [Header("Bâtiments de la ville")]
-    public List<MonoBehaviour> CityBuildings = new List<MonoBehaviour>();
+    [Header("Bâtiments de la ville")] public List<MonoBehaviour> CityBuildings = new List<MonoBehaviour>();
 
 
-    public static Action<int> ActionBasic;
-    public static Action<int> ActionDogma;
+    public Action<int> ActionBasic;
+    public Action<int> ActionDogma;
+    public Action ActionDogmaTechUnlockMax;
 
-    [Header("Combat Decision")]
-    public float AttackScanInterval = 10f;
+    [Header("Combat Decision")] public float AttackScanInterval = 10f;
     public float AttackRange = 150f;
     public float ResourceGreedFactor = 0.7f;
     public int MinVillagersToAttack = 2;
@@ -98,11 +103,8 @@ public class CityUtilityAI : MonoBehaviour
     private float attackScanTimer = 0f;
 
 
-
-
     #region Registration API (optimisation)
 
-   
     private IEnumerator BuildTaskRoutine()
     {
         while (true)
@@ -111,6 +113,7 @@ public class CityUtilityAI : MonoBehaviour
             yield return new WaitForSeconds(TaskScanInterval); // 40s dans ton code
         }
     }
+
     public void RegisterVillager(VillagerUtilityAI v)
     {
         if (v == null) return;
@@ -142,7 +145,7 @@ public class CityUtilityAI : MonoBehaviour
     //}
     bool ConsumeResourcesForBuilding(int wood, int stone, int metal, int food = 0)
     {
-        if (TotalWood < wood || TotalStone < stone || TotalFood < food|| TotalMetal<metal)
+        if (TotalWood < wood || TotalStone < stone || TotalFood < food || TotalMetal < metal)
             return false;
 
         var validStorages = storages.FindAll(s =>
@@ -175,24 +178,22 @@ public class CityUtilityAI : MonoBehaviour
     {
         if (building == null) return;
 
-      
-            CityBuildings.Add(building);
-            if (CurrentDogma == E_Dogma.Craft)
-            {
-                AddDogmaSciencePoints(1);
-            }
-            AddSciencePoints(1);
-            HandleBuildTasks();
-        
-            
-    }
 
+        CityBuildings.Add(building);
+        if (CurrentDogma == E_Dogma.Craft)
+        {
+            AddDogmaSciencePoints(1);
+        }
+
+        AddSciencePoints(1);
+        HandleBuildTasks();
+    }
 
 
     public void UnregisterResourceNode(ResourceNode rn)
     {
         if (rn == null) return;
-        evironementContainer.resourceNodes.Remove(rn);
+        environementContainer.resourceNodes.Remove(rn);
     }
 
 
@@ -213,7 +214,6 @@ public class CityUtilityAI : MonoBehaviour
     #endregion
 
 
-
     private Dictionary<BuildingType, TaskData> buildTaskLookup;
 
     private void Awake()
@@ -221,13 +221,12 @@ public class CityUtilityAI : MonoBehaviour
         buildTaskLookup = TaskDataList
             .Where(td => td.Type == TaskType.Build)
             .ToDictionary(td => td.TargetBuildingType, td => td);
-    
 
-    cityName = nationNames[UnityEngine.Random.Range(0, nationNames.Length)];
+
+        cityName = nationNames[UnityEngine.Random.Range(0, nationNames.Length)];
         gameObject.name = cityName;
         storages.Clear();
         storages.AddRange(GetComponentsInChildren<StorageBuilding>());
-        
     }
 
     void Start()
@@ -237,57 +236,59 @@ public class CityUtilityAI : MonoBehaviour
             GridManager = FindObjectOfType<GridManager2D>();
             if (GridManager == null) ;
         }
+
         StartCoroutine(BuildTaskRoutine());
 
         AggregateStorage();
 
         AddVillagers(6);
-        evironementContainer = EnvironementContainer.Instance;
+        environementContainer = EnvironementContainer.Instance;
     }
 
     private void AddVillagers(int pQuantity)
     {
         for (int i = 0; i < pQuantity; i++)
         {
-            var go = Instantiate(villager, transform);
-            var human= go.GetComponent<VillagerUtilityAI>();
+            var go = Instantiate(villager, transform.position + Vector3.down * 2,  Quaternion.identity, transform);
+            var human = go.GetComponent<VillagerUtilityAI>();
             if (human != null) RegisterVillager(human);
             human.Hp = Random.Range(HpMin, HpMax);
             human.agent.speed = Random.Range(SpeedMin, SpeedMax);
             human.Strength = Random.Range(StrengthMin, StrengthMax);
         }
+
         SetDogma();
     }
-    
+
     public void AddStrengthToAllVillagers(int pStrenghtBonus)
     {
         foreach (var villager in villagers)
         {
             villager.Strength += pStrenghtBonus;
         }
-        
+
         StrengthMin += pStrenghtBonus;
         StrengthMax += pStrenghtBonus;
     }
-    
+
     public void AddHealthToAllVillagers(int pHpBonus)
     {
         foreach (var villager in villagers)
         {
             villager.Hp += pHpBonus;
         }
-        
+
         HpMin += pHpBonus;
         HpMax += pHpBonus;
     }
-    
+
     public void AddSpeedToAllVillagers(int pSpeedBonus)
     {
         foreach (var villager in villagers)
         {
             villager.agent.speed += pSpeedBonus;
         }
-        
+
         SpeedMin += pSpeedBonus;
         SpeedMax += pSpeedBonus;
     }
@@ -298,14 +299,14 @@ public class CityUtilityAI : MonoBehaviour
         timer += Time.deltaTime;
         debugTimer += Time.deltaTime;
 
-       
+
         reproductionTimer += Time.deltaTime;
         if (reproductionTimer >= ReproductionCooldown)
         {
             reproductionTimer = 0f;
             TryReproduce();
         }
-        
+
         TryRecruitNearbyVillagers();
 
         if (timer >= TaskScanInterval)
@@ -314,7 +315,7 @@ public class CityUtilityAI : MonoBehaviour
             CleanupFinishedTasks();
             RefreshSceneListsIfNeeded();
             HandleResourceTasks();
-            
+
             AssignTasksToVillagers();
             AggregateStorage();
         }
@@ -322,8 +323,8 @@ public class CityUtilityAI : MonoBehaviour
         if (debugTimer >= 1f)
         {
             debugTimer = 0f;
-            
         }
+
         attackScanTimer += Time.deltaTime;
         if (attackScanTimer > AttackScanInterval)
         {
@@ -331,6 +332,7 @@ public class CityUtilityAI : MonoBehaviour
             EvaluateAttackOpportunity();
         }
     }
+
     float GetBuildingInterest(BuildingData building)
     {
         float score = 0f;
@@ -357,7 +359,7 @@ public class CityUtilityAI : MonoBehaviour
 
             case BuildingType.Mine:
                 // intérêt seulement si du minerai existe sur la map
-                int metalNodes = evironementContainer.resourceNodes
+                int metalNodes = environementContainer.resourceNodes
                     .Count(r => r != null && r.ResourceType == ResourceType.Metal);
 
                 if (metalNodes == 0)
@@ -383,7 +385,7 @@ public class CityUtilityAI : MonoBehaviour
 
         return score;
     }
-   
+
     float GetTotalResources()
     {
         return TotalWood + TotalStone + TotalFood + TotalMetal;
@@ -393,13 +395,11 @@ public class CityUtilityAI : MonoBehaviour
     {
         if (villagers.Count < MinVillagersToAttack)
             return;
-       
+
         CityUtilityAI bestTarget = null;
         float bestScore = float.NegativeInfinity;
 
         var allCities = FindObjectsByType<CityUtilityAI>(FindObjectsSortMode.None);
-
-        
 
 
         foreach (var other in allCities)
@@ -426,13 +426,11 @@ public class CityUtilityAI : MonoBehaviour
             {
                 bestScore = finalScore;
                 bestTarget = other;
-                
             }
         }
 
         if (bestTarget != null && bestScore > 0f)
         {
-           
             OrderAttack(bestTarget);
         }
     }
@@ -452,16 +450,10 @@ public class CityUtilityAI : MonoBehaviour
             if (v != null) RegisterVillager(v);
         }
 
-       
+
         TotalFood -= MinFoodForReproduction;
         SetDogma();
-
-
-
     }
-
-
-
 
 
     void CleanupFinishedTasks()
@@ -470,17 +462,11 @@ public class CityUtilityAI : MonoBehaviour
     }
 
 
-   
-
-
-
-#region Tâches / Création
-
-
+    #region Tâches / Création
 
     void HandleResourceTasks()
     {
-        foreach (var node in evironementContainer.resourceNodes)
+        foreach (var node in environementContainer.resourceNodes)
         {
             if (node == null || node.Amount <= 0) continue;
 
@@ -511,17 +497,18 @@ public class CityUtilityAI : MonoBehaviour
 
         var buildableBuildings = BuildingTypes
             .Where(b => b != null && b.Prefab != null)
-            .Where(b => !ActiveTasks.Exists(t => t != null && t.Data != null && t.Data.Type == TaskType.Build && t.BuildingData == b))
+            .Where(b => !ActiveTasks.Exists(t =>
+                t != null && t.Data != null && t.Data.Type == TaskType.Build && t.BuildingData == b))
             .Where(b => TotalWood >= b.WoodCost && TotalStone >= b.StoneCost && TotalMetal >= b.MetalCost)
             .ToList();
 
         foreach (var building in buildableBuildings)
         {
             Vector2Int targetCell;
-            bool foundCell = GridManager.GetCellsOwnedByCity(this).Count == 0 ?
-                GridManager.TryFindNearestFreeCell(transform.position, building.Size, out targetCell) :
-                GridManager.TryFindCellAdjacentToCity(this, building, out targetCell) ||
-                GridManager.TryFindNearestFreeCell(transform.position, building.Size, out targetCell);
+            bool foundCell = GridManager.GetCellsOwnedByCity(this).Count == 0
+                ? GridManager.TryFindNearestFreeCell(transform.position, building.Size, out targetCell)
+                : GridManager.TryFindCellAdjacentToCity(this, building, out targetCell) ||
+                  GridManager.TryFindNearestFreeCell(transform.position, building.Size, out targetCell);
 
             if (!foundCell) continue;
 
@@ -564,9 +551,6 @@ public class CityUtilityAI : MonoBehaviour
                 HousesBuilt++;
         }
     }
-
-
-
 
     #endregion
 
@@ -618,7 +602,6 @@ public class CityUtilityAI : MonoBehaviour
                 best.AassignedVillagers.Add(pVillager);
 
             pVillager.AssignTask(best);
-           
         }
     }
 
@@ -655,69 +638,59 @@ public class CityUtilityAI : MonoBehaviour
 
     void TryRecruitNearbyVillagers()
     {
-       
         Vector3 cityCenter = transform.position;
         float recruitRadius = 15f;
 
-       
-       Collider[] cols = Physics.OverlapSphere(cityCenter, recruitRadius);
+
+        Collider[] cols = Physics.OverlapSphere(cityCenter, recruitRadius);
         foreach (var col in cols)
         {
             if (col == null) continue;
             var v = col.GetComponent<VillagerUtilityAI>();
             if (v == null) continue;
 
-           
+
             if (villagers.Contains(v) || v.city != null) continue;
 
-            
+
             RegisterVillager(v);
-           
         }
 
-       
+
         villagers.RemoveAll(x => x == null);
     }
 
 
-
     void AggregateStorage()
     {
-
-        int w = 0, s = 0, f = 0,m=0;
+        int w = 0, s = 0, f = 0, m = 0;
         foreach (var st in storages)
         {
             if (st == null) continue;
             w += st.StoredWood;
             s += st.StoredStone;
             f += st.StoredFood;
-            if(CurrentDogma== E_Dogma.Development)
-            {
-                AddDogmaSciencePoints(1);
-            }
-            AddSciencePoints(1);
         }
+
         if (TotalWood < w)
         {
             TotalWood = w;
         }
-        if(TotalStone < s)
+
+        if (TotalStone < s)
         {
             TotalStone = s;
         }
-        if(TotalFood < f)
+
+        if (TotalFood < f)
         {
             TotalFood = f;
         }
 
-        if(TotalMetal < m)
+        if (TotalMetal < m)
         {
             TotalMetal = m;
         }
-            
-            
-        
-       
     }
 
 
@@ -731,8 +704,15 @@ public class CityUtilityAI : MonoBehaviour
             case ResourceType.Stone: TotalStone += pAmount; break;
             case ResourceType.Food: TotalFood += pAmount; break;
             case ResourceType.Metal: TotalMetal += pAmount; break;
-
         }
+        
+        AddSciencePoints(1);
+        
+        if (CurrentDogma == E_Dogma.Development)
+        {
+            AddDogmaSciencePoints(1);
+        }
+        
     }
 
     public StorageBuilding FindNearestStorage(Vector3 pFrom)
@@ -759,7 +739,6 @@ public class CityUtilityAI : MonoBehaviour
     {
         if (ActiveTasks == null || ActiveTasks.Count == 0)
         {
-           
             return;
         }
 
@@ -770,8 +749,8 @@ public class CityUtilityAI : MonoBehaviour
             if (t == null || t.Data == null) continue;
 
             string target = t.ResourceTarget != null ? t.ResourceTarget.name :
-                            t.BuildingData != null ? t.BuildingData.BuildingName :
-                            "N/A";
+                t.BuildingData != null ? t.BuildingData.BuildingName :
+                "N/A";
 
             log += $"[{t.Data.TaskName}:{t.Data.Type}->{target} assigned:{t.AassignedVillagers.Count}] ";
         }
@@ -784,18 +763,9 @@ public class CityUtilityAI : MonoBehaviour
 
     void RefreshSceneListsIfNeeded()
     {
-
-        evironementContainer.resourceNodes.RemoveAll(x => x == null);
+        environementContainer.resourceNodes.RemoveAll(x => x == null);
         villagers.RemoveAll(x => x == null);
-
-
-   
     }
-
-
-    
-
-
 
     #endregion
 
@@ -862,11 +832,10 @@ public class CityUtilityAI : MonoBehaviour
         float speedPercent = totalSpeedNormalized / ((SpeedMax - SpeedMin) * villagers.Count);
         float strengthPercent = totalStrengthNormalized / ((StrengthMax - StrengthMin) * villagers.Count);
 
-       
 
         return new float[] { hpPercent, speedPercent, strengthPercent };
     }
-   
+
     private void SetDogma()
     {
         if (villagers.Count < agentsQuantityNeedToSetDogma)
@@ -887,6 +856,8 @@ public class CityUtilityAI : MonoBehaviour
             case 1: CurrentDogma = E_Dogma.Development; break;
             case 2: CurrentDogma = E_Dogma.Military; break;
         }
+
+        AddDogmaTechUnlockMax();
     }
 
     public void AddSciencePoints(int pExperienceReward)
@@ -898,8 +869,14 @@ public class CityUtilityAI : MonoBehaviour
     {
         ActionDogma?.Invoke(pExperienceReward);
     }
+    
+    public void AddDogmaTechUnlockMax()
+    {
+        ActionDogmaTechUnlockMax?.Invoke();
+    }
 
     #endregion
+
     public void OrderAttack(CityUtilityAI targetCity)
     {
         if (targetCity == null) return;
@@ -910,12 +887,10 @@ public class CityUtilityAI : MonoBehaviour
 
         if (myCombat == null || enemyCombat == null)
         {
-            
             return;
         }
 
         myCombat.StartCombat(targetCity);
         enemyCombat.StartDefense(this);
     }
-
 }

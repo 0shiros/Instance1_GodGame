@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SO_MetalMine
   m_EditorClassIdentifier: Assembly-CSharp::TechnologyData
   TechnologyName: 18
-  ExperienceNeedToUnlock: 6
+  ExperienceNeedToUnlock: 60
   TechnologiesNeedToBeUnlock: 0a000000
   Dogma: 2
   Buildings:

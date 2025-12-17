@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: SO_EmptyTiles
   m_EditorClassIdentifier: Assembly-CSharp::SO_Tiles
   RuleTiles: {fileID: 0}
-  color: {r: 0.6320754, g: 0.6320754, b: 0.6320754, a: 1}
-  layerMask:
+  Color: {r: 0, g: 0, b: 0, a: 0}
+  LayerMask:
     serializedVersion: 2
     m_Bits: 0
+  TileType: 0
+  Name: Eraser

@@ -19,3 +19,4 @@ MonoBehaviour:
     Name: Stone
   Sprite: {fileID: -2371339777062046054, guid: 9c04ee80982c80b4583db94f37106de5, type: 3}
   id: 2
+  Name: Stone
