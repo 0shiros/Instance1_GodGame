@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2404124589276494461}
   - component: {fileID: 7556437402957739733}
   - component: {fileID: -5652239292985710443}
+  - component: {fileID: -2446486122144805774}
   m_Layer: 0
   m_Name: GO_MetalMine
   m_TagString: Building
@@ -82,7 +83,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 2
+  m_SortingOrder: 10
   m_Sprite: {fileID: 2930572097987800602, guid: 2b6183638f60d6441a8ad25b05b33100, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -4910,6 +4911,21 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &-2446486122144805774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2953286491786590815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28d1f988646ec0b499fe109be79557db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceNode
+  ResourceType: 2
+  Amount: 2147483647
+  HarvestPerAction: 1
 --- !u!1 &8415877693478229970
 GameObject:
   m_ObjectHideFlags: 0

@@ -98,7 +98,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CityUtilityAI
   TaskDataList:
-  - {fileID: 11400000, guid: 66013da55694d234eb4ca79222227701, type: 2}
   - {fileID: 11400000, guid: 26c7d254060ff4f4289bd57ec8c2eec6, type: 2}
   - {fileID: 11400000, guid: ad55ff5ef12a2c84a917212473ae5f45, type: 2}
   - {fileID: 11400000, guid: defd67ae90d1e744d8daaa1a1d0d9b50, type: 2}
@@ -249,10 +248,6 @@ MonoBehaviour:
   attackers: []
   defenders: []
   combatCenter: {fileID: 0}
-  moveSpeed: 3
-  attackDelay: 0.5
-  betweenTurnsDelay: 0.3
-  combatOffset: 1.5
 --- !u!198 &3214631270842079616
 ParticleSystem:
   m_ObjectHideFlags: 0

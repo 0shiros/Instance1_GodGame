@@ -3213,6 +3213,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1247685726}
     m_Modifications:
+    - target: {fileID: 538803517916476056, guid: a450f5430796eaf4e89ab23955e7acf7, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -702.72754
+      objectReference: {fileID: 0}
     - target: {fileID: 2092536196798036460, guid: a450f5430796eaf4e89ab23955e7acf7, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -11176,6 +11180,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2086541591}
     - target: {fileID: 2274975778819275141, guid: 95bb4688d2e319f46b1627cb9716d05a, type: 3}
+      propertyPath: delayMinMax.x
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 2274975778819275141, guid: 95bb4688d2e319f46b1627cb9716d05a, type: 3}
+      propertyPath: delayMinMax.y
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2274975778819275141, guid: 95bb4688d2e319f46b1627cb9716d05a, type: 3}
       propertyPath: meteoriteStartPos.x
       value: 15
       objectReference: {fileID: 0}
@@ -11199,6 +11211,22 @@ PrefabInstance:
       propertyPath: 'tilemaps.Array.data[3]'
       value: 
       objectReference: {fileID: 818439517}
+    - target: {fileID: 5069591913854908747, guid: 95bb4688d2e319f46b1627cb9716d05a, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5069591913854908747, guid: 95bb4688d2e319f46b1627cb9716d05a, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5069591913854908747, guid: 95bb4688d2e319f46b1627cb9716d05a, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5069591913854908747, guid: 95bb4688d2e319f46b1627cb9716d05a, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5300933052138001406, guid: 95bb4688d2e319f46b1627cb9716d05a, type: 3}
       propertyPath: m_Name
       value: Meteorite
