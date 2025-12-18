@@ -18,13 +18,13 @@ public class MapGenTweekerUI : MonoBehaviour
         switch (pValue) 
         {
             case 0:
-                mapData.MapBounds = new Vector2Int(100, 100);
-                break;
-            case 1:
                 mapData.MapBounds = new Vector2Int(250, 250);
                 break;
-            case 2:
+            case 1:
                 mapData.MapBounds = new Vector2Int(500, 500);
+                break;
+            case 2:
+                mapData.MapBounds = new Vector2Int(750, 750);
                 break;
             case 3:
                 mapData.MapBounds = new Vector2Int(1000, 1000);

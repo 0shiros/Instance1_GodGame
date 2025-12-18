@@ -104,5 +104,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResourceNode
   ResourceType: 3
-  Amount: 2147483647
+  Amount: 200
   HarvestPerAction: 1
