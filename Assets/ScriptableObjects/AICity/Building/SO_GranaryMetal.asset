@@ -17,7 +17,7 @@ MonoBehaviour:
   Size: {x: 1, y: 1}
   WoodCost: 0
   StoneCost: 0
-  MetalCost: 4
+  MetalCost: 100
   HousingCapacity: 2
   BuildingType: 15
   isStorage: 0

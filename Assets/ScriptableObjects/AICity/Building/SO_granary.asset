@@ -15,7 +15,7 @@ MonoBehaviour:
   BuildingName: New Building
   Prefab: {fileID: 2953286491786590815, guid: 6dbf2f9ef49ca9a4f8796859ed1d9a00, type: 3}
   Size: {x: 1, y: 1}
-  WoodCost: 5
+  WoodCost: 100
   StoneCost: 0
   MetalCost: 0
   HousingCapacity: 2
