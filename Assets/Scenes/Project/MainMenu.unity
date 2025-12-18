@@ -2865,6 +2865,7 @@ GameObject:
   - component: {fileID: 1606098502}
   - component: {fileID: 1606098504}
   - component: {fileID: 1606098503}
+  - component: {fileID: 1606098505}
   m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
@@ -2929,6 +2930,42 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1606098501}
   m_CullTransparentMesh: 1
+--- !u!328 &1606098505
+VideoPlayer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1606098501}
+  m_Enabled: 1
+  m_VideoClip: {fileID: 32900000, guid: 3257bd7410fe17f44bbf578658a9beae, type: 3}
+  m_TargetCameraAlpha: 1
+  m_TargetCamera3DLayout: 0
+  m_TargetCamera: {fileID: 0}
+  m_TargetTexture: {fileID: 0}
+  m_TimeReference: 0
+  m_TargetMaterialRenderer: {fileID: 0}
+  m_TargetMaterialProperty: <noninit>
+  m_RenderMode: 2
+  m_AspectRatio: 2
+  m_DataSource: 0
+  m_TimeUpdateMode: 2
+  m_PlaybackSpeed: 1
+  m_AudioOutputMode: 2
+  m_TargetAudioSources:
+  - {fileID: 0}
+  m_DirectAudioVolumes:
+  - 1
+  m_Url: 
+  m_EnabledAudioTracks: 01
+  m_DirectAudioMutes: 00
+  m_ControlledAudioTrackCount: 1
+  m_PlayOnAwake: 1
+  m_SkipOnDrop: 1
+  m_Looping: 0
+  m_WaitForFirstFrame: 1
+  m_FrameReadyEventEnabled: 0
+  m_VideoShaders: []
 --- !u!1001 &1640489716
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4288,6 +4325,46 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1955177201474943985, guid: 5e89e93315746404b8d96d8df0e1ff4d, type: 3}
+      propertyPath: m_Color.b
+      value: 0.4101
+      objectReference: {fileID: 0}
+    - target: {fileID: 1955177201474943985, guid: 5e89e93315746404b8d96d8df0e1ff4d, type: 3}
+      propertyPath: m_Color.g
+      value: 0.70980394
+      objectReference: {fileID: 0}
+    - target: {fileID: 1955177201474943985, guid: 5e89e93315746404b8d96d8df0e1ff4d, type: 3}
+      propertyPath: m_Color.r
+      value: 0.3372549
+      objectReference: {fileID: 0}
+    - target: {fileID: 2149078278370518410, guid: 5e89e93315746404b8d96d8df0e1ff4d, type: 3}
+      propertyPath: m_Color.b
+      value: 0.95686275
+      objectReference: {fileID: 0}
+    - target: {fileID: 2149078278370518410, guid: 5e89e93315746404b8d96d8df0e1ff4d, type: 3}
+      propertyPath: m_Color.g
+      value: 0.837081
+      objectReference: {fileID: 0}
+    - target: {fileID: 2149078278370518410, guid: 5e89e93315746404b8d96d8df0e1ff4d, type: 3}
+      propertyPath: m_Color.r
+      value: 0.45882356
+      objectReference: {fileID: 0}
+    - target: {fileID: 4163381324857280475, guid: 5e89e93315746404b8d96d8df0e1ff4d, type: 3}
+      propertyPath: m_Color.b
+      value: 0.8509804
+      objectReference: {fileID: 0}
+    - target: {fileID: 4163381324857280475, guid: 5e89e93315746404b8d96d8df0e1ff4d, type: 3}
+      propertyPath: m_Color.g
+      value: 0.47425798
+      objectReference: {fileID: 0}
+    - target: {fileID: 4163381324857280475, guid: 5e89e93315746404b8d96d8df0e1ff4d, type: 3}
+      propertyPath: m_Color.r
+      value: 0.21568623
+      objectReference: {fileID: 0}
+    - target: {fileID: 6196329851925443789, guid: 5e89e93315746404b8d96d8df0e1ff4d, type: 3}
+      propertyPath: m_Value
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6362819823885782890, guid: 5e89e93315746404b8d96d8df0e1ff4d, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -4366,6 +4443,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6362819823885782890, guid: 5e89e93315746404b8d96d8df0e1ff4d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7478492788662917816, guid: 5e89e93315746404b8d96d8df0e1ff4d, type: 3}
+      propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7478492788662917816, guid: 5e89e93315746404b8d96d8df0e1ff4d, type: 3}
