@@ -19,7 +19,7 @@ MonoBehaviour:
   StoneCost: 100
   MetalCost: 0
   HousingCapacity: 5
-  BuildingType: 1
+  BuildingType: 11
   isStorage: 0
   maxBuildingsPerCell: 3
   placementOffsetRadius: 0.35

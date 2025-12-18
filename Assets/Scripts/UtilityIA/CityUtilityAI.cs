@@ -366,6 +366,7 @@ public class CityUtilityAI : MonoBehaviour
             case BuildingType.House:
                 
                 score += Mathf.Max(0, villagers.Count - HousesBuilt * 2);
+                Debug.Log("1");
                 break;
 
             case BuildingType.Farm:
@@ -378,6 +379,7 @@ public class CityUtilityAI : MonoBehaviour
                 int farms = CityBuildings.Count(b =>
                     b != null && b.GetType().Name.Contains("Farm"));
                 score -= farms * 15;
+                Debug.Log("2");
                 break;
 
             case BuildingType.Mine:
@@ -385,12 +387,14 @@ public class CityUtilityAI : MonoBehaviour
                     .Count(r => r != null && r.ResourceType == ResourceType.Metal);
 
                 if (metalNodes == 0)
-                    return -1000f;
+                    
+                return -1000f;
 
                 score += metalNodes * 10;
 
                 if (TotalMetal < 5)
                     score += 25;
+                Debug.Log("3");
                 break;
 
             case BuildingType.Forge:
@@ -402,6 +406,7 @@ public class CityUtilityAI : MonoBehaviour
 
                 if (CurrentDogma == E_Dogma.Military)
                     score += 40;
+                Debug.Log("4");
                 break;
         }
 
@@ -517,65 +522,67 @@ public class CityUtilityAI : MonoBehaviour
     void HandleBuildTasks()
     {
         if (GridManager == null) return;
-
-        var buildableBuildings = BuildingTypes
-     .Where(b => b != null && b.Prefab != null)
-     .Where(b => !ActiveTasks.Exists(t =>
-         t != null && t.Data != null &&
-         t.Data.Type == TaskType.Build &&
-         t.BuildingData == b))
-     .Where(b => TotalWood >= b.WoodCost &&
-                 TotalStone >= b.StoneCost &&
-                 TotalMetal >= b.MetalCost)
-     .OrderByDescending(b => GetBuildingInterest(b))
-     .ToList();
-        foreach (var building in buildableBuildings)
+        if (TotalWood > 200)
         {
-            Vector2Int targetCell;
-            bool foundCell = GridManager.GetCellsOwnedByCity(this).Count == 0
-                ? GridManager.TryFindNearestFreeCell(transform.position, building.Size, out targetCell)
-                : GridManager.TryFindCellAdjacentToCity(this, building, out targetCell) ||
-                  GridManager.TryFindNearestFreeCell(transform.position, building.Size, out targetCell);
-
-            if (!foundCell) continue;
-
-            Vector3 worldPos = GridManager.CellToWorld(targetCell.x, targetCell.y);
-
-            if (!UnityEngine.AI.NavMesh.SamplePosition(worldPos, out var hit, 0.5f, UnityEngine.AI.NavMesh.AllAreas))
-                continue;
-
-            worldPos = hit.position;
-
-            if (!GridManager.TryReserveCell(this, targetCell, building, out Vector3 reservedWorldPos))
-                continue;
-
-            reservedWorldPos += new Vector3(
-                Random.Range(-0.45f, 0.45f) * GridManager.CellSize,
-                Random.Range(-0.45f, 0.45f) * GridManager.CellSize,
-                0f
-            );
-
-            if (!ConsumeResourcesForBuilding(building.WoodCost, building.StoneCost, building.MetalCost))
+            var buildableBuildings = BuildingTypes
+         .Where(b => b != null && b.Prefab != null)
+         .Where(b => !ActiveTasks.Exists(t =>
+             t != null && t.Data != null &&
+             t.Data.Type == TaskType.Build &&
+             t.BuildingData == b))
+         .Where(b => TotalWood >= b.WoodCost &&
+                     TotalStone >= b.StoneCost &&
+                     TotalMetal >= b.MetalCost)
+         .OrderByDescending(b => GetBuildingInterest(b))
+         .ToList();
+            foreach (var building in buildableBuildings)
             {
-                GridManager.ReleaseReservation(targetCell);
-                continue;
+                Vector2Int targetCell;
+                bool foundCell = GridManager.GetCellsOwnedByCity(this).Count == 0
+                    ? GridManager.TryFindNearestFreeCell(transform.position, building.Size, out targetCell)
+                    : GridManager.TryFindCellAdjacentToCity(this, building, out targetCell) ||
+                      GridManager.TryFindNearestFreeCell(transform.position, building.Size, out targetCell);
+
+                if (!foundCell) continue;
+
+                Vector3 worldPos = GridManager.CellToWorld(targetCell.x, targetCell.y);
+
+                if (!UnityEngine.AI.NavMesh.SamplePosition(worldPos, out var hit, 0.5f, UnityEngine.AI.NavMesh.AllAreas))
+                    continue;
+
+                worldPos = hit.position;
+
+                if (!GridManager.TryReserveCell(this, targetCell, building, out Vector3 reservedWorldPos))
+                    continue;
+
+                reservedWorldPos += new Vector3(
+                    Random.Range(-0.45f, 0.45f) * GridManager.CellSize,
+                    Random.Range(-0.45f, 0.45f) * GridManager.CellSize,
+                    0f
+                );
+
+                if (!ConsumeResourcesForBuilding(building.WoodCost, building.StoneCost, building.MetalCost))
+                {
+                    GridManager.ReleaseReservation(targetCell);
+                    continue;
+                }
+
+                if (!buildTaskLookup.TryGetValue(building.BuildingType, out var buildTaskData))
+                {
+                    GridManager.ReleaseReservation(targetCell);
+                    continue;
+                }
+
+                ActiveTasks.Add(new CityTask
+                {
+                    Data = buildTaskData,
+                    BuildingData = building,
+                    BuildPosition = reservedWorldPos
+                });
+
+                if (building.BuildingType == BuildingType.House)
+                    HousesBuilt++;
             }
-
-            if (!buildTaskLookup.TryGetValue(building.BuildingType, out var buildTaskData))
-            {
-                GridManager.ReleaseReservation(targetCell);
-                continue;
-            }
-
-            ActiveTasks.Add(new CityTask
-            {
-                Data = buildTaskData,
-                BuildingData = building,
-                BuildPosition = reservedWorldPos
-            });
-
-            if (building.BuildingType == BuildingType.House)
-                HousesBuilt++;
         }
     }
 
@@ -919,4 +926,5 @@ public class CityUtilityAI : MonoBehaviour
         myCombat.StartCombat(targetCity);
         enemyCombat.StartDefense(this);
     }
+
 }
