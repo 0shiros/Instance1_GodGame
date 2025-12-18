@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,8 +7,6 @@ using UnityEngine.AI;
 public class villagersUtilityAI : MonoBehaviour
 {
     public VillagerRole role = VillagerRole.Generalist;
-
-    [Header("City Assignment")]
 
     [Header("Capacités")]
     public int CarryCapacity = 5;
@@ -28,14 +27,24 @@ public class villagersUtilityAI : MonoBehaviour
     public float EatRate = 20f;
 
     [Header("Statistics")]
-    public int Hp;
-    public int Strength;
+    public int Hp = 100;
+    public int Strength = 10;
 
     [Header("Mouvement")]
     public float stoppingDistance = 0.2f;
 
+    [Header("Combat")]
+    public float attackRange = 1f;
+    public float attackRate = 1f; // attaques par seconde
+    private float attackCooldown = 0f;
+    private villagersUtilityAI currentTarget;
+
+    public bool isInCombat = false;
+    public bool isAttacker = false;
+
     [Header("Références")]
     public CityUtilityAI city;
+    public CityUtilityAI enemyCity;
 
     [Header("Construction fallback")]
     public float defaultBuildTime = 2f;
@@ -53,9 +62,6 @@ public class villagersUtilityAI : MonoBehaviour
     public ResourceType carryingType = ResourceType.None;
 
     public bool isBusy => state != EState.Idle;
-
-    private bool isInCombat = false;
-    public bool isAttacker = false;
 
     private void Awake()
     {
@@ -80,32 +86,109 @@ public class villagersUtilityAI : MonoBehaviour
         Hunger += HungerRate * Time.deltaTime;
         Fatigue += FatigueRate * Time.deltaTime;
 
-        if (Hunger >= HungerThreshold && state != EState.Eating && !isBusy)
-            StartEatFlow();
+        if (!isInCombat)
+        {
+            if (Hunger >= HungerThreshold && state != EState.Eating && !isBusy)
+                StartEatFlow();
 
-        if (Fatigue >= FatigueThreshold && state != EState.Sleeping && !isBusy)
-            StartSleepFlow();
+            if (Fatigue >= FatigueThreshold && state != EState.Sleeping && !isBusy)
+                StartSleepFlow();
+        }
+
+        // Combat en mêlée
+        if (isInCombat)
+        {
+            if (currentTarget == null || currentTarget.Hp <= 0)
+            {
+                List<villagersUtilityAI> enemies = isAttacker ? enemyCity?.villagers : city?.villagers;
+                UpdateCombatTarget(enemies);
+            }
+
+            if (currentTarget != null)
+            {
+                attackCooldown -= Time.deltaTime;
+                float dist = Vector3.Distance(transform.position, currentTarget.transform.position);
+
+                if (dist <= attackRange && attackCooldown <= 0f)
+                {
+                    Attack(currentTarget);
+                    attackCooldown = 1f / attackRate;
+                }
+                else
+                {
+                    GoToPosition(currentTarget.transform.position);
+                }
+            }
+        }
 
         UpdateAnimator();
     }
 
-    #region Task Management
-    
+    #region Combat
+
+    public void EnterCombat(Vector3 combatCenter, bool attacker)
+    {
+        StopCurrentAction();
+        isInCombat = true;
+        isAttacker = attacker;
+
+        Vector3 offset = Random.insideUnitSphere * 2f;
+        offset.y = 0f;
+
+        GoToPosition(combatCenter + offset);
+    }
+
     public void ExitCombat()
     {
         isInCombat = false;
         isAttacker = false;
+        currentTarget = null;
 
-        
         if (currentTask != null)
-        {
             AssignTask(currentTask);
-        }
         else
-        {
             StartIdle();
-        }
     }
+
+    private void UpdateCombatTarget(List<villagersUtilityAI> enemies)
+    {
+        if (enemies == null || enemies.Count == 0)
+        {
+            currentTarget = null;
+            return;
+        }
+
+        float minDist = float.PositiveInfinity;
+        villagersUtilityAI closest = null;
+        foreach (var e in enemies)
+        {
+            if (e == null || e.Hp <= 0) continue;
+            float dist = Vector3.Distance(transform.position, e.transform.position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                closest = e;
+            }
+        }
+
+        currentTarget = closest;
+    }
+
+    private void Attack(villagersUtilityAI target)
+    {
+        if (target == null || Hp <= 0) return;
+
+        target.TakeDamage(Strength);
+        Debug.Log($"{name} inflige {Strength} à {target.name}");
+
+        if (target.Hp <= 0)
+            target.Die();
+    }
+
+    #endregion
+
+    #region Task Management
+
     public void AssignTask(CityTask task)
     {
         if (task == null) return;
@@ -127,20 +210,6 @@ public class villagersUtilityAI : MonoBehaviour
         }
     }
 
-
-    public void EnterCombat(Vector3 combatCenter, bool attacker)
-    {
-        StopCurrentAction();
-
-        isInCombat = true;
-        isAttacker = attacker;
-
-        Vector3 offset = Random.insideUnitSphere * 2f;
-        offset.y = 0f;
-
-        GoToPosition(combatCenter + offset);
-    }
-
     public void AbandonCurrentTask()
     {
         if (currentTask != null)
@@ -153,9 +222,11 @@ public class villagersUtilityAI : MonoBehaviour
     }
 
     public bool IsIdle() => !isBusy && currentTask == null;
+
     #endregion
 
-    #region Eating
+    #region Eating / Sleeping
+
     private void StartEatFlow()
     {
         StopCurrentAction();
@@ -164,22 +235,21 @@ public class villagersUtilityAI : MonoBehaviour
 
     private IEnumerator EatRoutine()
     {
-        StorageBuilding nearestStorage = FindNearestStorageWithFood();
-        ResourceNode nearestFoodNode = FindNearestResource(ResourceType.Food);
+        StorageBuilding storage = FindNearestStorageWithFood();
+        ResourceNode foodNode = FindNearestResource(ResourceType.Food);
 
         state = EState.Moving;
 
-        if (nearestStorage != null)
+        if (storage != null)
         {
-            if (!GoToPosition(nearestStorage.transform.position)) { StartIdle(); yield break; }
+            if (!GoToPosition(storage.transform.position)) { StartIdle(); yield break; }
             yield return WaitUntilArrived();
 
             state = EState.Eating;
-
             while (Hunger > 0f && city.TotalFood > 0)
             {
-                int toTake = Mathf.Min(FoodPerEat, nearestStorage.StoredFood);
-                int taken = nearestStorage.Withdraw(ResourceType.Food, toTake);
+                int toTake = Mathf.Min(FoodPerEat, storage.StoredFood);
+                int taken = storage.Withdraw(ResourceType.Food, toTake);
                 if (taken <= 0) break;
 
                 float elapsed = 0f;
@@ -195,19 +265,18 @@ public class villagersUtilityAI : MonoBehaviour
             yield break;
         }
 
-        if (nearestFoodNode != null)
+        if (foodNode != null)
         {
-            if (!GoToPosition(nearestFoodNode.transform.position)) { StartIdle(); yield break; }
+            if (!GoToPosition(foodNode.transform.position)) { StartIdle(); yield break; }
             yield return WaitUntilArrived();
 
             state = EState.Eating;
-
-            while (Hunger > 0f && nearestFoodNode.Amount > 0)
+            while (Hunger > 0f && foodNode.Amount > 0)
             {
-                if (Vector3.Distance(transform.position, nearestFoodNode.transform.position) > HarvestDistance) break;
+                if (Vector3.Distance(transform.position, foodNode.transform.position) > HarvestDistance) break;
 
-                int toTake = Mathf.Min(FoodPerEat, nearestFoodNode.Amount);
-                nearestFoodNode.Amount -= toTake;
+                int toTake = Mathf.Min(FoodPerEat, foodNode.Amount);
+                foodNode.Amount -= toTake;
 
                 float elapsed = 0f;
                 while (elapsed < EatDurationPerUnit && Hunger > 0f)
@@ -225,30 +294,6 @@ public class villagersUtilityAI : MonoBehaviour
         StartIdle();
     }
 
-    private StorageBuilding FindNearestStorageWithFood()
-    {
-        if (city == null) return null;
-
-        StorageBuilding best = null;
-        float bestDist = float.PositiveInfinity;
-
-        foreach (var s in city.GetComponentsInChildren<StorageBuilding>())
-        {
-            if (s == null || city.TotalFood <= 0) continue;
-
-            float d = Vector3.Distance(transform.position, s.transform.position);
-            if (d < bestDist)
-            {
-                bestDist = d;
-                best = s;
-            }
-        }
-        return best;
-    }
-
-    #endregion
-
-    #region Sleep
     private void StartSleepFlow()
     {
         StopCurrentAction();
@@ -266,7 +311,6 @@ public class villagersUtilityAI : MonoBehaviour
 
         state = EState.Sleeping;
         float recoverRate = 25f;
-
         while (Fatigue > 0f)
         {
             Fatigue -= recoverRate * Time.deltaTime;
@@ -276,30 +320,10 @@ public class villagersUtilityAI : MonoBehaviour
         StartIdle();
     }
 
-    private GameObject FindNearestHouseObject()
-    {
-        if (city == null) return null;
-
-        GameObject best = null;
-        float bestDist = float.PositiveInfinity;
-
-        foreach (Transform child in city.transform)
-        {
-            if (!child.CompareTag("Building")) continue;
-
-            float d = Vector3.Distance(transform.position, child.position);
-            if (d < bestDist)
-            {
-                bestDist = d;
-                best = child.gameObject;
-            }
-        }
-        return best;
-    }
-
     #endregion
 
-    #region Collect / Build routines
+    #region Collect / Build
+
     private IEnumerator CollectRoutine(CityTask task)
     {
         if (task.ResourceTarget == null) { FinishCurrentTask(); yield break; }
@@ -375,20 +399,21 @@ public class villagersUtilityAI : MonoBehaviour
         yield return WaitUntilArrived();
 
         city?.NotifyResourceCollected(carryingType, carrying);
-
         carrying = 0;
         carryingType = ResourceType.None;
-
         yield return new WaitForSeconds(0.1f);
     }
+
     #endregion
 
-    #region Movement Helpers
+    #region Movement
+
     private bool GoToPosition(Vector3 pos)
     {
         if (agent == null) return false;
         agent.isStopped = false;
         agent.SetDestination(pos);
+        state = EState.Moving;
         return true;
     }
 
@@ -399,7 +424,6 @@ public class villagersUtilityAI : MonoBehaviour
         float t = 0f;
         while (agent.pathPending || agent.remainingDistance > agent.stoppingDistance)
         {
-            if (currentTask == null) yield break;
             t += Time.deltaTime;
             if (t > timeout) yield break;
             yield return null;
@@ -420,9 +444,11 @@ public class villagersUtilityAI : MonoBehaviour
         }
         state = EState.Idle;
     }
+
     #endregion
 
     #region Helpers
+
     private ResourceNode FindNearestResource(ResourceType type)
     {
         ResourceNode best = null;
@@ -435,6 +461,44 @@ public class villagersUtilityAI : MonoBehaviour
             {
                 bestDist = d;
                 best = rn;
+            }
+        }
+        return best;
+    }
+
+    private StorageBuilding FindNearestStorageWithFood()
+    {
+        if (city == null) return null;
+        StorageBuilding best = null;
+        float bestDist = float.PositiveInfinity;
+
+        foreach (var s in city.GetComponentsInChildren<StorageBuilding>())
+        {
+            if (s == null || city.TotalFood <= 0) continue;
+            float d = Vector3.Distance(transform.position, s.transform.position);
+            if (d < bestDist)
+            {
+                bestDist = d;
+                best = s;
+            }
+        }
+        return best;
+    }
+
+    private GameObject FindNearestHouseObject()
+    {
+        if (city == null) return null;
+        GameObject best = null;
+        float bestDist = float.PositiveInfinity;
+
+        foreach (Transform child in city.transform)
+        {
+            if (!child.CompareTag("Building")) continue;
+            float d = Vector3.Distance(transform.position, child.position);
+            if (d < bestDist)
+            {
+                bestDist = d;
+                best = child.gameObject;
             }
         }
         return best;
@@ -462,7 +526,6 @@ public class villagersUtilityAI : MonoBehaviour
         animator.SetBool("isEating", state == EState.Eating);
         animator.SetBool("isSleeping", state == EState.Sleeping);
     }
-    #endregion
 
     public void TakeDamage(int amount)
     {
@@ -477,4 +540,6 @@ public class villagersUtilityAI : MonoBehaviour
 
         Destroy(gameObject);
     }
+
+    #endregion
 }
