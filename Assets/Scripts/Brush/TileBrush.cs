@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Brush;
 using NavMeshPlus.Components;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 using UnityEngine.InputSystem;
@@ -29,6 +31,8 @@ public class TileBrush : MonoBehaviour
     ColorBlender colorBlender;
     private BrushPreview previewBrush;
     private Vector3Int oldMidCell;
+    
+    public UnityEvent<int> OnQuestComplete = new UnityEvent<int>();
 
     private void OnDisable()
     {
@@ -43,6 +47,14 @@ public class TileBrush : MonoBehaviour
     private void Start()
     {
         colorBlender = ColorBlender.Instance;
+        previewBrush = GetComponent<BrushPreview>();
+        BrushSizeSlider.onValueChanged.AddListener(SizeChanged);
+        SetWaterTile();
+
+    }
+
+    private void SetWaterTile()
+    {
         for (int x = Mathf.CeilToInt((mapBounds.MapBounds.x / 2) * -1);
              x < Mathf.CeilToInt(mapBounds.MapBounds.x / 2);
              x++)
@@ -55,9 +67,6 @@ public class TileBrush : MonoBehaviour
                 waterTileMap.SetColor(new Vector3Int(x, y, 0), waterTile.Color);
             }
         }
-
-        previewBrush = GetComponent<BrushPreview>();
-        BrushSizeSlider.onValueChanged.AddListener(SizeChanged);
     }
 
     public void Reset()
@@ -65,10 +74,10 @@ public class TileBrush : MonoBehaviour
         currentTile = null;
         previewBrush.HidePreview();
     }
-    
+
     private void SizeChanged(float pArg0)
     {
-        Quest.Instance.CompleteQuest(1);
+        OnQuestComplete.Invoke(1);
         previewBrush.SetSize((int)pArg0);
     }
 
@@ -88,14 +97,14 @@ public class TileBrush : MonoBehaviour
             case ETileType.Dirt:
                 break;
             case ETileType.Grass:
-                Quest.Instance.CompleteQuest(2);
+                OnQuestComplete.Invoke(2);
                 break;
             case ETileType.Sand:
-                Quest.Instance.CompleteQuest(0);
+                OnQuestComplete.Invoke(0);
                 break;
             case ETileType.HeightGrass:
                 break;
-        } 
+        }
     }
 
     public void TileSelected(bool pIsSelected)
@@ -204,7 +213,6 @@ public class TileBrush : MonoBehaviour
             AudioManager.Instance.PlayOverlap("Erase");
         }
 
-        Quest.Instance.CompleteQuest(0);
         oldMidCell = midCell;
 
         int size = Mathf.Max(0, (int)BrushSizeSlider.value);
@@ -215,31 +223,25 @@ public class TileBrush : MonoBehaviour
             target = FindTargetTilemap(midCell, pRuleTile);
         }
 
-        for (int dx = -size; dx <= size; dx++)
+        List<Vector3Int> _cells = Shaper.Instance.SquareShape(size, midCell);
+
+        foreach (Vector3Int _cellPos in _cells)
         {
-            for (int dy = -size; dy <= size; dy++)
+            if (pRuleTile == waterTile)
             {
-                if (dx * dx + dy * dy <= rSq)
-                {
-                    Vector3Int cellPos = new Vector3Int(midCell.x + dx, midCell.y + dy, midCell.z);
+                ReplaceByWater(_cellPos);
+            }
+            else
+            {
+                if (target == null)
+                    target = FindTargetTilemap(_cellPos, pRuleTile);
+                if (target == null) continue;
 
-                    if (pRuleTile == waterTile)
-                    {
-                        ReplaceByWater(cellPos);
-                    }
-                    else
-                    {
-                        if (target == null)
-                            target = FindTargetTilemap(cellPos, pRuleTile);
-                        if (target == null) continue;
-
-                        target.SetTile(cellPos, pRuleTile != null ? pRuleTile.RuleTiles : null);
-                        if (pRuleTile != null)
-                            target.SetColor(cellPos, colorBlender.BlendColorForTile());
-                        else
-                            target.SetColor(cellPos, Color.clear);
-                    }
-                }
+                target.SetTile(_cellPos, pRuleTile != null ? pRuleTile.RuleTiles : null);
+                if (pRuleTile != null)
+                    target.SetColor(_cellPos, colorBlender.BlendColorForTile());
+                else
+                    target.SetColor(_cellPos, Color.clear);
             }
         }
     }

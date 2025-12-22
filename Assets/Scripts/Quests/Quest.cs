@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class Quest : MonoBehaviour
@@ -12,7 +13,11 @@ public class Quest : MonoBehaviour
     [SerializeField] private Image previewImage;
     [SerializeField] private TextMeshProUGUI questName;
     [SerializeField] private TextMeshProUGUI questDescription;
+
+    [SerializeField] private TileBrush brush;
     public static Quest Instance;
+    
+    
     private SO_Quest activeSoQuest;
 
     void Awake()
@@ -30,10 +35,11 @@ public class Quest : MonoBehaviour
 
     private void Start()
     {
+        brush.OnQuestComplete.AddListener(CompleteQuest);
         StartQuest(0);
     }
 
-    public void StartQuest(int pQuestID)
+    private void StartQuest(int pQuestID)
     {
         if (pQuestID > quests.Count - 1 || pQuestID < 0) return;
         
