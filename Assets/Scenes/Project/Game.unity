@@ -4841,6 +4841,7 @@ GameObject:
   - component: {fileID: 645553421}
   - component: {fileID: 645553420}
   - component: {fileID: 645553419}
+  - component: {fileID: 645553428}
   - component: {fileID: 645553418}
   - component: {fileID: 645553423}
   - component: {fileID: 645553424}
@@ -4926,6 +4927,9 @@ MonoBehaviour:
   maxRadius: 5
   NavMesh: {fileID: 1165953081}
   currentTile: {fileID: 0}
+  OnQuestComplete:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!81 &645553420
 AudioListener:
   m_ObjectHideFlags: 0
@@ -5083,6 +5087,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6b5f08b759cd2b48bf289cf484d46a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Brush.Shaper
+--- !u!114 &645553428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 645553417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13cb84845481c344cacc4b54d630fdac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Brush.TileMapManager
+  tilemaps:
+  - {fileID: 1060145726}
+  - {fileID: 818439517}
+  - {fileID: 642973270}
+  - {fileID: 1944642708}
+  - {fileID: 318923123}
 --- !u!1 &662562720
 GameObject:
   m_ObjectHideFlags: 0
@@ -13127,6 +13149,7 @@ MonoBehaviour:
   previewImage: {fileID: 2021485913}
   questName: {fileID: 888490354}
   questDescription: {fileID: 551992014}
+  brush: {fileID: 645553419}
 --- !u!114 &2134827883 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4187778820429248089, guid: a450f5430796eaf4e89ab23955e7acf7, type: 3}

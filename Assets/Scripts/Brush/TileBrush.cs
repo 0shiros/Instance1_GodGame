@@ -31,7 +31,7 @@ public class TileBrush : MonoBehaviour
     ColorBlender colorBlender;
     private BrushPreview previewBrush;
     private Vector3Int oldMidCell;
-    
+
     public UnityEvent<int> OnQuestComplete = new UnityEvent<int>();
 
     private void OnDisable()
@@ -50,7 +50,6 @@ public class TileBrush : MonoBehaviour
         previewBrush = GetComponent<BrushPreview>();
         BrushSizeSlider.onValueChanged.AddListener(SizeChanged);
         SetWaterTile();
-
     }
 
     private void SetWaterTile()
@@ -85,7 +84,6 @@ public class TileBrush : MonoBehaviour
     {
         currentTile = pTile;
         colorBlender.SetColorForTile(pTile);
-        FindTargetTilemap(GetMidCell(), currentTile);
         previewBrush.ShowPreview();
         target = null;
 
@@ -150,95 +148,33 @@ public class TileBrush : MonoBehaviour
     private void DrawTiles()
     {
         if (currentTile == null) return;
-        CircleDraw(currentTile);
-    }
-
-    private Tilemap FindTargetTilemap(Vector3Int pos, SO_Tiles pRuleTile)
-    {
-        if (tilemaps == null || tilemaps.Count == 0) return null;
-
-        if (pRuleTile != null && pRuleTile.LayerMask != 0)
-        {
-            for (int i = tilemaps.Count - 1; i >= 0; i--)
-            {
-                var tm = tilemaps[i];
-                if (tm == null) continue;
-                if ((pRuleTile.LayerMask & (1 << tm.gameObject.layer)) != 0)
-                {
-                    GetComponent<BrushPreview>().SetTargetTilemap(tm, (int)BrushSizeSlider.value, pRuleTile);
-                    return tm;
-                }
-            }
-        }
-
-        if (pRuleTile == EraseTile)
-        {
-            for (int i = tilemaps.Count - 1; i >= 0; i--)
-            {
-                var tm = tilemaps[i];
-                if (tm == null) continue;
-                if (tm.GetTile(pos) != null)
-                {
-                    GetComponent<BrushPreview>().SetTargetTilemap(tm, (int)BrushSizeSlider.value, pRuleTile);
-                    return tm;
-                }
-            }
-        }
-
-        for (int i = tilemaps.Count - 1; i >= 0; i--)
-        {
-            var tm = tilemaps[i];
-            if (tm != null)
-            {
-                GetComponent<BrushPreview>().SetTargetTilemap(tm, (int)BrushSizeSlider.value, pRuleTile);
-                return tm;
-            }
-        }
-
-        return null;
-    }
-
-    private void CircleDraw(SO_Tiles pRuleTile)
-    {
         if (tilemaps == null || tilemaps.Count == 0 || camera == null) return;
 
-        var midCell = GetMidCell();
+        Vector3Int _midCell = GetMidCell();
 
-        if (midCell != oldMidCell && pRuleTile != EraseTile && AudioManager.Instance.IsPlaying("Draw"))
+        oldMidCell = _midCell;
+
+        int _size = Mathf.Max(0, (int)BrushSizeSlider.value);
+
+        if (currentTile != EraseTile)
         {
-            AudioManager.Instance.PlayOverlap("Draw");
-        }
-        else if (midCell != oldMidCell && AudioManager.Instance.IsPlaying("Erase"))
-        {
-            AudioManager.Instance.PlayOverlap("Erase");
-        }
-
-        oldMidCell = midCell;
-
-        int size = Mathf.Max(0, (int)BrushSizeSlider.value);
-        int rSq = size * size;
-
-        if (pRuleTile == EraseTile && target == null)
-        {
-            target = FindTargetTilemap(midCell, pRuleTile);
+            target = TileMapManager.Instance.FindTilemap(currentTile);
         }
 
-        List<Vector3Int> _cells = Shaper.Instance.SquareShape(size, midCell);
+        List<Vector3Int> _cells = Shaper.Instance.SquareShape(_size, _midCell);
 
         foreach (Vector3Int _cellPos in _cells)
         {
-            if (pRuleTile == waterTile)
+            if (currentTile == waterTile)
             {
                 ReplaceByWater(_cellPos);
             }
             else
             {
-                if (target == null)
-                    target = FindTargetTilemap(_cellPos, pRuleTile);
                 if (target == null) continue;
 
-                target.SetTile(_cellPos, pRuleTile != null ? pRuleTile.RuleTiles : null);
-                if (pRuleTile != null)
+                target.SetTile(_cellPos, currentTile != null ? currentTile.RuleTiles : null);
+                if (currentTile != null)
                     target.SetColor(_cellPos, colorBlender.BlendColorForTile());
                 else
                     target.SetColor(_cellPos, Color.clear);
@@ -249,11 +185,11 @@ public class TileBrush : MonoBehaviour
 
     private Vector3Int GetMidCell()
     {
-        Vector3 mouse = Input.mousePosition;
-        mouse.z = -camera.transform.position.z;
-        Vector3 worldPos = camera.ScreenToWorldPoint(mouse);
-        Vector3Int midCell = tilemaps[0].WorldToCell(new Vector3(worldPos.x, worldPos.y, 0f));
-        return midCell;
+        Vector3 _mouse = Input.mousePosition;
+        _mouse.z = -camera.transform.position.z;
+        Vector3 _worldPos = camera.ScreenToWorldPoint(_mouse);
+        Vector3Int _midCell = waterTileMap.WorldToCell(new Vector3(_worldPos.x, _worldPos.y, 0f));
+        return _midCell;
     }
 
     private void ReplaceByWater(Vector3Int pCellPos)
@@ -270,7 +206,6 @@ public class TileBrush : MonoBehaviour
 
     public void ClearCurrentTileGround()
     {
-        if (currentTile == null) return;
         currentTile = null;
     }
 }
