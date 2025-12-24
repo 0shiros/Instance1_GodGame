@@ -229,30 +229,6 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 645553419}
         m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
-        m_MethodName: GetTile
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 84360f99f1f29244bb544471cc52eebd, type: 2}
-          m_ObjectArgumentAssemblyTypeName: SO_Tiles, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 645553424}
-        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
-        m_MethodName: TileSelected
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 645553419}
-        m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
         m_MethodName: TileSelected
         m_Mode: 6
         m_Arguments:
@@ -263,13 +239,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 645553424}
-        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
-        m_MethodName: ClearCurrentTileEnvironement
-        m_Mode: 1
+      - m_Target: {fileID: 645553428}
+        m_TargetAssemblyTypeName: Brush.TileMapManager, Assembly-CSharp
+        m_MethodName: SetTileButton
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 11400000, guid: 84360f99f1f29244bb544471cc52eebd, type: 2}
+          m_ObjectArgumentAssemblyTypeName: SO_Tiles, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -524,30 +500,6 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 645553419}
         m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
-        m_MethodName: GetTile
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 7bd8a8510c1ee4243a2c4571451ea222, type: 2}
-          m_ObjectArgumentAssemblyTypeName: SO_Tiles, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 645553424}
-        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
-        m_MethodName: TileSelected
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 645553419}
-        m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
         m_MethodName: TileSelected
         m_Mode: 6
         m_Arguments:
@@ -558,13 +510,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 645553424}
-        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
-        m_MethodName: ClearCurrentTileEnvironement
-        m_Mode: 1
+      - m_Target: {fileID: 645553428}
+        m_TargetAssemblyTypeName: Brush.TileMapManager, Assembly-CSharp
+        m_MethodName: SetTileButton
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 11400000, guid: 7bd8a8510c1ee4243a2c4571451ea222, type: 2}
+          m_ObjectArgumentAssemblyTypeName: SO_Tiles, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -732,30 +684,6 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 645553419}
         m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
-        m_MethodName: GetTile
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 18c420ceab39c33499f2a288bc1e184f, type: 2}
-          m_ObjectArgumentAssemblyTypeName: SO_Tiles, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 645553424}
-        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
-        m_MethodName: TileSelected
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 645553419}
-        m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
         m_MethodName: TileSelected
         m_Mode: 6
         m_Arguments:
@@ -766,13 +694,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 645553424}
-        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
-        m_MethodName: ClearCurrentTileEnvironement
-        m_Mode: 1
+      - m_Target: {fileID: 645553428}
+        m_TargetAssemblyTypeName: Brush.TileMapManager, Assembly-CSharp
+        m_MethodName: SetTileButton
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 11400000, guid: 18c420ceab39c33499f2a288bc1e184f, type: 2}
+          m_ObjectArgumentAssemblyTypeName: SO_Tiles, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4926,7 +4854,6 @@ MonoBehaviour:
   minRadius: 1
   maxRadius: 5
   NavMesh: {fileID: 1165953081}
-  currentTile: {fileID: 0}
   OnQuestComplete:
     m_PersistentCalls:
       m_Calls: []
@@ -5029,7 +4956,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 645553417}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d07ba333c19880244be8a563efa0f91e, type: 3}
   m_Name: 
@@ -5137,6 +5064,7 @@ Transform:
   - {fileID: 1770263696}
   - {fileID: 1165953079}
   - {fileID: 353634066}
+  - {fileID: 1869020720}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &687490577
@@ -5523,30 +5451,6 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 645553419}
         m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
-        m_MethodName: GetTile
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: a5b5fc596a7ae1142aedf4f12d77086e, type: 2}
-          m_ObjectArgumentAssemblyTypeName: SO_Tiles, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 645553424}
-        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
-        m_MethodName: TileSelected
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 645553419}
-        m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
         m_MethodName: TileSelected
         m_Mode: 6
         m_Arguments:
@@ -5557,13 +5461,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 645553424}
-        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
-        m_MethodName: ClearCurrentTileEnvironement
-        m_Mode: 1
+      - m_Target: {fileID: 645553428}
+        m_TargetAssemblyTypeName: Brush.TileMapManager, Assembly-CSharp
+        m_MethodName: SetTileButton
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 11400000, guid: a5b5fc596a7ae1142aedf4f12d77086e, type: 2}
+          m_ObjectArgumentAssemblyTypeName: SO_Tiles, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -6493,7 +6397,7 @@ MonoBehaviour:
   satValImage: {fileID: 1441227384}
   outputImage: {fileID: 1808219641}
   hueSlider: {fileID: 848448732}
-  colorBlender: {fileID: 0}
+  colorBlender: {fileID: 913484749}
   hexInputField: {fileID: 475456351}
   testImage: {fileID: 1278210292}
 --- !u!222 &913484748
@@ -9561,30 +9465,6 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 645553419}
         m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
-        m_MethodName: GetTile
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 8339c9415194d8245be2f71935f7a97d, type: 2}
-          m_ObjectArgumentAssemblyTypeName: SO_Tiles, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 645553424}
-        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
-        m_MethodName: TileSelected
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 645553419}
-        m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
         m_MethodName: TileSelected
         m_Mode: 6
         m_Arguments:
@@ -9595,13 +9475,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 645553424}
-        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
-        m_MethodName: ClearCurrentTileEnvironement
-        m_Mode: 1
+      - m_Target: {fileID: 645553428}
+        m_TargetAssemblyTypeName: Brush.TileMapManager, Assembly-CSharp
+        m_MethodName: SetTileButton
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 11400000, guid: 8339c9415194d8245be2f71935f7a97d, type: 2}
+          m_ObjectArgumentAssemblyTypeName: SO_Tiles, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -11468,6 +11348,53 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1856819421}
   m_CullTransparentMesh: 1
+--- !u!1 &1869020719
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1869020720}
+  - component: {fileID: 1869020721}
+  m_Layer: 0
+  m_Name: MapManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1869020720
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869020719}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -1.85666, y: 0.40244, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 662562721}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1869020721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1869020719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e223e2c44af86b04caa83729d38f0d51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Environement.MapManager
+  mapBounds: {fileID: 11400000, guid: 0a8bb1adcacbc5a48846e8c2e6cf8163, type: 2}
+  waterTileMap: {fileID: 1060145726}
+  waterTile: {fileID: 11400000, guid: 8339c9415194d8245be2f71935f7a97d, type: 2}
 --- !u!1 &1869543503
 GameObject:
   m_ObjectHideFlags: 0
@@ -12713,30 +12640,6 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 645553419}
         m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
-        m_MethodName: GetTile
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 11400000, guid: 293ff6976c2b85b4f8622318cdcd6c81, type: 2}
-          m_ObjectArgumentAssemblyTypeName: SO_Tiles, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 645553424}
-        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
-        m_MethodName: TileSelected
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 645553419}
-        m_TargetAssemblyTypeName: TileBrush, Assembly-CSharp
         m_MethodName: TileSelected
         m_Mode: 6
         m_Arguments:
@@ -12747,13 +12650,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
-      - m_Target: {fileID: 645553424}
-        m_TargetAssemblyTypeName: EnvironementBrush, Assembly-CSharp
-        m_MethodName: ClearCurrentTileEnvironement
-        m_Mode: 1
+      - m_Target: {fileID: 645553428}
+        m_TargetAssemblyTypeName: Brush.TileMapManager, Assembly-CSharp
+        m_MethodName: SetTileButton
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 11400000, guid: 293ff6976c2b85b4f8622318cdcd6c81, type: 2}
+          m_ObjectArgumentAssemblyTypeName: SO_Tiles, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 

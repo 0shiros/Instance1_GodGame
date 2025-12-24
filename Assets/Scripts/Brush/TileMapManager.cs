@@ -36,19 +36,20 @@ namespace Brush
         }
 
 
-        public TileHandler? GetTile()
+        public TileHandler GetTile()
         {
             if (currentTile != null)
             {
                 TileHandler _tile = new TileHandler(FindTilemap(currentTile), currentTile);
                 return _tile;
             }
-            return null;
+            return new TileHandler();
         }
 
         public void SetTileButton(SO_Tiles _Tile)
         {
             currentTile =  _Tile;
+            ColorBlender.Instance.SetColorForTile(_Tile);
         }
     }
 

@@ -26,7 +26,7 @@ public class TileBrush : MonoBehaviour
     bool canErase;
     private bool isEraseSelected;
     private Tilemap target;
-    [SerializeField] private SO_Tiles currentTile;
+    [SerializeField] private TileHandler currentTile;
     bool isSelected;
     ColorBlender colorBlender;
     private BrushPreview previewBrush;
@@ -41,7 +41,7 @@ public class TileBrush : MonoBehaviour
 
     public SO_Tiles GetTile()
     {
-        return currentTile;
+        return currentTile.Tile;
     }
 
     private void Start()
@@ -49,28 +49,11 @@ public class TileBrush : MonoBehaviour
         colorBlender = ColorBlender.Instance;
         previewBrush = GetComponent<BrushPreview>();
         BrushSizeSlider.onValueChanged.AddListener(SizeChanged);
-        SetWaterTile();
     }
 
-    private void SetWaterTile()
-    {
-        for (int x = Mathf.CeilToInt((mapBounds.MapBounds.x / 2) * -1);
-             x < Mathf.CeilToInt(mapBounds.MapBounds.x / 2);
-             x++)
-        {
-            for (int y = Mathf.CeilToInt((mapBounds.MapBounds.y / 2) * -1);
-                 y < Mathf.CeilToInt(mapBounds.MapBounds.x / 2);
-                 y++)
-            {
-                waterTileMap.SetTile(new Vector3Int(x, y, 0), waterTile.RuleTiles);
-                waterTileMap.SetColor(new Vector3Int(x, y, 0), waterTile.Color);
-            }
-        }
-    }
 
     public void Reset()
     {
-        currentTile = null;
         previewBrush.HidePreview();
     }
 
@@ -80,30 +63,7 @@ public class TileBrush : MonoBehaviour
         previewBrush.SetSize((int)pArg0);
     }
 
-    public void GetTile(SO_Tiles pTile)
-    {
-        currentTile = pTile;
-        colorBlender.SetColorForTile(pTile);
-        previewBrush.ShowPreview();
-        target = null;
 
-
-        switch (pTile.TileType)
-        {
-            case ETileType.Water:
-                break;
-            case ETileType.Dirt:
-                break;
-            case ETileType.Grass:
-                OnQuestComplete.Invoke(2);
-                break;
-            case ETileType.Sand:
-                OnQuestComplete.Invoke(0);
-                break;
-            case ETileType.HeightGrass:
-                break;
-        }
-    }
 
     public void TileSelected(bool pIsSelected)
     {
@@ -132,8 +92,13 @@ public class TileBrush : MonoBehaviour
 
     public void CanDraw(InputAction.CallbackContext context)
     {
-        if (currentTile == null || !isSelected) return;
-        if (context.started) canDraw = true;
+        if (!isSelected) return;
+        if (context.started)
+        {
+            currentTile = TileMapManager.Instance.GetTile();
+            canDraw = true;
+        }
+
         if (context.canceled)
         {
             canDraw = false;
@@ -147,7 +112,6 @@ public class TileBrush : MonoBehaviour
 
     private void DrawTiles()
     {
-        if (currentTile == null) return;
         if (tilemaps == null || tilemaps.Count == 0 || camera == null) return;
 
         Vector3Int _midCell = GetMidCell();
@@ -156,16 +120,16 @@ public class TileBrush : MonoBehaviour
 
         int _size = Mathf.Max(0, (int)BrushSizeSlider.value);
 
-        if (currentTile != EraseTile)
+        if (currentTile.Tile != EraseTile)
         {
-            target = TileMapManager.Instance.FindTilemap(currentTile);
+            target = currentTile.Tilemap;
         }
 
         List<Vector3Int> _cells = Shaper.Instance.SquareShape(_size, _midCell);
 
         foreach (Vector3Int _cellPos in _cells)
         {
-            if (currentTile == waterTile)
+            if (currentTile.Tile == waterTile)
             {
                 ReplaceByWater(_cellPos);
             }
@@ -173,8 +137,8 @@ public class TileBrush : MonoBehaviour
             {
                 if (target == null) continue;
 
-                target.SetTile(_cellPos, currentTile != null ? currentTile.RuleTiles : null);
-                if (currentTile != null)
+                target.SetTile(_cellPos, currentTile.Tile != null ? currentTile.Tile.RuleTiles : null);
+                if (currentTile.Tile != null)
                     target.SetColor(_cellPos, colorBlender.BlendColorForTile());
                 else
                     target.SetColor(_cellPos, Color.clear);
@@ -206,6 +170,5 @@ public class TileBrush : MonoBehaviour
 
     public void ClearCurrentTileGround()
     {
-        currentTile = null;
     }
 }
